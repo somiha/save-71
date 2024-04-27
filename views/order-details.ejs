@@ -1,0 +1,266 @@
+<%- include('header-one'); -%>
+<div class="d-flex flex-column min-vh-100">
+  <header class="d-flex justify-content-between px-5 border-bottom py-3">
+    <div>
+      <h4 class="fw-bold fs-2">Orders </h4>
+    </div>
+    <button class="btn btn-outline-secondary fs-4 d-lg-none dashboard-opener">
+      <i class="bi bi-list"></i>
+    </button>
+  </header>
+
+
+  <div id="printContent" class="d-flex justify-content-center align-items-center px-5 bg-light flex-grow-1">
+    <div class="bg-white p-5 rounded-2" style="height: fit-content;">
+      <div class=" d-flex justify-content-between ">
+        <% console.log(seller_details.shop_name) %>
+        <h5 class="fw-bold fs-4" style="color: #347cbf"><%= seller_details.shop_name %>
+        </h5>
+      </div>
+      <div class=" d-flex justify-content-between ">
+        <div>
+          <h5 class="fw-semibold fs-6 text-black">Order Id : <%= order_details[0].order_id %>
+          </h5>
+          <p class="color3">Order Date : <%= (order_details[0].placed_date).toISOString().substr(0,10) %>
+          </p>
+          <!-- <p class="color9">Delivery Date : <%= (order_details[0].delivery_date).toISOString().substr(0,10) %>
+            </p> -->
+          <% if (matchingUser) { %>
+          <p for="dlocation" class="form-label ">User Name: <%= matchingUser.user_name %></p>
+          <p for="dlocation" class="form-label ">User Contact: <%= matchingUser.phone %></p>
+          <% } %>
+          <label for="dlocation" class="form-label fw-bold">Delivery Location: <%= order.address %></label>
+          <form method="POST" action="/deliveryCharge/<%= order.order_id  %>" class="">
+            <label for="deliveryCharge" class="form-label ">Delivery Charge :
+              <%= (order.deliveryCharge * currRate).toFixed(2) %> <%= currencyCode  %></label>
+
+            <dev id="buttons_remove_delivery">
+              <% if (order.is_paid == 0) { %>
+              <input type="text" name="deliveryCharge" <%= order.is_paid != 0 ? 'readonly' : ''  %>
+                class="form-control text-front" placeholder="Type Delivery Charge"
+                value="<%= (order.deliveryCharge * currRate).toFixed(2)  %>" />
+              <button type="submit" id="loginForm" class="btn btn-primary text-white my-2"
+                style="background-color: #1a63a6">Update</button>
+              <% } %>
+            </dev>
+
+          </form>
+        </div>
+        <div id="buttons_remove">
+          <a href="/orders">
+            <button class="bg-black text-white rounded-circle">
+              <i class="bi bi-x fs-4"></i>
+            </button>
+          </a>
+          <div class="d-flex justify-content-end mt-3">
+            <button onclick="printDiv('printContent')" class="btn btn-outline-primary">
+              <i class="bi bi-printer bi-2x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div>
+          <h5 class="fw-bold fs-4 text-black">Products</h5>
+
+          <div class="row justify-content-start">
+            <% // for (var i=0; i < order_details.length; i++) {%>
+              <div class="pe-1 col">
+                <div class="border rounded d-flex align-items-center p-2">
+                  <%// for (var k = 0; k < image.length; k++) { %>
+                    <%// if (image[k].product_id == order_details[i].product_id) { %>
+                      <img class="" style="width: 30%;"
+                        src="<%= //image[k].product_image_url  %>" alt="">
+                    <%// } %>
+                  <%// } %>
+                  <div>
+                    <p class="m-0 fw-bold text-black m-2">
+                      <%= //order_details[i].product_name %>
+                    </p>
+                    <p class="m-0 color2 m-2">
+                      <%=// (order_details[i].product_price * currRate).toFixed(2) %> <%= //currencyCode  %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <% //} %>
+
+          </div>
+
+        </div> -->
+
+      <div class="mt-4">
+        <h5 class="fw-bold fs-4 text-black mb-4">
+          Invoice
+        </h5>
+
+        <div class="d-flex justify-content-between align-items-center border-bottom">
+          <div class="">
+            <% for (var i=0; i < order_details.length; i++) {%>
+            <div class="d-flex align-items-start gap-4 mb-3">
+
+              <h6 class="fw-6 text-black me-2 <%= order_details[i].stock_out? " text-decoration-line-through"
+                    : "" %>
+                    "><%= order_details[i].product_name %>
+              </h6>
+              <% if (order_details[i].stock_out === 0 && order_details[0].seller_confirm === 0 && order_details[0].order_status=== 3 && order_details[0].is_paid === 0) { %>
+              <a class="m-0 p-0 "
+                href="/stock_out/<%= order_details[i].order_id %>/<%= order_details[i].order_details_id %>/<%= order_details[i].product_id %>">
+                <button id="stockOut_remove" class="rounded border-0 text-bg-danger badge">Stock
+                  Out</button>
+              </a>
+              <% } %>
+            </div>
+            <% } %>
+          </div>
+
+          <div class="">
+            <div class="pb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="border-start border-end px-4">
+                  <% for (var i=0; i < order_details.length; i++) {%>
+                  <p class="fw-6 text-black <%= order_details[i].stock_out? " text-decoration-line-through"
+                        : "" %>"><%= (order_details[i].product_price * currRate).toFixed(2) %>
+
+                    <!-- changing the quantity of products available -->
+                    <% if (order.seller_confirm == 0) { %>
+                  <form method="POST"
+                    action="/updateOrder/<%= order_details[i].order_details_id %>/<%= order_details[i].product_cat_id %>/1">
+                    x &nbsp; <input type="number" min="0" class="color1" name="update_quantity"
+                      style="width: 30px; text-align: center;" value="<%= order_details[i].product_quantity %>">
+                    <button title="update quantity" type="submit" class="btn btn-outline-primary"><i
+                        class="bi bi-arrow-repeat"></i></button>
+                  </form>
+                  <% } else { %>
+                  x <%= order_details[i].product_quantity %>
+                  <% } %>
+
+                  </p>
+                  <% } %>
+                </div>
+                <div class="border-start border-end px-4">
+                  <% var total_price= 0 %>
+                  <% for (var i=0; i < order_details.length; i++) { %>
+                  <p class="fw-6 text-black <%= order_details[i].stock_out? " text-decoration-line-through"
+                          : "" %> ">
+                    <%= (order_details[i].product_price * order_details[i].product_quantity * currRate).toFixed(2) %>
+                  </p>
+                  <% if (order_details[i].stock_out==0) { %>
+                  <% total_price= ((parseFloat(total_price) + parseFloat(order_details[i].product_price) * parseFloat(order_details[i].product_quantity)  * currRate)).toFixed(2)
+                          %>
+                  <% } %>
+                  <% } %>
+                </div>
+
+                <!-- <div class="border-start border-end px-4">
+                    <% for (var i=0; i < order_details.length; i++) {%>
+                      <% if (order_details[i].stock_out==0 && order_details[0].order_status==3) { %>
+                        <a
+                          href="/stock_out/<%= order_details[i].order_id %>/<%= order_details[i].order_details_id %>/<%= order_details[i].product_id %>">
+                          <button class="text-white rounded border-0 px-3 my-2" style="background-color: #ED4824;">Stock
+                            Out</button>
+                        </a>
+                      <% } %>
+                    <% } %>
+                  </div> -->
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <p class="fs-6 text-black">Total Product Price</p>
+          </div>
+          <div class="">
+            <p class="fw-6">
+              <%= total_price %> <%= currencyCode  %>
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center border-bottom">
+          <div>
+            <p class="fs-6 text-black">Delivery Charge </p>
+          </div>
+          <div class="">
+            <p class="fw-6">
+              + <%= (parseFloat(order.deliveryCharge) * currRate).toFixed(2) %> <%= currencyCode  %>
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <p class="fw-semibold text-black">Total Order Price</p>
+          </div>
+          <div class="">
+            <p class="fw-semibold">
+              = <%= (Number(total_price) + parseFloat(order.deliveryCharge) * currRate).toFixed(2) %>
+              <%= currencyCode  %>
+            </p>
+          </div>
+        </div>
+        <div id="control_remove" class="d-flex text-white justify-content-end">
+          <% if (order_details[0].order_status==3) { %>
+          <a href="/order_details/<%= order_details[0].order_id %>/2">
+            <button class="btn btn-outline-danger mx-2">Cancel
+            </button>
+          </a>
+          <% } %>
+          <% if (order_details[0].order_status==3) { %>
+          <% if (order_details[0].request_review==0 && order_details[0].is_paid != 0) { %>
+          <a href="/order_details/<%= order_details[0].order_id %>/4">
+            <button class="btn btn-outline-success ">Ship
+              Order</button>
+          </a>
+          <% } else if (order_details[0].request_review && !order_details[0].seller_confirm) { %>
+          <a href="/order_details/<%= order_details[0].order_id %>/3">
+            <button class="btn btn-outline-success">Available
+            </button>
+          </a>
+          <% } %>
+          <% } %>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+<script>
+  function printDiv(divId) {
+    var printContents = document.getElementById(divId).innerHTML;
+    var excludedDivIds = ['buttons_remove', 'control_remove', 'stockOut_remove', 'buttons_remove_delivery'];
+    var originalContents = document.body.innerHTML;
+
+    excludedDivIds.forEach(function (divIdToRemove) {
+      var excludedDiv = document.getElementById(divIdToRemove);
+      if (excludedDiv) {
+        printContents = printContents.replace(excludedDiv.outerHTML, '');
+      }
+    });
+
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+  }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- <script>
+$(document).ready(function() {
+  $('input[name="update_quantity"]').on('input', function() {
+    var max = parseInt($(this).attr('max'));
+    if ($(this).val() > max || $(this).val() < 1) {
+      $(this).val(max);
+    }
+  });
+});
+</script> -->
+
+<%- include('footer-one'); -%>

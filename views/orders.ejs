@@ -1,0 +1,1685 @@
+<%- include('header-one'),{menuId:menuId}; -%>
+<link rel="stylesheet" type="text/css" href="./css/daterangepicker.css" />
+
+<div class="w-100 bg-light">
+  <%- include('dashboard-topbar'),{menuId:menuId}; -%>
+  <style>
+    .highlighted {
+      background-color: yellow;
+      /* Change the background color to highlight */
+      border-radius: 5px;
+      /* Add rounded corners to the border */
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      /* Add a subtle shadow for a material effect */
+      transition: 1s ease-in-out;
+      /* Longer transition duration for a smoother effect */
+    }
+  </style>
+
+  <%
+var orderCount = [0, 0, 0, 0, 0, 0];
+var totalPrice = [0, 0, 0, 0, 0, 0];
+var review = 0;
+for (var i = 0; i < orders.length; i++) {
+  if (orders[i].in_cart == 0) {
+    review = review + orders[i].request_review;
+    var matchingOrderDetails = order_details.filter(function(detail) {
+      return detail.order_id === orders[i].order_id;
+    });
+    if (matchingOrderDetails.length > 0 && !orders[i].request_review) {
+      orderCount[orders[i].order_status - 1]++;
+      matchingOrderDetails.forEach(function(detail) {
+        totalPrice[orders[i].order_status - 1] += detail.product_total_price;
+      });
+      totalPrice[orders[i].order_status - 1] += orders[i].deliveryCharge;
+    }
+  }
+}
+%>
+
+  <!-- tab section -->
+  <div class=" my-5 px-2 mt-5">
+    <nav class="mb-4 w-100 px-lg-5 py-5 py-lg-0 overflow-x-auto">
+
+      <div class="row">
+        <div class="col-sm-3 text-start">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control w-10" placeholder="Search Number or Order ID" aria-label="Search">
+          </div>
+        </div>
+        <div class="col-sm-6 text-start">
+          <!-- Empty space -->
+        </div>
+
+        <div class="col-sm-3 text-end">
+          <!-- filter button -->
+          <div id="reportrange" class="input-group mb-4">
+            <i class="bi bi-calendar"></i>&nbsp;
+            <span>Filter</span>&nbsp;<i class="bi bi-caret-down-fill"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 fs-6 products-tab " id="nav-tab" role="tablist">
+        <a class="nav-link active btn p-2 px-3" id="nav-description-tab" data-bs-toggle="tab"
+          data-bs-target="#new-order" type="button">
+          New Order (<%= orderCount[2] %>) </br> [<%= (totalPrice[2] * currRate).toFixed(2) %> <%= currencyCode  %> ]
+        </a>
+        <a class="nav-link btn p-2 px-3" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#accepted-order"
+          type="button">
+          Shipped Order (<%= orderCount[3] %>) </br> [<%= (totalPrice[3] * currRate).toFixed(2) %> <%= currencyCode  %>
+          ]
+        </a>
+        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#confirmed-order"
+          type="button">
+          Confirmed Order (<%= orderCount[0] %>) </br> [<%= (totalPrice[0] * currRate).toFixed(2) %>
+          <%= currencyCode  %> ]
+        </a>
+        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#rejected-order"
+          type="button">
+          Rejected Order (<%= orderCount[1] %>) </br> [<%= (totalPrice[1] * currRate).toFixed(2) %> <%= currencyCode  %>
+          ]
+        </a>
+      </div>
+
+    </nav>
+    <div class="tab-content w-100 px-3" id="nav-tabContent">
+      <!-- new order -->
+      <div class="tab-pane fade show active  rounded-3" id="new-order" role="tabpanel" tabindex="0">
+        <section class="my-2">
+          <button id="generateCSV1">Generate CSV</button>
+          <button id="downloadInvoice1">Download Invoice</button>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
+                      <th scope="col"><label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="selectAll1">
+                          <span class="checkmark"></span>
+                        </label></th>
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Customer Info</th>
+                      <th scope="col" hidden>Total Price</th>
+                      <th scope="col" hidden>Delivery Charge</th>
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Status</th>
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < orders.length; i++) { %>
+                    <% if (orders[i].in_cart == 0) { %>
+                    <% var oID=0 %>
+                    <% if (orders[i].order_status==3) { %>
+                    <tr>
+
+                      <td style="vertical-align: middle;">
+                        <label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="orderCheckbox1">
+                          <span class="checkmark"></span>
+                        </label>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <% if (userInfo[orders[i].user_id]) { %>
+                        <p><%= userInfo[orders[i].user_id].user_name %></p>
+                        <p><%= userInfo[orders[i].user_id].phone %></p>
+                        <% } %>
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = order_details.filter(detail => detail.order_id === orders[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+                      <td style="vertical-align: middle;" hidden>
+                        <% deliveryCharge = (parseFloat(orders[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) + parseFloat(deliveryCharge)).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;" data-status="<%= orders[i].is_paid %>""><% if (orders[i].is_paid==0) { %>
+                        <span class=" badge rounded-pill"
+                        style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                        <% } else if (orders[i].is_paid==1) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                        <% } else if (orders[i].is_paid==2) { %>
+                        <abbr title="Cash On Delivery" class="badge rounded-pill"
+                          style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                        <% } %>
+                        <% if (orders[i].seller_confirm == 0) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                        <% } %>
+                      </td>
+                      <td hidden>
+                        <% for (var j=0; j < order_details.length; j++) { %>
+                        <% if (order_details[j].order_id==orders[i].order_id) { %>
+
+                        <%= order_details[j].product_name %> x<%= order_details[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/order_details/<%= orders[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <% } %>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- <% for (var i=0; i < orders.length; i++) { %>
+          <% if (orders[i].in_cart == 0) { %>
+          <% var oID=0 %>
+          <% if (orders[i].order_status==3) { %>
+
+
+          <div class="border-bottom mb-3 order">
+
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="w-auto">
+                <div class="d-flex row-gap-4 flex-column p-4">
+
+
+                  <% for (var j=0; j < order_details.length; j++) { %>
+                  <% if (order_details[j].order_id==orders[i].order_id) { %>
+                  <div class=" d-flex gap-3 ">
+                    <% for (var k = 0; k < image.length; k++) { %>
+                    <% if (image[k].product_id == order_details[j].product_id) { %>
+                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url  %>"
+                      alt="">
+                    <% } %>
+                    <% } %>
+                    <div class="fw-semibold ">
+                      <p class="m-0">
+                        <a class="text-black"
+                          href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>"><%= order_details[j].product_name %></a>
+                        <% if (orders[i].is_paid==0) { %>
+                        <span class="badge rounded-pill text-bg-danger">Unpaid</span>
+                        <% } else if (orders[i].is_paid==1) { %>
+                        <span class="badge rounded-pill text-bg-success">Paid</span>
+                        <% } else if (orders[i].is_paid==2) { %>
+                        <abbr title="Cash On Delivery" class="badge rounded-pill text-bg-success">COD</abbr>
+                        <% } %>
+                        <% if (orders[i].seller_confirm == 0) { %>
+                        <span class="badge rounded-pill text-bg-warning">Unchecked</span>
+                        <% } %>
+                      </p>
+                      <p class="m-0">x<%= order_details[j].product_quantity %>
+                      </p>
+                    </div>
+                  </div>
+                  <% } %>
+                  <% } %>
+
+                </div>
+              </div>
+
+
+              <div class="col-3">
+                <div class="d-flex justify-content-end">
+
+                  <a href="/order_details/<%= orders[i].order_id %>" class="btn border fw-semibold view-eye-btn">
+                    <i class="bi bi-eye"></i>
+                    View
+
+                  </a>
+                </div>
+              </div>
+            </div>
+
+
+            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+              <% for (var t=0; t < userInfo.length; t++) { %>
+              <% if (userInfo[t].user_id==orders[i].user_id) { %>
+              <span id="number" hidden><%= userInfo[t].phone %></span>
+              <% } %>
+              <% } %>
+              <span id="order_id"> Order ID : <%= orders[i].order_id %> </span>|
+              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span> |
+              <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %></span>
+            </p>
+          </div>
+          <% } %>
+          <% } %>
+          <% } %> -->
+          <!-- For end -->
+        </section>
+      </div>
+
+
+      <!-- Shipped order -->
+      <div class="tab-pane fade" id="accepted-order" role="tabpanel" tabindex="0">
+        <section class="my-2">
+          <button id="generateCSV2">Generate CSV</button>
+          <button id="downloadInvoice">Download Invoice</button>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
+                      <th scope="col"><label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="selectAll2">
+                          <span class="checkmark"></span>
+                        </label></th>
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Customer Info</th>
+                      <th scope="col" hidden>Total Price</th>
+                      <th scope="col" hidden>Delivery Charge</th>
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Status</th>
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < orders.length; i++) { %>
+                    <% if (orders[i].in_cart == 0) { %>
+                    <% var oID=0 %>
+                    <% if (orders[i].order_status==4) { %>
+                    <tr>
+
+                      <td style="vertical-align: middle;">
+                        <label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="orderCheckbox2">
+                          <span class="checkmark"></span>
+                        </label>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <% if (userInfo[orders[i].user_id]) { %>
+                        <p><%= userInfo[orders[i].user_id].user_name %></p>
+                        <p><%= userInfo[orders[i].user_id].phone %></p>
+                        <% } %>
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = order_details.filter(detail => detail.order_id === orders[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+                      <td style="vertical-align: middle;" hidden>
+                        <% deliveryCharge = (parseFloat(orders[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) + parseFloat(deliveryCharge)).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;" data-status="<%= orders[i].is_paid %>""><% if (orders[i].is_paid==0) { %>
+                                  <span class=" badge rounded-pill"
+                        style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                        <% } else if (orders[i].is_paid==1) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                        <% } else if (orders[i].is_paid==2) { %>
+                        <abbr title="Cash On Delivery" class="badge rounded-pill"
+                          style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                        <% } %>
+                        <% if (orders[i].seller_confirm == 0) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                        <% } %>
+                      </td>
+                      <td hidden>
+                        <% for (var j=0; j < order_details.length; j++) { %>
+                        <% if (order_details[j].order_id==orders[i].order_id) { %>
+
+                        <%= order_details[j].product_name %> x<%= order_details[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/order_details/<%= orders[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <% } %>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- <% for (var i=0; i < orders.length; i++) { %>
+          <% if (orders[i].in_cart == 0) { %>
+          <% if (orders[i].order_status==4) { %>
+
+          <div class="border-bottom mb-3 order">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="w-auto">
+                <div class="d-flex row-gap-4 flex-column ">
+                  <% for (var j=0; j < order_details.length; j++) { %>
+                  <% if (order_details[j].order_id==orders[i].order_id) { %>
+                  <div class="d-flex">
+                    <% for (var k = 0; k < image.length; k++) { %>
+                    <% if (image[k].product_id == order_details[j].product_id) { %>
+                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url  %>"
+                      alt="">
+                    <% } %>
+                    <% } %>
+                    <div class="fw-semibold ps-3">
+                      <a class="text-black" href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>">
+                        <p class="m-0">
+                          <%= order_details[j].product_name %>
+                        </p>
+                      </a>
+                      <p class="m-0">x<%= order_details[j].product_quantity %>
+                      </p>
+                    </div>
+                  </div>
+                  <% } %>
+                  <% } %>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="d-flex justify-content-end">
+                  <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
+                    <button class="btn border fw-semibold view-eye-btn">
+                      <i class="bi bi-eye"></i>
+                      View
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+              <% for (var t=0; t < userInfo.length; t++) { %>
+              <% if (userInfo[t].user_id==orders[i].user_id) { %>
+              <span id="number" hidden><%= userInfo[t].phone %></span>
+              <% } %>
+              <% } %>
+              <span id="order_id"> Order ID : <%= orders[i].order_id %> </span>|
+              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span>
+            </p>
+          </div>
+          <% } %>
+          <% } %>
+          <% } %> -->
+        </section>
+      </div>
+
+      <!-- confirmed order -->
+      <div class="tab-pane fade" id="confirmed-order" role="tabpanel" tabindex="0">
+        <section class="my-2">
+          <button id="generateCSV3">Generate CSV</button>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
+                      <th scope="col"><label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="selectAll3">
+                          <span class="checkmark"></span>
+                        </label></th>
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Customer Info</th>
+                      <th scope="col" hidden>Total Price</th>
+                      <th scope="col" hidden>Delivery Charge</th>
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Status</th>
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < orders.length; i++) { %>
+                    <% if (orders[i].in_cart == 0) { %>
+                    <% var oID=0 %>
+                    <% if (orders[i].order_status==1) { %>
+                    <tr>
+
+                      <td style="vertical-align: middle;">
+                        <label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="orderCheckbox3">
+                          <span class="checkmark"></span>
+                        </label>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <% if (userInfo[orders[i].user_id]) { %>
+                        <p><%= userInfo[orders[i].user_id].user_name %></p>
+                        <p><%= userInfo[orders[i].user_id].phone %></p>
+                        <% } %>
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = order_details.filter(detail => detail.order_id === orders[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+                      <td style="vertical-align: middle;" hidden>
+                        <% deliveryCharge = (parseFloat(orders[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) + parseFloat(deliveryCharge)).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;" data-status="<%= orders[i].is_paid %>""><% if (orders[i].is_paid==0) { %>
+                                  <span class=" badge rounded-pill"
+                        style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                        <% } else if (orders[i].is_paid==1) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                        <% } else if (orders[i].is_paid==2) { %>
+                        <abbr title="Cash On Delivery" class="badge rounded-pill"
+                          style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                        <% } %>
+                        <% if (orders[i].seller_confirm == 0) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                        <% } %>
+                      </td>
+                      <td hidden>
+                        <% for (var j=0; j < order_details.length; j++) { %>
+                        <% if (order_details[j].order_id==orders[i].order_id) { %>
+
+                        <%= order_details[j].product_name %> x<%= order_details[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/order_details/<%= orders[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <% } %>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- <% for (var i=0; i < orders.length; i++) { %>
+          <% if (orders[i].in_cart == 0) { %>
+          <% if (orders[i].order_status==1) { %>
+          <div class="border-bottom mb-3 order">
+            <div class=" d-flex justify-content-between align-items-start">
+
+              <div class=" w-auto">
+                <div class="d-flex row-gap-4 flex-column">
+                  <% for (var j=0; j < order_details.length; j++) { %>
+                  <% if (order_details[j].order_id==orders[i].order_id) { %>
+                  <div class=" d-flex">
+                    <% for (var k = 0; k < image.length; k++) { %>
+                    <% if (image[k].product_id == order_details[j].product_id) { %>
+                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url %>"
+                      alt="">
+                    <% } %>
+                    <% } %>
+                    <div class="fw-semibold ps-3">
+                      <a class="text-black" href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>">
+                        <p class="m-0">
+                          <%= order_details[j].product_name %>
+                        </p>
+                      </a>
+                      <p class="m-0">x<%= order_details[j].product_quantity %>
+                      </p>
+                    </div>
+                  </div>
+                  <% } %>
+                  <% } %>
+
+                </div>
+              </div>
+
+
+              <div class="col-3">
+                <div class="d-flex justify-content-end">
+                  <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
+                    <button class="btn border fw-semibold view-eye-btn">
+                      <i class="bi bi-eye"></i>
+                      View
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+              <% for (var t=0; t < userInfo.length; t++) { %>
+              <% if (userInfo[t].user_id==orders[i].user_id) { %>
+              <span id="number" hidden><%= userInfo[t].phone %></span>
+              <% } %>
+              <% } %>
+              <span id="order_id"> Order ID : <%= orders[i].order_id %></span> |
+              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
+              </span>|
+              <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %>
+              </span>
+            </p>
+          </div>
+          <% } %>
+          <% } %>
+
+          <% } %> -->
+        </section>
+
+      </div>
+
+
+
+      <!-- rejected-order -->
+      <div class="tab-pane fade" id="rejected-order" role="tabpanel" tabindex="0">
+        <section class="my-2">
+          <button id="generateCSV4">Generate CSV</button>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
+                      <th scope="col"><label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="selectAll4">
+                          <span class="checkmark"></span>
+                        </label></th>
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Customer Info</th>
+                      <th scope="col" hidden>Total Price</th>
+                      <th scope="col" hidden>Delivery Charge</th>
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Status</th>
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < orders.length; i++) { %>
+                    <% if (orders[i].in_cart == 0) { %>
+                    <% var oID=0 %>
+                    <% if (orders[i].order_status==2) { %>
+                    <tr>
+
+                      <td style="vertical-align: middle;">
+                        <label class="checkbox-wrap checkbox-primary m-2">
+                          <input type="checkbox" class="orderCheckbox4">
+                          <span class="checkmark"></span>
+                        </label>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= orders[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <% if (userInfo[orders[i].user_id]) { %>
+                        <p><%= userInfo[orders[i].user_id].user_name %></p>
+                        <p><%= userInfo[orders[i].user_id].phone %></p>
+                        <% } %>
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = order_details.filter(detail => detail.order_id === orders[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+                      <td style="vertical-align: middle;" hidden>
+                        <% deliveryCharge = (parseFloat(orders[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) + parseFloat(deliveryCharge)).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;" data-status="<%= orders[i].is_paid %>""><% if (orders[i].is_paid==0) { %>
+                                  <span class=" badge rounded-pill"
+                        style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                        <% } else if (orders[i].is_paid==1) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                        <% } else if (orders[i].is_paid==2) { %>
+                        <abbr title="Cash On Delivery" class="badge rounded-pill"
+                          style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                        <% } %>
+                        <% if (orders[i].seller_confirm == 0) { %>
+                        <span class="badge rounded-pill"
+                          style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                        <% } %>
+                      </td>
+                      <td hidden>
+                        <% for (var j=0; j < order_details.length; j++) { %>
+                        <% if (order_details[j].order_id==orders[i].order_id) { %>
+
+                        <%= order_details[j].product_name %> x<%= order_details[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/order_details/<%= orders[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <% } %>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- <% for (var i=0; i < orders.length; i++) { %>
+          <% if (orders[i].in_cart == 0) { %>
+          <% if (orders[i].order_status==2) { %>
+
+
+          <div class="border-bottom mb-3 order">
+
+            <div class="d-flex justify-content-between align-items-start">
+
+              <div class="w-auto">
+                <div class="d-flex row-gap-4 flex-column">
+                  <% for (var j=0; j < order_details.length; j++) { %>
+                  <% if (order_details[j].order_id==orders[i].order_id) { %>
+                  <div class="d-flex">
+                    <% for (var k = 0; k < image.length; k++) { %>
+                    <% if (image[k].product_id == order_details[j].product_id) { %>
+                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url  %>"
+                      alt="">
+                    <% } %>
+                    <% } %>
+                    <div class="fw-semibold ps-3">
+                      <a class="text-black" href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>">
+                        <p class="m-0">
+                          <%= order_details[j].product_name %>
+                        </p>
+                      </a>
+                      <p class="m-0">x<%= order_details[j].product_quantity %>
+                      </p>
+                    </div>
+                    <% } %>
+                    <% } %>
+                  </div>
+
+                </div>
+              </div>
+
+
+              <div class="col-3">
+                <div class="d-flex justify-content-end">
+                  <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
+                    <button class=" btn border fw-semibold view-eye-btn">
+                      <i class="bi bi-eye"></i>
+                      View
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+              <% for (var t=0; t < userInfo.length; t++) { %>
+              <% if (userInfo[t].user_id==orders[i].user_id) { %>
+              <span id="number" hidden><%= userInfo[t].phone %></span>
+              <% } %>
+              <% } %>
+              <span id="order_id"> Order ID : <%= orders[i].order_id %> </span>|
+              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
+              </span>
+            </p>
+          </div>
+
+
+
+
+          <% } %>
+          <% } %>
+          <% } %> -->
+        </section>
+
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <!-- <div class="my-5 px-5 w-100">
+    <div class="my-5">
+       -->
+  <!-- <div class="d-flex justify-content-between align-items-center mb-5">
+        <div id="newOrder" class="px-2">
+          <p class="mb-0 fs-3 fw-semibold">New Order</p>
+        </div>
+      </div>
+
+      <section class="my-2">
+        <% for (var i=0; i < orders.length; i++) { %>
+          <% if (orders[i].in_cart == 0) { %>
+          <% var oID=0 %>
+            <% if (orders[i].order_status==3) { %>
+
+              <div class="border-bottom mb-3">
+
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="w-auto">
+                    <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
+                      <% for (var j=0; j < order_details.length; j++) { %>
+                        <% if (order_details[j].order_id==orders[i].order_id) { %>
+                          <div class=" d-flex gap-3">
+                            <% for (var k = 0; k < image.length; k++) { %>
+                              <% if (image[k].product_id == order_details[j].product_id) { %>
+                                <img class="" style="width: 4rem; object-fit: contain;"
+                                  src="<%= image[k].product_image_url  %>" alt="">
+                              <% } %>
+                            <% } %>
+                            <div class="fw-semibold ">
+                              <p class="m-0">
+                                <%= order_details[j].product_name %>
+                                  <% if (orders[i].is_paid==0) { %>
+                                    <span class="badge rounded-pill text-bg-danger">Unpaid</span>
+                                    <% } else { %>
+                                      <span class="badge rounded-pill text-bg-success">Paid</span>
+                                      <% } %>
+                              </p>
+                              <p class="m-0">x<%= order_details[j].product_quantity %>
+                              </p>
+                            </div>
+                          </div>
+                          <% } %>
+                            <% } %>
+
+                    </div>
+                  </div>
+
+
+                  <div class="col-3">
+                    <div class="d-flex justify-content-end">
+
+                      <a href="/order_details/<%= orders[i].order_id %>" class="btn border fw-semibold view-eye-btn">
+                        <i class="bi bi-eye"></i>
+                        View
+
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+
+                <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+                  <span> Order ID : <%= orders[i].order_id %> </span>|
+                  <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span> |
+                  <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %></span>
+                </p>
+              </div>
+              <% } %>
+            <% } %>
+        <% } %>
+<!-- For end -->
+  <!-- </section>
+
+      <div  class="" style="margin-top: 100px;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div id="accepted" class="px-2">
+            <p class="mb-0 fs-3 fw-semibold">Accepted Order</p>
+          </div>
+        </div>
+        <section class="my-2">
+        <% for (var i=0; i < orders.length; i++) { %>
+          <% if (orders[i].in_cart == 0) { %>
+          <% if (orders[i].order_status==4) { %>
+
+              <div class="border-bottom mb-3">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="w-auto">
+                    <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
+                      <% for (var j=0; j < order_details.length; j++) { %>
+                        <% if (order_details[j].order_id==orders[i].order_id) { %>
+                          <div class="d-flex">
+                            <% for (var k = 0; k < image.length; k++) { %>
+                              <% if (image[k].product_id == order_details[j].product_id) { %>
+                                <img class="" style="width: 4rem; object-fit: contain;"
+                                  src="<%= image[k].product_image_url  %>" alt="">
+                              <% } %>
+                            <% } %>
+                            <div class="fw-semibold ps-3">
+                              <p class="m-0">
+                                <%= order_details[j].product_name %>
+                              </p>
+                              <p class="m-0">x<%= order_details[j].product_quantity %>
+                              </p>
+                            </div>
+                          </div>
+                          <% } %>
+                            <% } %>
+                    </div>
+                  </div>
+
+
+                  <div class="col-3">
+                    <div class="d-flex justify-content-end">
+                      <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
+                        <button class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+                          View
+                        </button>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+                  <span> Order ID : <%= orders[i].order_id %> </span>|
+                  <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span>
+
+
+                </p>
+              </div>
+
+
+
+
+      <% } %>
+      <% } %>
+    <% } %>
+  </section>
+</div> -->
+  <!-- CONFIRM ORDERS -->
+  <!-- <div class="" style="margin-top: 100px;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div id="confirmed" class="px-2">
+                <p class="mb-0 fs-3 fw-semibold">Confirmed Order</p>
+              </div>
+            </div>
+            <section class="my-2">
+            <% for (var i=0; i < orders.length; i++) { %>
+              <% if (orders[i].in_cart == 0) { %>
+              <% if (orders[i].order_status==1) { %>
+
+
+
+
+                  <div class="border-bottom mb-3">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                      <div class="w-auto">
+                        <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
+                          <% for (var j=0; j < order_details.length; j++) { %>
+                            <% if (order_details[j].order_id==orders[i].order_id) { %>
+                              <div class="d-flex">
+                                <% for (var k = 0; k < image.length; k++) { %>
+                                  <% if (image[k].product_id == order_details[j].product_id) { %>
+                                    <img class="" style="width: 4rem; object-fit: contain;"
+                                      src="<%= image[k].product_image_url  %>" alt="">
+                                  <% } %>
+                                <% } %>
+                                <div class="fw-semibold ps-3">
+                                  <p class="m-0">
+                                    <%= order_details[j].product_name %>
+                                  </p>
+                                  <p class="m-0">x<%= order_details[j].product_quantity %>
+                                  </p>
+                                </div>
+                              </div>
+                              <% } %>
+                                <% } %>
+
+                        </div>
+                      </div>
+
+
+                      <div class="col-3">
+                        <div class="d-flex justify-content-end">
+                          <a href="/order_details/<%= orders[i].order_id %>"
+                            class=" bg-transparent text-black fw-semibold">
+                            <button class="btn border fw-semibold view-eye-btn">
+                              <i class="bi bi-eye"></i>
+                              View
+                            </button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+                      <span> Order ID : <%= orders[i].order_id %></span> |
+                      <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
+                      </span>|
+                      <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %>
+                      </span>
+                    </p>
+
+
+
+
+
+                <% } %>
+                  <% } %>
+                  <% } %>
+                </section>
+              </div> -->
+
+  <!-- REJECTED ORDERS -->
+  <!-- <div class="" style="margin-top: 100px;">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div id="rejected" class="px-2">
+                          <p class="mb-0 fs-3 fw-semibold">Rejected Order</p>
+                        </div>
+                        <div>
+
+                        </div>
+                      </div>
+                      <% for (var i=0; i < orders.length; i++) { %>
+                        <% if (orders[i].in_cart == 0) { %>
+                        <% if (orders[i].order_status==2) { %>
+                          <section class="my-2">
+
+                            <div class="border-bottom mb-3">
+
+                              <div class="d-flex justify-content-between align-items-start">
+
+                                <div class="w-auto">
+                                  <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
+                                    <% for (var j=0; j < order_details.length; j++) { %>
+                                      <% if (order_details[j].order_id==orders[i].order_id) { %>
+                                        <div class="d-flex">
+                                          <% for (var k = 0; k < image.length; k++) { %>
+                                            <% if (image[k].product_id == order_details[j].product_id) { %>
+                                              <img class="" style="width: 4rem; object-fit: contain;"
+                                                src="<%= image[k].product_image_url  %>" alt="">
+                                            <% } %>
+                                          <% } %>
+                                          <div class="fw-semibold ps-3">
+                                            <p class="m-0">
+                                              <%= order_details[j].product_name %>
+                                            </p>
+                                            <p class="m-0">x<%= order_details[j].product_quantity %>
+                                            </p>
+                                          </div>
+                                          <% } %>
+                                            <% } %>
+                                        </div>
+
+                                  </div>
+                                </div>
+
+
+                                <div class="col-3">
+                                  <div class="d-flex justify-content-end">
+                                    <a href="/order_details/<%= orders[i].order_id %>"
+                                      class=" bg-transparent text-black fw-semibold">
+                                      <button class=" btn border fw-semibold view-eye-btn">
+                                        <i class="bi bi-eye"></i>
+                                        View
+                                      </button>
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
+                                <span> Order ID : <%= orders[i].order_id %> </span>|
+                                <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
+                                </span>
+                              </p>
+                            </div>
+
+
+                          </section>
+                    </div>
+                    <% } %>
+                      <% } %>
+                      <% } %>
+                        </section> -->
+  <!-- </div>
+    </div>
+  </div>  -->
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var targetId = window.location.hash.substring(1); // Get the fragment identifier (without the '#')
+
+    if (targetId) {
+      var targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        targetElement.classList.add('highlighted'); // Add a CSS class for highlighting
+        setTimeout(function () {
+          targetElement.classList.remove('highlighted'); // Remove the class after a delay
+        }, 1000);
+      }
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('input[aria-label="Search"]').on('keyup', function () {
+      var searchVal = $(this).val().toLowerCase();
+      $('#rejected-order, #confirmed-order, #accepted-order, #new-order').each(function () {
+        $(this).find('.order').each(function () {
+          var orderId = $(this).find('#order_id').text().toLowerCase();
+          var number = $(this).find('#number').text().toLowerCase();
+          if (orderId.includes(searchVal) || number.includes(searchVal)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      })
+    });
+  });
+</script>
+
+<!-- Filter script -->
+<script src="./js/moment.min.js"></script>
+<script src="./js/daterangepicker.js" defer></script>
+
+<script>
+  document.querySelector('.selectAll1').addEventListener('change', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox1');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = this.checked;
+    }, this);
+  });
+</script>
+<script>
+  document.querySelector('.selectAll2').addEventListener('change', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox2');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = this.checked;
+    }, this);
+  });
+</script>
+<script>
+  document.querySelector('.selectAll3').addEventListener('change', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox3');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = this.checked;
+    }, this);
+  });
+</script>
+<script>
+  document.querySelector('.selectAll4').addEventListener('change', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox4');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = this.checked;
+    }, this);
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+
+<script>
+
+  document.getElementById('downloadInvoice1').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox1:checked');
+    let orderIds = '';
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      orderIds += row.children[1].textContent.trim() + ',';
+
+      console.log(row.children[1].textContent);
+    });
+
+    window.location.href = `/print-orders?orderIds=${orderIds}`;
+
+    console.log(orderIds);
+
+    console.log(checkboxes);
+    //   if (checkboxes.length === 0) {
+    //     alert('No checkbox is checked');
+    //     return;
+    //   }
+    //   var html = `<html>
+    //   <head>
+    //     <title>Invoice</title>
+    //   </head>
+    //   <body style="font-family: Arial, sans-serif; padding: 20px;">
+    //     <h1 style="font-size: 24px; color: #333; border-bottom: 1px solid #333; padding-bottom: 10px;Invoice</h1>`;
+    //   checkboxes.forEach(function (checkbox) {
+    //     var row = checkbox.closest('tr');
+    //     html += `
+    //      <div>
+    //           <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+    //               <div style="flex: 1; margin: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+    //                   <p style="font-size: 16px; font-weight: bold;">Customer Name:
+    //                       ${row.children[4].textContent.split('\n')[2].trim()}</p>
+    //                   <p style="font-size: 16px;">Mobile Number: ${row.children[4].textContent.split('\n')[3].trim()}</p>
+    //                   <p style="font-size: 16px;">Address: </p>
+    //               </div>
+    //               <div style="flex: 1; margin: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+    //                   <p style="font-size: 16px; font-weight: bold;">Order Id: ${row.children[1].textContent}</p>
+    //                   <p style="font-size: 16px;">Placed Date: ${row.children[3].textContent}</p>
+    //                   <p style="font-size: 16px;">Delivery Date: ${row.children[2].textContent}</p>
+    //                   <p style="font-size: 16px;">Status: ${row.children[8].getAttribute('data-status')}</p>
+    //               </div>
+    //           </div>
+    //       </div>
+    //       <div style="width: 80%; margin: 0 auto;">
+    //           <table style="width: 100%;">
+    //               <thead>
+    //                   <tr>
+    //                       <th style="padding: 10px; background-color: #f9f9f9; font-size: 16px;">Product Name</th>
+    //                       <th style="padding: 10px; background-color: #f9f9f9; font-size: 16px;">Quantity</th>
+    //                       <th style="padding: 10px; background-color: #f9f9f9; font-size: 16px;">Price</th>
+    //                   </tr>
+    //               </thead>
+    //               <tbody>
+    //                   <tr>
+    //                       <td style="padding: 10px; font-size: 16px;">${row.children[9].textContent.trim().replace(/\s*\n\s*/g, ',').replace(/,\s*,/g, ', ')}</td>
+    //                       <td style = "padding: 10px; font-size: 16px;" > Quantity</td >
+    //                       <td style="padding: 10px; font-size: 16px;">Price</td>
+    //                   </tr >
+    //                   <tr>
+    //                       <td colspan="2" style="padding: 10px; font-weight: bold; text-align: right; font-size: 16px;">Total Price:
+    //                           ${row.children[5].textContent}</td>
+    //                       <td style="padding: 10px;"></td>
+    //                   </tr>
+    //                   <tr>
+    //                       <td colspan="2" style="padding: 10px; text-align: right; font-size: 16px;">Delivery Price:
+    //                           ${row.children[6].textContent}</td>
+    //                       <td style="padding: 10px;"></td>
+    //                   </tr>
+    //                   <tr>
+    //                       <td colspan="2" style="padding: 10px; font-size: 16px; font-weight: bold; text-align: right;">Sum of Total Price:
+    //                           ${row.children[7].textContent}
+    //                       </td>
+    //                       <td style="padding: 10px;"></td>
+    //                   </tr>
+    //               </tbody >
+    //           </table >
+    //       </div >
+    //       <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">`;
+    //   });
+    //   html += `<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;"></body></html>`;
+
+    //   var tempDiv = document.createElement('div');
+    //   tempDiv.innerHTML = html;
+    //   document.body.appendChild(tempDiv);
+
+    //   html2canvas(tempDiv, { scale: 1 }).then(function (canvas) {
+    //     var imgData = canvas.toDataURL('image/png');
+    //     var doc = new window.jspdf.jsPDF('p', 'pt', 'a3');
+    //     var pageWidth = doc.internal.pageSize.getWidth();
+    //     var pageHeight = doc.internal.pageSize.getHeight();
+    //     var canvasWidth = canvas.width;
+    //     var canvasHeight = canvas.height;
+
+    //     // Define margins
+    //     var margin = 20; // Change this to the desired margin size
+    //     var widthWithMargin = pageWidth - 2 * margin;
+    //     var heightWithMargin = pageHeight - 2 * margin;
+
+    //     // Calculate scale factor based on width
+    //     var scaleFactor = widthWithMargin / canvasWidth;
+    //     var scaledHeight = canvasHeight * scaleFactor;
+    //     var heightLeft = scaledHeight;
+    //     var position = margin; // Start position at top margin
+
+    //     doc.addImage(imgData, 'PNG', margin, position, widthWithMargin, scaledHeight);
+    //     heightLeft -= heightWithMargin;
+
+    //     while (heightLeft >= 0) {
+    //       position = heightLeft - scaledHeight + margin;
+    //       doc.addPage();
+    //       doc.addImage(imgData, 'PNG', margin, position, widthWithMargin, scaledHeight);
+    //       heightLeft -= heightWithMargin;
+    //     }
+
+    //     doc.save('invoice.pdf');
+    //     document.body.removeChild(tempDiv);
+    //   });
+    // });
+  })
+</script>
+
+
+
+<!-- <script>
+
+  document.getElementById('downloadInvoice').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox2:checked');
+    var doc = new window.jspdf.jsPDF();
+    var headers = ['Order Id', 'Customer Name', 'Phone', 'Total Price', 'Delivery Charge', 'Total Order Price', 'Delivery Date', 'Placed Date', 'Product Name', 'Status'];
+    var data = [];
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      var orderId = row.children[1].textContent;
+      var customerInfo = row.children[4].textContent.split('\n');
+      var customerName = customerInfo[2].trim();
+      var phone = customerInfo[3].trim();
+      var totalPrice = row.children[5].textContent;
+      var delivery_charge = row.children[6].textContent;
+      var totalOrderPrice = row.children[7].textContent;
+      var deliveryDate = row.children[2].textContent;
+      var placedDate = row.children[3].textContent;
+      var product_name = row.children[9];
+      var products = product_name.textContent.trim().replace(/\s*\n\s*/g, ', ').replace(/,\s*,/g, ',');
+
+      var statusCell = row.children[8];
+      console.log('statusCell:', statusCell);
+      var statusData = statusCell.getAttribute('data-status');
+      if (statusData == '0') {
+        status = 'Unpaid';
+      } else if (statusData == '1') {
+        status = 'Paid';
+      } else if (statusData == '2') {
+        status = 'COD';
+      }
+
+
+
+      console.log('orderId:', orderId);
+      console.log('customerInfo:', customerInfo);
+      console.log('customerName:', customerName);
+      console.log('phone:', phone);
+      console.log('totalPrice:', totalPrice);
+      console.log('status:', status);
+      console.log('product_name:', products);
+      data.push([orderId, customerName, phone, totalPrice, delivery_charge, totalOrderPrice, deliveryDate, placedDate, products, status]);
+    });
+    doc.autoTable({
+      head: [headers],
+      body: data,
+    });
+
+    doc.save('invoice.pdf');
+  });
+</script> -->
+
+<script>
+  document.getElementById('generateCSV1').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox1:checked');
+
+    var data = [];
+    data.push(['Order Id', 'Customer Name', 'Phone', 'Total Price', 'Delivery Charge', 'Total Order Price', 'Delivery Date', 'Placed Date', 'Product Name', 'Status']);
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      var orderId = row.children[1].textContent;
+      var customerInfo = row.children[4].textContent.split('\n');
+      var customerName = customerInfo[2].trim();
+      var phone = customerInfo[3].trim();
+      var totalPrice = row.children[5].textContent;
+      var delivery_charge = row.children[6].textContent;
+      var totalOrderPrice = row.children[7].textContent;
+      var deliveryDate = row.children[2].textContent;
+      var placedDate = row.children[3].textContent;
+      var product_name = row.children[9];
+      var products = product_name.textContent.trim().replace(/\s*\n\s*/g, ', ').replace(/,\s*,/g, ',');
+
+      var statusCell = row.children[8];
+      console.log('statusCell:', statusCell);
+      var statusData = statusCell.getAttribute('data-status');
+      if (statusData == '0') {
+        status = 'Unpaid';
+      } else if (statusData == '1') {
+        status = 'Paid';
+      } else if (statusData == '2') {
+        status = 'COD';
+      }
+
+
+
+      console.log('orderId:', orderId);
+      console.log('customerInfo:', customerInfo);
+      console.log('customerName:', customerName);
+      console.log('phone:', phone);
+      console.log('totalPrice:', totalPrice);
+      console.log('status:', status);
+      console.log('product_name:', products);
+      data.push([orderId, customerName, phone, totalPrice, delivery_charge, totalOrderPrice, deliveryDate, placedDate, products, status]);
+    });
+    var csv = Papa.unparse(data);
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    var now = new Date();
+
+    // Format date and time as 'YYYYMMDD_HHMMSS'
+    var timestamp = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') + '_' +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0');
+
+    // Append timestamp to file name
+    link.download = 'new_orders_' + timestamp + '.csv';
+
+    link.click();
+  });
+</script>
+
+<script>
+  document.getElementById('generateCSV2').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox2:checked');
+
+    var data = [];
+    data.push(['Order Id', 'Customer Name', 'Phone', 'Total Price', 'Delivery Charge', 'Total Order Price', 'Delivery Date', 'Placed Date', 'Product Name', 'Status']);
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      var orderId = row.children[1].textContent;
+      var customerInfo = row.children[4].textContent.split('\n');
+      var customerName = customerInfo[2].trim();
+      var phone = customerInfo[3].trim();
+      var totalPrice = row.children[5].textContent;
+      var delivery_charge = row.children[6].textContent;
+      var totalOrderPrice = row.children[7].textContent;
+      var deliveryDate = row.children[2].textContent;
+      var placedDate = row.children[3].textContent;
+      var product_name = row.children[9];
+      var products = product_name.textContent.trim().replace(/\s*\n\s*/g, ', ').replace(/,\s*,/g, ',');
+
+      var statusCell = row.children[8];
+      console.log('statusCell:', statusCell);
+      var statusData = statusCell.getAttribute('data-status');
+      if (statusData == '0') {
+        status = 'Unpaid';
+      } else if (statusData == '1') {
+        status = 'Paid';
+      } else if (statusData == '2') {
+        status = 'COD';
+      }
+
+
+
+      console.log('orderId:', orderId);
+      console.log('customerInfo:', customerInfo);
+      console.log('customerName:', customerName);
+      console.log('phone:', phone);
+      console.log('totalPrice:', totalPrice);
+      console.log('status:', status);
+      console.log('product_name:', products);
+      data.push([orderId, customerName, phone, totalPrice, delivery_charge, totalOrderPrice, deliveryDate, placedDate, products, status]);
+    });
+    var csv = Papa.unparse(data);
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    var now = new Date();
+
+    // Format date and time as 'YYYYMMDD_HHMMSS'
+    var timestamp = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') + '_' +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0');
+
+    // Append timestamp to file name
+    link.download = 'confirmed_orders_' + timestamp + '.csv';
+
+    link.click();
+  });
+</script>
+
+<script>
+  document.getElementById('generateCSV3').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox3:checked');
+
+    var data = [];
+    data.push(['Order Id', 'Customer Name', 'Phone', 'Total Price', 'Delivery Charge', 'Total Order Price', 'Delivery Date', 'Placed Date', 'Product Name', 'Status']);
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      var orderId = row.children[1].textContent;
+      var customerInfo = row.children[4].textContent.split('\n');
+      var customerName = customerInfo[2].trim();
+      var phone = customerInfo[3].trim();
+      var totalPrice = row.children[5].textContent;
+      var delivery_charge = row.children[6].textContent;
+      var totalOrderPrice = row.children[7].textContent;
+      var deliveryDate = row.children[2].textContent;
+      var placedDate = row.children[3].textContent;
+      var product_name = row.children[9];
+      var products = product_name.textContent.trim().replace(/\s*\n\s*/g, ', ').replace(/,\s*,/g, ',');
+
+      var statusCell = row.children[8];
+      console.log('statusCell:', statusCell);
+      var statusData = statusCell.getAttribute('data-status');
+      if (statusData == '0') {
+        status = 'Unpaid';
+      } else if (statusData == '1') {
+        status = 'Paid';
+      } else if (statusData == '2') {
+        status = 'COD';
+      }
+
+
+
+      console.log('orderId:', orderId);
+      console.log('customerInfo:', customerInfo);
+      console.log('customerName:', customerName);
+      console.log('phone:', phone);
+      console.log('totalPrice:', totalPrice);
+      console.log('status:', status);
+      console.log('product_name:', products);
+      data.push([orderId, customerName, phone, totalPrice, delivery_charge, totalOrderPrice, deliveryDate, placedDate, products, status]);
+    });
+    var csv = Papa.unparse(data);
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    var now = new Date();
+
+    // Format date and time as 'YYYYMMDD_HHMMSS'
+    var timestamp = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') + '_' +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0');
+
+    // Append timestamp to file name
+    link.download = 'shipped_orders_' + timestamp + '.csv';
+
+    link.click();
+  });
+</script>
+
+<script>
+  document.getElementById('generateCSV4').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox4:checked');
+
+    var data = [];
+    data.push(['Order Id', 'Customer Name', 'Phone', 'Total Price', 'Delivery Charge', 'Total Order Price', 'Delivery Date', 'Placed Date', 'Product Name', 'Status']);
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      var orderId = row.children[1].textContent;
+      var customerInfo = row.children[4].textContent.split('\n');
+      var customerName = customerInfo[2].trim();
+      var phone = customerInfo[3].trim();
+      var totalPrice = row.children[5].textContent;
+      var delivery_charge = row.children[6].textContent;
+      var totalOrderPrice = row.children[7].textContent;
+      var deliveryDate = row.children[2].textContent;
+      var placedDate = row.children[3].textContent;
+      var product_name = row.children[9];
+      var products = product_name.textContent.trim().replace(/\s*\n\s*/g, ', ').replace(/,\s*,/g, ',');
+
+      var statusCell = row.children[8];
+      console.log('statusCell:', statusCell);
+      var statusData = statusCell.getAttribute('data-status');
+      if (statusData == '0') {
+        status = 'Unpaid';
+      } else if (statusData == '1') {
+        status = 'Paid';
+      } else if (statusData == '2') {
+        status = 'COD';
+      }
+
+
+
+      console.log('orderId:', orderId);
+      console.log('customerInfo:', customerInfo);
+      console.log('customerName:', customerName);
+      console.log('phone:', phone);
+      console.log('totalPrice:', totalPrice);
+      console.log('status:', status);
+      console.log('product_name:', products);
+      data.push([orderId, customerName, phone, totalPrice, delivery_charge, totalOrderPrice, deliveryDate, placedDate, products, status]);
+    });
+    var csv = Papa.unparse(data);
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    var now = new Date();
+
+    // Format date and time as 'YYYYMMDD_HHMMSS'
+    var timestamp = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') + '_' +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0');
+
+    // Append timestamp to file name
+    link.download = 'rejected_orders_' + timestamp + '.csv';
+
+    link.click();
+  });
+</script>
+
+<script type="text/javascript">
+  $(function () {
+
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+      $('#reportrange span').html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+
+      // If no range is selected, show all orders
+      if (!start || !end) {
+        $('#rejected-order, #confirmed-order, #accepted-order, #new-order').show();
+        return;
+      }
+
+      // Iterate through each parent div and check if the order date is within the selected range
+      $('#rejected-order, #confirmed-order, #accepted-order, #new-order').each(function () {
+        $(this).find('.order').each(function () {
+          var orderDate = moment($(this).find('#order_date').text().replace('Placed Date:', ''), 'YYYY-MM-DD');
+          if (orderDate.isBetween(start, end, null, '[]')) {
+            // Order date is within the selected range, show the parent div
+            $(this).show();
+          } else {
+            // Order date is outside the selected range, hide the parent div
+            $(this).hide();
+          }
+        })
+      });
+    }
+
+    $('#reportrange').daterangepicker({
+      startDate: start,
+      endDate: end,
+      ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      }
+    }, cb);
+
+    cb(); // Call initially to show all orders
+
+  });
+</script>
+
+<!-- Filter Script -->
+<%- include('footer-one'); -%>
