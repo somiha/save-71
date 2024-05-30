@@ -1,6 +1,7 @@
 const db = require("../config/database.config");
 const catModel = require("../middlewares/cat");
 const crypto = require("../middlewares/crypto");
+const { queryAsync, queryAsyncWithoutValue } = require("../config/helper");
 const locationOptimizedDistance = require("../middlewares/locationOptimizedDistance");
 
 exports.shop_owner_product = async (req, res) => {
@@ -47,7 +48,7 @@ exports.shop_owner_product = async (req, res) => {
         await locationOptimizedDistance.getSortedShopsAndProductsByDistance(
           userLat,
           userLng,
-          passID,
+          sID,
           null,
           null
         );
@@ -125,10 +126,10 @@ exports.shop_owner_product = async (req, res) => {
                         // return res.send("Under contraction")
 
                         res.render("shop-owner-products", {
-                          ogImage: "https://save71.com/images/logo-og.webp",
+                          ogImage: "http://localhost:3000/images/logo-og.webp",
                           ogTitle:
                             "Save71 Connects You and the World through Business.",
-                          ogUrl: "https://save71.com",
+                          ogUrl: "http://localhost:3000",
                           currRate,
                           currencyCode,
                           userName: userName,

@@ -3,9 +3,9 @@ const mysql = require("mysql2");
 
 // const db = mysql.createConnection({
 //   host: "localhost",
-//   user: "save71comzIvH",
-//   password: "DeZfHvzPXnkdlwOR7p9QB1U5",
-//   database: "save71_com_kCjFzw3q",
+//   user: "lensnmza_somiha1",
+//   password: "8A7=7o8l1~c5",
+//   database: "lensnmza_save-71",
 // });
 
 const db = mysql.createConnection({

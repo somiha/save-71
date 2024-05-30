@@ -8,19 +8,20 @@
 
     </div>
     <!-- Header -->
-			<!-- search -->
-			<!-- <div class="w-lg-50 mb-3">
+    <!-- search -->
+    <!-- <div class="w-lg-50 mb-3">
 				<input type="text" class="form-control p-2" id="search_text" placeholder="Search by product ID" />
 			</div> -->
 
-      <div class="row">
-        <div class="col-sm-3 text-start">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control w-10" id="search_text" placeholder="Search Number or Order ID" aria-label="Search">
-          </div>
+    <div class="row">
+      <div class="col-sm-3 text-start">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control w-10" id="search_text" placeholder="Search Number or Order ID"
+            aria-label="Search">
         </div>
       </div>
-			<!-- search -->
+    </div>
+    <!-- search -->
 
     <div class="d-flex flex-column row-gap-3 flex-lg-row justify-content-between align-items-center mb-4">
       <div class="text-left">
@@ -36,7 +37,8 @@
           <i class="bi bi-plus-circle"></i>
           Add Product</a>
         <div class="dropdown">
-          <button class="btn btn-main-outline d-flex gap-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-main-outline d-flex gap-3" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
             Sort <i class="bi bi-chevron-down"></i>
           </button>
           <ul class="dropdown-menu">
@@ -61,7 +63,7 @@
       <p class="mb-0 fs-5 fw-medium">Published Products</p>
       <% for (var i=0; i < products.length; i++) { %>
       <% if (products[i].quantity !=-1) { %>
-				<div class="d-flex align-items-center mt-0 mb-0 py-0 border-bottom published_product individual_product">
+      <div class="d-flex align-items-center mt-0 mb-0 py-0 border-bottom published_product individual_product">
         <div class="w-100">
           <div class="d-flex align-items-center justify-content-between py-0">
             <div class="d-flex align-items-center w-50">
@@ -73,7 +75,14 @@
               <div class="fw-medium d-flex flex-column gap-1">
                 <p class="m-0 fs-6 fw-medium">
                   <% if (products[i].is_branded == 1) {%>
-                    <i class="bi bi-patch-check-fill branded_badge"></i>
+                  <i class="bi bi-patch-check-fill branded_badge"></i>
+                  <% } else{%>
+
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy"
+                    viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" />
+                  </svg>
                   <% } %>
                   <%= products[i].product_name %>
                   <% var statName = ['','','Pending', 'Rejected'] %>
@@ -88,9 +97,11 @@
                   <!-- <span class="badge rounded-pill text-bg-warning fs-6" title="It's a branded product">Branded</span> -->
                   <% } %>
                 </p>
-                <p class="m-0 d-flex text-secondary product_id" id="<%= i %>_published_pID">Product Id : <%= products[i].product_id %></p>
+                <p class="m-0 d-flex text-secondary product_id" id="<%= i %>_published_pID">Product Id :
+                  <%= products[i].product_id %></p>
                 </p>
-                <p class="m-0 d-flex">Price : <%= (products[i].product_price * currRate).toFixed(2) %> <%= currencyCode  %>
+                <p class="m-0 d-flex">Price : <%= (products[i].product_price * currRate).toFixed(2) %>
+                  <%= currencyCode  %>
                 </p>
               </div>
             </div>
@@ -98,8 +109,11 @@
               <a href="#" title="Delete this product" onclick="showDeleteConfirmation('<%= products[i].product_id %>')">
                 <i class="bi bi-trash btn rounded-0 border fs-5"></i>
               </a>
-              <a href="/edit_product/<%= encodeURIComponent(products[i].product_id) %>" title="Edit this product"><i class="bi bi-pencil btn rounded-0 border fs-5"></i></a>
-              <a href="/unpublish_product/<%= encodeURIComponent(products[i].product_id) %>" title="Unpublish this product"><i class="bi bi-eye-slash text-white btn rounded-0 border fs-5" style="background-color: #1A63A6;"></i></a>
+              <a href="/edit_product/<%= encodeURIComponent(products[i].product_id) %>" title="Edit this product"><i
+                  class="bi bi-pencil btn rounded-0 border fs-5"></i></a>
+              <a href="/unpublish_product/<%= encodeURIComponent(products[i].product_id) %>"
+                title="Unpublish this product"><i class="bi bi-eye-slash text-white btn rounded-0 border fs-5"
+                  style="background-color: #1A63A6;"></i></a>
             </div>
           </div>
         </div>
@@ -113,7 +127,7 @@
       <p class="mb-0 fs-5 fw-medium mt-5">Unpublished Products</p>
       <% for (var i=0; i < products.length; i++) { %>
       <% if (products[i].quantity==-1) { %>
-				<div class="d-flex align-items-center mt-0 mb-0 py-0 border-bottom unpublished_product individual_product">
+      <div class="d-flex align-items-center mt-0 mb-0 py-0 border-bottom unpublished_product individual_product">
         <!-- <div class="pe-1">
           <input type="checkbox" id="<%= products[i].product_id %>" name="product_check" value="product" class="form-check-input cursor-pointer" />
         </div> -->
@@ -138,7 +152,8 @@
                   <span class="badge rounded-pill text-bg-secondary fs-6" title="Admin will review">In Review</span>
                   <% } %>
                 </p>
-                <p class="m-0 d-flex text-secondary product_id" id="<%= i %>_unpublished_pID">Product Id : <%= products[i].product_id %></p>
+                <p class="m-0 d-flex text-secondary product_id" id="<%= i %>_unpublished_pID">Product Id :
+                  <%= products[i].product_id %></p>
                 <p class="m-0 d-flex fs-6">Price: <%=
 																			(products[i].product_price *
 																			currRate).toFixed(2) %>
@@ -150,8 +165,10 @@
               <a href="#" title="Delete this product" onclick="showDeleteConfirmation('<%= products[i].product_id %>')">
                 <i class="bi bi-trash btn rounded-0 border fs-5"></i>
               </a>
-              <a href="/edit_product/<%= encodeURIComponent(products[i].product_id) %>" title="Edit this product"><i class="bi bi-pencil btn rounded-0 border fs-5"></i></a>
-              <a href="/publish_product/<%= encodeURIComponent(products[i].product_id) %>" title="Publish this product"><i class="bi bi-eye btn-danger btn rounded-0 border fs-5"></i></a>
+              <a href="/edit_product/<%= encodeURIComponent(products[i].product_id) %>" title="Edit this product"><i
+                  class="bi bi-pencil btn rounded-0 border fs-5"></i></a>
+              <a href="/publish_product/<%= encodeURIComponent(products[i].product_id) %>"
+                title="Publish this product"><i class="bi bi-eye btn-danger btn rounded-0 border fs-5"></i></a>
             </div>
           </div>
         </div>
@@ -197,7 +214,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     // Get the query parameter from the URL
     var urlParams = new URLSearchParams(window.location.search);
     var queryParam = urlParams.get('pID');
@@ -209,7 +226,7 @@
       filterProducts(queryParam);
     }
 
-    $('#search_text').on('input', function() {
+    $('#search_text').on('input', function () {
       var searchVal = $(this).val().toLowerCase().trim();
 
       // If search is empty, show all products
@@ -228,7 +245,7 @@
       $(".individual_product").attr('style', 'display: none !important');
 
       // Filter and show the individual products that match the search value
-      $(".individual_product").filter(function() {
+      $(".individual_product").filter(function () {
         var productId = $(this).find(".product_id").text().toLowerCase();
         return productId.includes(searchVal);
       }).attr('style', 'display: block !important');

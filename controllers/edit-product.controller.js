@@ -179,11 +179,11 @@ exports.edit_productPost = async (req, res) => {
       if (req.files) {
         var pic_urls = req.files["productImages"]
           ? req.files["productImages"].map(
-              (file) => "https://save71.com/images/products/" + file.filename
+              (file) => "http://localhost:3000/images/products/" + file.filename
             )
           : [];
         var video_url = req.files["product_video"]
-          ? "https://save71.com/images/products/" +
+          ? "http://localhost:3000/images/products/" +
             req.files["product_video"][0].filename
           : null;
       }

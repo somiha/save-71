@@ -83,12 +83,13 @@ for (var i = 0; i < orders.length; i++) {
       </div>
 
     </nav>
-    <div class="tab-content w-100 px-3" id="nav-tabContent">
+    <div class="tab-content w-100 px-5" id="nav-tabContent">
       <!-- new order -->
       <div class="tab-pane fade show active  rounded-3" id="new-order" role="tabpanel" tabindex="0">
         <section class="my-2">
-          <button id="generateCSV1">Generate CSV</button>
-          <button id="downloadInvoice1">Download Invoice</button>
+          <button id="generateCSV1" class="btn btn-primary" style="background-color: #2874a6;">Generate CSV</button>
+          <button id="downloadInvoice1" class="btn btn-primary" style="background-color: #2874a6;">Download
+            Invoice</button>
           <div class="row">
             <div class="col-md-12">
               <div class="table-wrap" style="overflow-x: auto;">
@@ -199,85 +200,6 @@ for (var i = 0; i < orders.length; i++) {
               </div>
             </div>
           </div>
-
-
-
-          <!-- <% for (var i=0; i < orders.length; i++) { %>
-          <% if (orders[i].in_cart == 0) { %>
-          <% var oID=0 %>
-          <% if (orders[i].order_status==3) { %>
-
-
-          <div class="border-bottom mb-3 order">
-
-            <div class="d-flex justify-content-between align-items-start">
-              <div class="w-auto">
-                <div class="d-flex row-gap-4 flex-column p-4">
-
-
-                  <% for (var j=0; j < order_details.length; j++) { %>
-                  <% if (order_details[j].order_id==orders[i].order_id) { %>
-                  <div class=" d-flex gap-3 ">
-                    <% for (var k = 0; k < image.length; k++) { %>
-                    <% if (image[k].product_id == order_details[j].product_id) { %>
-                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url  %>"
-                      alt="">
-                    <% } %>
-                    <% } %>
-                    <div class="fw-semibold ">
-                      <p class="m-0">
-                        <a class="text-black"
-                          href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>"><%= order_details[j].product_name %></a>
-                        <% if (orders[i].is_paid==0) { %>
-                        <span class="badge rounded-pill text-bg-danger">Unpaid</span>
-                        <% } else if (orders[i].is_paid==1) { %>
-                        <span class="badge rounded-pill text-bg-success">Paid</span>
-                        <% } else if (orders[i].is_paid==2) { %>
-                        <abbr title="Cash On Delivery" class="badge rounded-pill text-bg-success">COD</abbr>
-                        <% } %>
-                        <% if (orders[i].seller_confirm == 0) { %>
-                        <span class="badge rounded-pill text-bg-warning">Unchecked</span>
-                        <% } %>
-                      </p>
-                      <p class="m-0">x<%= order_details[j].product_quantity %>
-                      </p>
-                    </div>
-                  </div>
-                  <% } %>
-                  <% } %>
-
-                </div>
-              </div>
-
-
-              <div class="col-3">
-                <div class="d-flex justify-content-end">
-
-                  <a href="/order_details/<%= orders[i].order_id %>" class="btn border fw-semibold view-eye-btn">
-                    <i class="bi bi-eye"></i>
-                    View
-
-                  </a>
-                </div>
-              </div>
-            </div>
-
-
-            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-              <% for (var t=0; t < userInfo.length; t++) { %>
-              <% if (userInfo[t].user_id==orders[i].user_id) { %>
-              <span id="number" hidden><%= userInfo[t].phone %></span>
-              <% } %>
-              <% } %>
-              <span id="order_id"> Order ID : <%= orders[i].order_id %> </span>|
-              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span> |
-              <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %></span>
-            </p>
-          </div>
-          <% } %>
-          <% } %>
-          <% } %> -->
-          <!-- For end -->
         </section>
       </div>
 
@@ -285,8 +207,9 @@ for (var i = 0; i < orders.length; i++) {
       <!-- Shipped order -->
       <div class="tab-pane fade" id="accepted-order" role="tabpanel" tabindex="0">
         <section class="my-2">
-          <button id="generateCSV2">Generate CSV</button>
-          <button id="downloadInvoice">Download Invoice</button>
+          <button id="generateCSV2" class="btn btn-primary" style="background-color: #2874a6;">Generate CSV</button>
+          <button id="downloadInvoice2" class="btn btn-primary" style="background-color: #2874a6;">Download
+            Invoice</button>
           <div class="row">
             <div class="col-md-12">
               <div class="table-wrap" style="overflow-x: auto;">
@@ -397,68 +320,16 @@ for (var i = 0; i < orders.length; i++) {
               </div>
             </div>
           </div>
-          <!-- <% for (var i=0; i < orders.length; i++) { %>
-          <% if (orders[i].in_cart == 0) { %>
-          <% if (orders[i].order_status==4) { %>
 
-          <div class="border-bottom mb-3 order">
-            <div class="d-flex justify-content-between align-items-start">
-              <div class="w-auto">
-                <div class="d-flex row-gap-4 flex-column ">
-                  <% for (var j=0; j < order_details.length; j++) { %>
-                  <% if (order_details[j].order_id==orders[i].order_id) { %>
-                  <div class="d-flex">
-                    <% for (var k = 0; k < image.length; k++) { %>
-                    <% if (image[k].product_id == order_details[j].product_id) { %>
-                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url  %>"
-                      alt="">
-                    <% } %>
-                    <% } %>
-                    <div class="fw-semibold ps-3">
-                      <a class="text-black" href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>">
-                        <p class="m-0">
-                          <%= order_details[j].product_name %>
-                        </p>
-                      </a>
-                      <p class="m-0">x<%= order_details[j].product_quantity %>
-                      </p>
-                    </div>
-                  </div>
-                  <% } %>
-                  <% } %>
-                </div>
-              </div>
-              <div class="col-3">
-                <div class="d-flex justify-content-end">
-                  <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
-                    <button class="btn border fw-semibold view-eye-btn">
-                      <i class="bi bi-eye"></i>
-                      View
-                    </button>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-              <% for (var t=0; t < userInfo.length; t++) { %>
-              <% if (userInfo[t].user_id==orders[i].user_id) { %>
-              <span id="number" hidden><%= userInfo[t].phone %></span>
-              <% } %>
-              <% } %>
-              <span id="order_id"> Order ID : <%= orders[i].order_id %> </span>|
-              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span>
-            </p>
-          </div>
-          <% } %>
-          <% } %>
-          <% } %> -->
         </section>
       </div>
 
       <!-- confirmed order -->
       <div class="tab-pane fade" id="confirmed-order" role="tabpanel" tabindex="0">
         <section class="my-2">
-          <button id="generateCSV3">Generate CSV</button>
+          <button id="generateCSV3" class="btn btn-primary" style="background-color: #2874a6;">Generate CSV</button>
+          <button id="downloadInvoice3" class="btn btn-primary" style="background-color: #2874a6;">Download
+            Invoice</button>
           <div class="row">
             <div class="col-md-12">
               <div class="table-wrap" style="overflow-x: auto;">
@@ -569,69 +440,7 @@ for (var i = 0; i < orders.length; i++) {
               </div>
             </div>
           </div>
-          <!-- <% for (var i=0; i < orders.length; i++) { %>
-          <% if (orders[i].in_cart == 0) { %>
-          <% if (orders[i].order_status==1) { %>
-          <div class="border-bottom mb-3 order">
-            <div class=" d-flex justify-content-between align-items-start">
 
-              <div class=" w-auto">
-                <div class="d-flex row-gap-4 flex-column">
-                  <% for (var j=0; j < order_details.length; j++) { %>
-                  <% if (order_details[j].order_id==orders[i].order_id) { %>
-                  <div class=" d-flex">
-                    <% for (var k = 0; k < image.length; k++) { %>
-                    <% if (image[k].product_id == order_details[j].product_id) { %>
-                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url %>"
-                      alt="">
-                    <% } %>
-                    <% } %>
-                    <div class="fw-semibold ps-3">
-                      <a class="text-black" href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>">
-                        <p class="m-0">
-                          <%= order_details[j].product_name %>
-                        </p>
-                      </a>
-                      <p class="m-0">x<%= order_details[j].product_quantity %>
-                      </p>
-                    </div>
-                  </div>
-                  <% } %>
-                  <% } %>
-
-                </div>
-              </div>
-
-
-              <div class="col-3">
-                <div class="d-flex justify-content-end">
-                  <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
-                    <button class="btn border fw-semibold view-eye-btn">
-                      <i class="bi bi-eye"></i>
-                      View
-                    </button>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-              <% for (var t=0; t < userInfo.length; t++) { %>
-              <% if (userInfo[t].user_id==orders[i].user_id) { %>
-              <span id="number" hidden><%= userInfo[t].phone %></span>
-              <% } %>
-              <% } %>
-              <span id="order_id"> Order ID : <%= orders[i].order_id %></span> |
-              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
-              </span>|
-              <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %>
-              </span>
-            </p>
-          </div>
-          <% } %>
-          <% } %>
-
-          <% } %> -->
         </section>
 
       </div>
@@ -641,7 +450,9 @@ for (var i = 0; i < orders.length; i++) {
       <!-- rejected-order -->
       <div class="tab-pane fade" id="rejected-order" role="tabpanel" tabindex="0">
         <section class="my-2">
-          <button id="generateCSV4">Generate CSV</button>
+          <button id="generateCSV4" class="btn btn-primary" style="background-color: #2874a6;">Generate CSV</button>
+          <button id="downloadInvoice4" class="btn btn-primary" style="background-color: #2874a6;">Download
+            Invoice</button>
           <div class="row">
             <div class="col-md-12">
               <div class="table-wrap" style="overflow-x: auto;">
@@ -752,73 +563,7 @@ for (var i = 0; i < orders.length; i++) {
               </div>
             </div>
           </div>
-          <!-- <% for (var i=0; i < orders.length; i++) { %>
-          <% if (orders[i].in_cart == 0) { %>
-          <% if (orders[i].order_status==2) { %>
 
-
-          <div class="border-bottom mb-3 order">
-
-            <div class="d-flex justify-content-between align-items-start">
-
-              <div class="w-auto">
-                <div class="d-flex row-gap-4 flex-column">
-                  <% for (var j=0; j < order_details.length; j++) { %>
-                  <% if (order_details[j].order_id==orders[i].order_id) { %>
-                  <div class="d-flex">
-                    <% for (var k = 0; k < image.length; k++) { %>
-                    <% if (image[k].product_id == order_details[j].product_id) { %>
-                    <img class="" style="width: 4rem; object-fit: contain;" src="<%= image[k].product_image_url  %>"
-                      alt="">
-                    <% } %>
-                    <% } %>
-                    <div class="fw-semibold ps-3">
-                      <a class="text-black" href="/products?pID=<%= encodeURIComponent(order_details[j].product_id) %>">
-                        <p class="m-0">
-                          <%= order_details[j].product_name %>
-                        </p>
-                      </a>
-                      <p class="m-0">x<%= order_details[j].product_quantity %>
-                      </p>
-                    </div>
-                    <% } %>
-                    <% } %>
-                  </div>
-
-                </div>
-              </div>
-
-
-              <div class="col-3">
-                <div class="d-flex justify-content-end">
-                  <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
-                    <button class=" btn border fw-semibold view-eye-btn">
-                      <i class="bi bi-eye"></i>
-                      View
-                    </button>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-              <% for (var t=0; t < userInfo.length; t++) { %>
-              <% if (userInfo[t].user_id==orders[i].user_id) { %>
-              <span id="number" hidden><%= userInfo[t].phone %></span>
-              <% } %>
-              <% } %>
-              <span id="order_id"> Order ID : <%= orders[i].order_id %> </span>|
-              <span id="order_date">Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
-              </span>
-            </p>
-          </div>
-
-
-
-
-          <% } %>
-          <% } %>
-          <% } %> -->
         </section>
 
       </div>
@@ -827,298 +572,6 @@ for (var i = 0; i < orders.length; i++) {
   </div>
 
 
-
-  <!-- <div class="my-5 px-5 w-100">
-    <div class="my-5">
-       -->
-  <!-- <div class="d-flex justify-content-between align-items-center mb-5">
-        <div id="newOrder" class="px-2">
-          <p class="mb-0 fs-3 fw-semibold">New Order</p>
-        </div>
-      </div>
-
-      <section class="my-2">
-        <% for (var i=0; i < orders.length; i++) { %>
-          <% if (orders[i].in_cart == 0) { %>
-          <% var oID=0 %>
-            <% if (orders[i].order_status==3) { %>
-
-              <div class="border-bottom mb-3">
-
-                <div class="d-flex justify-content-between align-items-start">
-                  <div class="w-auto">
-                    <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
-                      <% for (var j=0; j < order_details.length; j++) { %>
-                        <% if (order_details[j].order_id==orders[i].order_id) { %>
-                          <div class=" d-flex gap-3">
-                            <% for (var k = 0; k < image.length; k++) { %>
-                              <% if (image[k].product_id == order_details[j].product_id) { %>
-                                <img class="" style="width: 4rem; object-fit: contain;"
-                                  src="<%= image[k].product_image_url  %>" alt="">
-                              <% } %>
-                            <% } %>
-                            <div class="fw-semibold ">
-                              <p class="m-0">
-                                <%= order_details[j].product_name %>
-                                  <% if (orders[i].is_paid==0) { %>
-                                    <span class="badge rounded-pill text-bg-danger">Unpaid</span>
-                                    <% } else { %>
-                                      <span class="badge rounded-pill text-bg-success">Paid</span>
-                                      <% } %>
-                              </p>
-                              <p class="m-0">x<%= order_details[j].product_quantity %>
-                              </p>
-                            </div>
-                          </div>
-                          <% } %>
-                            <% } %>
-
-                    </div>
-                  </div>
-
-
-                  <div class="col-3">
-                    <div class="d-flex justify-content-end">
-
-                      <a href="/order_details/<%= orders[i].order_id %>" class="btn border fw-semibold view-eye-btn">
-                        <i class="bi bi-eye"></i>
-                        View
-
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-
-                <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-                  <span> Order ID : <%= orders[i].order_id %> </span>|
-                  <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span> |
-                  <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %></span>
-                </p>
-              </div>
-              <% } %>
-            <% } %>
-        <% } %>
-<!-- For end -->
-  <!-- </section>
-
-      <div  class="" style="margin-top: 100px;">
-        <div class="d-flex justify-content-between align-items-center">
-          <div id="accepted" class="px-2">
-            <p class="mb-0 fs-3 fw-semibold">Accepted Order</p>
-          </div>
-        </div>
-        <section class="my-2">
-        <% for (var i=0; i < orders.length; i++) { %>
-          <% if (orders[i].in_cart == 0) { %>
-          <% if (orders[i].order_status==4) { %>
-
-              <div class="border-bottom mb-3">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div class="w-auto">
-                    <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
-                      <% for (var j=0; j < order_details.length; j++) { %>
-                        <% if (order_details[j].order_id==orders[i].order_id) { %>
-                          <div class="d-flex">
-                            <% for (var k = 0; k < image.length; k++) { %>
-                              <% if (image[k].product_id == order_details[j].product_id) { %>
-                                <img class="" style="width: 4rem; object-fit: contain;"
-                                  src="<%= image[k].product_image_url  %>" alt="">
-                              <% } %>
-                            <% } %>
-                            <div class="fw-semibold ps-3">
-                              <p class="m-0">
-                                <%= order_details[j].product_name %>
-                              </p>
-                              <p class="m-0">x<%= order_details[j].product_quantity %>
-                              </p>
-                            </div>
-                          </div>
-                          <% } %>
-                            <% } %>
-                    </div>
-                  </div>
-
-
-                  <div class="col-3">
-                    <div class="d-flex justify-content-end">
-                      <a href="/order_details/<%= orders[i].order_id %>" class=" bg-transparent text-black fw-semibold">
-                        <button class="btn border fw-semibold view-eye-btn">
-                          <i class="bi bi-eye"></i>
-                          View
-                        </button>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-                  <span> Order ID : <%= orders[i].order_id %> </span>|
-                  <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %></span>
-
-
-                </p>
-              </div>
-
-
-
-
-      <% } %>
-      <% } %>
-    <% } %>
-  </section>
-</div> -->
-  <!-- CONFIRM ORDERS -->
-  <!-- <div class="" style="margin-top: 100px;">
-            <div class="d-flex justify-content-between align-items-center">
-              <div id="confirmed" class="px-2">
-                <p class="mb-0 fs-3 fw-semibold">Confirmed Order</p>
-              </div>
-            </div>
-            <section class="my-2">
-            <% for (var i=0; i < orders.length; i++) { %>
-              <% if (orders[i].in_cart == 0) { %>
-              <% if (orders[i].order_status==1) { %>
-
-
-
-
-                  <div class="border-bottom mb-3">
-
-                    <div class="d-flex justify-content-between align-items-start">
-
-                      <div class="w-auto">
-                        <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
-                          <% for (var j=0; j < order_details.length; j++) { %>
-                            <% if (order_details[j].order_id==orders[i].order_id) { %>
-                              <div class="d-flex">
-                                <% for (var k = 0; k < image.length; k++) { %>
-                                  <% if (image[k].product_id == order_details[j].product_id) { %>
-                                    <img class="" style="width: 4rem; object-fit: contain;"
-                                      src="<%= image[k].product_image_url  %>" alt="">
-                                  <% } %>
-                                <% } %>
-                                <div class="fw-semibold ps-3">
-                                  <p class="m-0">
-                                    <%= order_details[j].product_name %>
-                                  </p>
-                                  <p class="m-0">x<%= order_details[j].product_quantity %>
-                                  </p>
-                                </div>
-                              </div>
-                              <% } %>
-                                <% } %>
-
-                        </div>
-                      </div>
-
-
-                      <div class="col-3">
-                        <div class="d-flex justify-content-end">
-                          <a href="/order_details/<%= orders[i].order_id %>"
-                            class=" bg-transparent text-black fw-semibold">
-                            <button class="btn border fw-semibold view-eye-btn">
-                              <i class="bi bi-eye"></i>
-                              View
-                            </button>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-                      <span> Order ID : <%= orders[i].order_id %></span> |
-                      <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
-                      </span>|
-                      <span>Delivery Date : <%= (orders[i].delivery_date).toISOString().substr(0,10) %>
-                      </span>
-                    </p>
-
-
-
-
-
-                <% } %>
-                  <% } %>
-                  <% } %>
-                </section>
-              </div> -->
-
-  <!-- REJECTED ORDERS -->
-  <!-- <div class="" style="margin-top: 100px;">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div id="rejected" class="px-2">
-                          <p class="mb-0 fs-3 fw-semibold">Rejected Order</p>
-                        </div>
-                        <div>
-
-                        </div>
-                      </div>
-                      <% for (var i=0; i < orders.length; i++) { %>
-                        <% if (orders[i].in_cart == 0) { %>
-                        <% if (orders[i].order_status==2) { %>
-                          <section class="my-2">
-
-                            <div class="border-bottom mb-3">
-
-                              <div class="d-flex justify-content-between align-items-start">
-
-                                <div class="w-auto">
-                                  <div class="d-flex gap-3 flex-lg-wrap flex-column flex-lg-row">
-                                    <% for (var j=0; j < order_details.length; j++) { %>
-                                      <% if (order_details[j].order_id==orders[i].order_id) { %>
-                                        <div class="d-flex">
-                                          <% for (var k = 0; k < image.length; k++) { %>
-                                            <% if (image[k].product_id == order_details[j].product_id) { %>
-                                              <img class="" style="width: 4rem; object-fit: contain;"
-                                                src="<%= image[k].product_image_url  %>" alt="">
-                                            <% } %>
-                                          <% } %>
-                                          <div class="fw-semibold ps-3">
-                                            <p class="m-0">
-                                              <%= order_details[j].product_name %>
-                                            </p>
-                                            <p class="m-0">x<%= order_details[j].product_quantity %>
-                                            </p>
-                                          </div>
-                                          <% } %>
-                                            <% } %>
-                                        </div>
-
-                                  </div>
-                                </div>
-
-
-                                <div class="col-3">
-                                  <div class="d-flex justify-content-end">
-                                    <a href="/order_details/<%= orders[i].order_id %>"
-                                      class=" bg-transparent text-black fw-semibold">
-                                      <button class=" btn border fw-semibold view-eye-btn">
-                                        <i class="bi bi-eye"></i>
-                                        View
-                                      </button>
-                                    </a>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <p class="py-3 m-0 d-flex gap-4" style="color: #4D4D4D; font-weight: 500;">
-                                <span> Order ID : <%= orders[i].order_id %> </span>|
-                                <span>Placed Date: <%= (orders[i].placed_date).toISOString().substr(0,10) %>
-                                </span>
-                              </p>
-                            </div>
-
-
-                          </section>
-                    </div>
-                    <% } %>
-                      <% } %>
-                      <% } %>
-                        </section> -->
-  <!-- </div>
-    </div>
-  </div>  -->
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -1211,115 +664,79 @@ for (var i = 0; i < orders.length; i++) {
       console.log(row.children[1].textContent);
     });
 
-    window.location.href = `/print-orders?orderIds=${orderIds}`;
+    // window.location.href = `/print-orders?orderIds=${orderIds}`;
+    window.open(`/print-orders?orderIds=${orderIds}`, '_blank');
 
     console.log(orderIds);
 
     console.log(checkboxes);
-    //   if (checkboxes.length === 0) {
-    //     alert('No checkbox is checked');
-    //     return;
-    //   }
-    //   var html = `<html>
-    //   <head>
-    //     <title>Invoice</title>
-    //   </head>
-    //   <body style="font-family: Arial, sans-serif; padding: 20px;">
-    //     <h1 style="font-size: 24px; color: #333; border-bottom: 1px solid #333; padding-bottom: 10px;Invoice</h1>`;
-    //   checkboxes.forEach(function (checkbox) {
-    //     var row = checkbox.closest('tr');
-    //     html += `
-    //      <div>
-    //           <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-    //               <div style="flex: 1; margin: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
-    //                   <p style="font-size: 16px; font-weight: bold;">Customer Name:
-    //                       ${row.children[4].textContent.split('\n')[2].trim()}</p>
-    //                   <p style="font-size: 16px;">Mobile Number: ${row.children[4].textContent.split('\n')[3].trim()}</p>
-    //                   <p style="font-size: 16px;">Address: </p>
-    //               </div>
-    //               <div style="flex: 1; margin: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
-    //                   <p style="font-size: 16px; font-weight: bold;">Order Id: ${row.children[1].textContent}</p>
-    //                   <p style="font-size: 16px;">Placed Date: ${row.children[3].textContent}</p>
-    //                   <p style="font-size: 16px;">Delivery Date: ${row.children[2].textContent}</p>
-    //                   <p style="font-size: 16px;">Status: ${row.children[8].getAttribute('data-status')}</p>
-    //               </div>
-    //           </div>
-    //       </div>
-    //       <div style="width: 80%; margin: 0 auto;">
-    //           <table style="width: 100%;">
-    //               <thead>
-    //                   <tr>
-    //                       <th style="padding: 10px; background-color: #f9f9f9; font-size: 16px;">Product Name</th>
-    //                       <th style="padding: 10px; background-color: #f9f9f9; font-size: 16px;">Quantity</th>
-    //                       <th style="padding: 10px; background-color: #f9f9f9; font-size: 16px;">Price</th>
-    //                   </tr>
-    //               </thead>
-    //               <tbody>
-    //                   <tr>
-    //                       <td style="padding: 10px; font-size: 16px;">${row.children[9].textContent.trim().replace(/\s*\n\s*/g, ',').replace(/,\s*,/g, ', ')}</td>
-    //                       <td style = "padding: 10px; font-size: 16px;" > Quantity</td >
-    //                       <td style="padding: 10px; font-size: 16px;">Price</td>
-    //                   </tr >
-    //                   <tr>
-    //                       <td colspan="2" style="padding: 10px; font-weight: bold; text-align: right; font-size: 16px;">Total Price:
-    //                           ${row.children[5].textContent}</td>
-    //                       <td style="padding: 10px;"></td>
-    //                   </tr>
-    //                   <tr>
-    //                       <td colspan="2" style="padding: 10px; text-align: right; font-size: 16px;">Delivery Price:
-    //                           ${row.children[6].textContent}</td>
-    //                       <td style="padding: 10px;"></td>
-    //                   </tr>
-    //                   <tr>
-    //                       <td colspan="2" style="padding: 10px; font-size: 16px; font-weight: bold; text-align: right;">Sum of Total Price:
-    //                           ${row.children[7].textContent}
-    //                       </td>
-    //                       <td style="padding: 10px;"></td>
-    //                   </tr>
-    //               </tbody >
-    //           </table >
-    //       </div >
-    //       <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">`;
-    //   });
-    //   html += `<hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;"></body></html>`;
 
-    //   var tempDiv = document.createElement('div');
-    //   tempDiv.innerHTML = html;
-    //   document.body.appendChild(tempDiv);
+  })
+</script>
 
-    //   html2canvas(tempDiv, { scale: 1 }).then(function (canvas) {
-    //     var imgData = canvas.toDataURL('image/png');
-    //     var doc = new window.jspdf.jsPDF('p', 'pt', 'a3');
-    //     var pageWidth = doc.internal.pageSize.getWidth();
-    //     var pageHeight = doc.internal.pageSize.getHeight();
-    //     var canvasWidth = canvas.width;
-    //     var canvasHeight = canvas.height;
+<script>
 
-    //     // Define margins
-    //     var margin = 20; // Change this to the desired margin size
-    //     var widthWithMargin = pageWidth - 2 * margin;
-    //     var heightWithMargin = pageHeight - 2 * margin;
+  document.getElementById('downloadInvoice2').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox2:checked');
+    let orderIds = '';
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      orderIds += row.children[1].textContent.trim() + ',';
 
-    //     // Calculate scale factor based on width
-    //     var scaleFactor = widthWithMargin / canvasWidth;
-    //     var scaledHeight = canvasHeight * scaleFactor;
-    //     var heightLeft = scaledHeight;
-    //     var position = margin; // Start position at top margin
+      console.log(row.children[1].textContent);
+    });
 
-    //     doc.addImage(imgData, 'PNG', margin, position, widthWithMargin, scaledHeight);
-    //     heightLeft -= heightWithMargin;
+    // window.location.href = `/print-orders?orderIds=${orderIds}`;
 
-    //     while (heightLeft >= 0) {
-    //       position = heightLeft - scaledHeight + margin;
-    //       doc.addPage();
-    //       doc.addImage(imgData, 'PNG', margin, position, widthWithMargin, scaledHeight);
-    //       heightLeft -= heightWithMargin;
-    //     }
+    window.open(`/print-orders?orderIds=${orderIds}`, '_blank');
+    console.log(orderIds);
 
-    //     doc.save('invoice.pdf');
-    //     document.body.removeChild(tempDiv);
-    //   });
-    // });
+    console.log(checkboxes);
+
+  })
+</script>
+
+<script>
+
+  document.getElementById('downloadInvoice3').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox3:checked');
+    let orderIds = '';
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      orderIds += row.children[1].textContent.trim() + ',';
+
+      console.log(row.children[1].textContent);
+    });
+
+    // window.location.href = `/print-orders?orderIds=${orderIds}`;
+    window.open(`/print-orders?orderIds=${orderIds}`, '_blank');
+
+    console.log(orderIds);
+
+    console.log(checkboxes);
+
+  })
+</script>
+
+<script>
+
+  document.getElementById('downloadInvoice4').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.orderCheckbox4:checked');
+    let orderIds = '';
+    checkboxes.forEach(function (checkbox) {
+      var row = checkbox.closest('tr');
+      orderIds += row.children[1].textContent.trim() + ',';
+
+      console.log(row.children[1].textContent);
+    });
+
+    // window.location.href = `/print-orders?orderIds=${orderIds}`;
+    window.open(`/print-orders?orderIds=${orderIds}`, '_blank');
+
+    console.log(orderIds);
+
+    console.log(checkboxes);
+
   })
 </script>
 
@@ -1499,7 +916,7 @@ for (var i = 0; i < orders.length; i++) {
       now.getSeconds().toString().padStart(2, '0');
 
     // Append timestamp to file name
-    link.download = 'confirmed_orders_' + timestamp + '.csv';
+    link.download = 'shipped_orders_' + timestamp + '.csv';
 
     link.click();
   });
@@ -1563,7 +980,7 @@ for (var i = 0; i < orders.length; i++) {
       now.getSeconds().toString().padStart(2, '0');
 
     // Append timestamp to file name
-    link.download = 'shipped_orders_' + timestamp + '.csv';
+    link.download = 'confirmed_orders_' + timestamp + '.csv';
 
     link.click();
   });

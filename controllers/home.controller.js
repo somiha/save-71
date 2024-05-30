@@ -8,16 +8,15 @@ const moment = require("moment");
 exports.home = async (req, res) => {
   db.query("SELECT * FROM `extra_cat`", (errDate, resDate) => {
     if (errDate) {
-      console.log(errDate);
       res.status(500).send("Error updating popularity");
     }
     let last_update = resDate[0].last_update;
     const currentDate = moment();
     const lastUpdate = moment(last_update);
-    console.log("Current Date: ", currentDate);
+    // console.log("Current Date: ", currentDate);
     const diffDays = currentDate.diff(lastUpdate, "days");
     if (diffDays >= 3) {
-      console.log("Popularity updated successfully!");
+      // console.log("Popularity updated successfully!");
       last_update = currentDate.format("YYYY-MM-DD");
       db.query(
         "UPDATE `extra_cat` SET `popular_cat_value` = '0', `last_update` = ?",
@@ -27,16 +26,22 @@ exports.home = async (req, res) => {
             console.log(err);
             res.status(500).send("Error updating popularity");
           }
-          console.log("Popularity updated successfully Exited!");
+          // console.log("Popularity updated successfully Exited!");
         }
       );
     }
   });
 
-  var isLogged = crypto.decrypt(req.cookies.login_status || "");
+  // var isLogged = crypto.decrypt(req.cookies.login_status || "");
+  var isLogged = req.cookies.login_status
+    ? crypto.decrypt(req.cookies.login_status)
+    : "";
   if (isLogged == "true") {
     try {
-      const userId = crypto.decrypt(req.cookies.userId);
+      // const userId = crypto.decrypt(req.cookies.userId);
+      const userId = req.cookies.userId
+        ? crypto.decrypt(req.cookies.userId)
+        : "";
       const currencyCode = crypto.decrypt(req.cookies.currencyCode);
       const [
         mainCat,
@@ -60,7 +65,6 @@ exports.home = async (req, res) => {
 
       // Get user's current location from request query parameters
       const location = JSON.parse(JSON.stringify(req.cookies.location) || "{}");
-      console.log(location);
 
       // const userLat = crypto.decrypt(location.latitude);
       // const userLng = crypto.decrypt(location.longitude);
@@ -116,6 +120,7 @@ exports.home = async (req, res) => {
           db.query(
             "SELECT * FROM `products` WHERE `products`.`quantity` = 0 AND `products`.`status` = 1 AND `products`.`admin_published` = 1 ORDER BY `products`.`sell_count` DESC",
             (err2, res2) => {
+              // console.log("Products: ", res2);
               if (!err2) {
                 // INNER JOIN `extra_cat` ON `products`.`product_cat_id` = `extra_cat`.`extra_cat_id`
                 var images = fetchFeaturedImages.map((image) => {
@@ -123,7 +128,7 @@ exports.home = async (req, res) => {
                   return image;
                 });
 
-                console.log("Sorted Shops: ", sortedShopsAndProductsByDistance);
+                // console.log("Sorted Shops: ", sortedShopsAndProductsByDistance);
                 sortedShopsAndProductsByDistance.forEach((shop) => {
                   shop.product_id = crypto.smallEncrypt(shop.product_id);
                   var image = images.find(

@@ -3,7 +3,7 @@ const catModel = require("../../middlewares/cat");
 const crypto = require("../../middlewares/crypto");
 
 exports.order = async (req, res) => {
-  var login_status = crypto.decrypt(req.cookies.login_status || '');
+  var login_status = crypto.decrypt(req.cookies.login_status || "");
   if (login_status) {
     try {
       const userId = crypto.decrypt(req.cookies.userId);
@@ -14,7 +14,8 @@ exports.order = async (req, res) => {
         catModel.fetchAllNotifications(userId),
       ]);
       var user_id = crypto.decrypt(req.cookies.userId);
-      var oQuery = "SELECT * FROM `orders` INNER JOIN `shop` ON `shop`.`id` = `orders`.`seller_id` WHERE `orders`.`user_id` = ?";
+      var oQuery =
+        "SELECT * FROM `orders` INNER JOIN `shop` ON `shop`.`id` = `orders`.`seller_id` WHERE `orders`.`user_id` = ?";
       var query =
         "SELECT * FROM `orders` INNER JOIN `order_details` ON `orders`.`order_id` = `order_details`.`order_id` INNER JOIN `products` ON `products`.`product_id` = `order_details`.`product_id` WHERE `orders`.`user_id` = ?  ORDER BY `orders`.`placed_date` DESC";
       db.query(query, [user_id], (err1, res1) => {
@@ -27,39 +28,53 @@ exports.order = async (req, res) => {
                   if (!err3) {
                     var total_price = [];
                     var deliveryChargesAdded = {};
-                    res1.forEach(orderDetails => {
+                    res1.forEach((orderDetails) => {
                       if (isNaN(total_price[orderDetails.order_id])) {
                         total_price[orderDetails.order_id] = 0;
                       }
-                      if (orderDetails.product_quantity >= 0 && orderDetails.stock_out == 0) {
-                        total_price[orderDetails.order_id] += orderDetails.product_total_price;
+                      if (
+                        orderDetails.product_quantity >= 0 &&
+                        orderDetails.stock_out == 0
+                      ) {
+                        total_price[orderDetails.order_id] +=
+                          orderDetails.product_total_price;
                         if (!deliveryChargesAdded[orderDetails.order_id]) {
-                          total_price[orderDetails.order_id] += orderDetails.deliveryCharge;
+                          total_price[orderDetails.order_id] +=
+                            orderDetails.deliveryCharge;
                           deliveryChargesAdded[orderDetails.order_id] = true;
                         }
                       }
                       // console.log(total_price[orderDetails.order_id])
                     });
 
-                    var images = res3.map(image => {
+                    var images = res3.map((image) => {
                       image.product_id = crypto.smallEncrypt(image.product_id);
                       return image;
                     });
 
-                    var orderDetails = res1.map(orderDetail => {
-                      orderDetail.product_id = crypto.smallEncrypt(orderDetail.product_id);
+                    var orderDetails = res1.map((orderDetail) => {
+                      orderDetail.product_id = crypto.smallEncrypt(
+                        orderDetail.product_id
+                      );
                       return orderDetail;
                     });
-                    // console.log("Order Details: ", orderDetails)
+                    console.log("Order Details: ", orderDetails);
+                    console.log("order: ", res2);
+                    const filteredOrders = res2.filter((order) => {
+                      return orderDetails.some(
+                        (detail) => detail.order_id === order.order_id
+                      );
+                    });
                     res.render("./user-dashboard/order", {
                       ogImage: "https://www.localhost:3000/images/logo-og.webp",
-                      ogTitle: "Save71 Connects You and the World through Business.",
+                      ogTitle:
+                        "Save71 Connects You and the World through Business.",
                       ogUrl: "https://www.localhost:3000",
                       orderDetails: orderDetails,
                       currRate,
                       total_price,
                       currencyCode,
-                      order: res2,
+                      order: filteredOrders,
                       image: images,
                       menuId: "shop-owner-purchases",
                       name: "Purchases",
@@ -89,11 +104,7 @@ exports.order = async (req, res) => {
 
 exports.acceptOrder = async (req, res) => {
   try {
-    const [setNotification] = await Promise.all([
-      catModel.setNotification,
-    ]);
-    console.log("Accept Order");
-    console.log(req.params.order_id);
+    const [setNotification] = await Promise.all([catModel.setNotification]);
 
     var order_id = req.params.order_id;
     var userId = crypto.decrypt(req.cookies.userId);
@@ -119,148 +130,159 @@ exports.acceptOrder = async (req, res) => {
 
           // payment gateway will confirm here.
 
-          db.query("SELECT * FROM `shop_balance` WHERE `shop_balance`.`shop_id` = ?", [seller_id], (errShop, resShop) => {
-            if (!errShop) {
+          db.query(
+            "SELECT * FROM `shop_balance` WHERE `shop_balance`.`shop_id` = ?",
+            [seller_id],
+            (errShop, resShop) => {
+              if (!errShop) {
+                db.query(
+                  "SELECT SUM(product_total_price) as `total_price`, `deliveryCharge`  FROM `order_details` INNER JOIN `orders` ON `orders`.`order_id` = `order_details`.`order_id` WHERE `order_details`.`order_id` = ?",
+                  [order_id],
+                  (errOrder, resOrder) => {
+                    if (!errOrder) {
+                      // if ((resOrder[0].deliveryCharge + resOrder[0].total_price) <= resShop[0].own_balance) {
 
-              db.query("SELECT SUM(product_total_price) as `total_price`, `deliveryCharge`  FROM `order_details` INNER JOIN `orders` ON `orders`.`order_id` = `order_details`.`order_id` WHERE `order_details`.`order_id` = ?",
-                [order_id], (errOrder, resOrder) => {
-                  if (!errOrder) {
+                      //   //  Own balance buy
 
-                    // if ((resOrder[0].deliveryCharge + resOrder[0].total_price) <= resShop[0].own_balance) {
+                      //   const remBalance = resShop[0].own_balance - (resOrder[0].deliveryCharge + resOrder[0].total_price)
+                      //   console.log("Remaining balance : ", remBalance)
 
-                    //   //  Own balance buy
+                      //   db.query("UPDATE `shop_balance` SET `own_balance` = ? WHERE `shop_balance`.`shop_id` = ?", [remBalance, seller_id], (errUpdateBal, resUpdateBal) => {
+                      //     if (!errUpdateBal) {
+                      //       db.query(
+                      //         "UPDATE `orders` SET `order_status` = '3', `request_review` = '0', `is_paid` = '1' WHERE `orders`.`order_id` = ?",
+                      //         [order_id],
+                      //         (err3, res3) => {
+                      //           if (!err3) {
 
-                    //   const remBalance = resShop[0].own_balance - (resOrder[0].deliveryCharge + resOrder[0].total_price)
-                    //   console.log("Remaining balance : ", remBalance)
+                      //             db.query("SELECT * FROM `orders` INNER JOIN `shop` ON `shop`.`id` = `orders`.`seller_id` INNER JOIN `user` ON `user`.`user_id` = `shop`.`seller_user_id` WHERE `orders`.`order_id` = ?",
+                      //               [order_id], (err4, res4) => {
+                      //                 if (!err4) {
+                      //                   setNotification(res4[0].seller_user_id, `Order ${order_id} has been Accepted and Paid by the Buyer. Please check your order details.`, `/order_details/${order_id}`)
 
-                    //   db.query("UPDATE `shop_balance` SET `own_balance` = ? WHERE `shop_balance`.`shop_id` = ?", [remBalance, seller_id], (errUpdateBal, resUpdateBal) => {
-                    //     if (!errUpdateBal) {
-                    //       db.query(
-                    //         "UPDATE `orders` SET `order_status` = '3', `request_review` = '0', `is_paid` = '1' WHERE `orders`.`order_id` = ?",
-                    //         [order_id],
-                    //         (err3, res3) => {
-                    //           if (!err3) {
+                      //                   // adding received money history in sellers account
+                      //                   db.query("INSERT INTO `payment_history` (`history_id`, `shop_id`, `amount`, `type`, `date`, `order_id`, `ref_user_id`, `sent_user_id`) VALUES (NULL, ?, ?, ?, ?, ?, NULL, '0')",
+                      //                     [
+                      //                       res4[0].seller_id,
+                      //                       (resOrder[0].deliveryCharge + resOrder[0].total_price),
+                      //                       1,    // 3 means order accept money
+                      //                       new Date(),
+                      //                       order_id,
+                      //                     ], (err5, res5) => {
+                      //                       if (!err5) {
 
-                    //             db.query("SELECT * FROM `orders` INNER JOIN `shop` ON `shop`.`id` = `orders`.`seller_id` INNER JOIN `user` ON `user`.`user_id` = `shop`.`seller_user_id` WHERE `orders`.`order_id` = ?",
-                    //               [order_id], (err4, res4) => {
-                    //                 if (!err4) {
-                    //                   setNotification(res4[0].seller_user_id, `Order ${order_id} has been Accepted and Paid by the Buyer. Please check your order details.`, `/order_details/${order_id}`)
+                      //                         // adding sent money history in buyers account
+                      //                         db.query("INSERT INTO `payment_history` (`history_id`, `shop_id`, `amount`, `type`, `date`, `order_id`, `ref_user_id`, `sent_user_id`) VALUES (NULL, ?, ?, ?, ?, ?, NULL, ?)",
+                      //                           [
+                      //                             seller_id,
+                      //                             (resOrder[0].deliveryCharge + resOrder[0].total_price),
+                      //                             4,    // 4 means sent money to shop
+                      //                             new Date(),
+                      //                             order_id,
+                      //                             res4[0].seller_user_id,
+                      //                           ], (err6, res6) => {
+                      //                             if (!err6) {
 
-                    //                   // adding received money history in sellers account
-                    //                   db.query("INSERT INTO `payment_history` (`history_id`, `shop_id`, `amount`, `type`, `date`, `order_id`, `ref_user_id`, `sent_user_id`) VALUES (NULL, ?, ?, ?, ?, ?, NULL, '0')",
-                    //                     [
-                    //                       res4[0].seller_id,
-                    //                       (resOrder[0].deliveryCharge + resOrder[0].total_price),
-                    //                       1,    // 3 means order accept money
-                    //                       new Date(),
-                    //                       order_id,
-                    //                     ], (err5, res5) => {
-                    //                       if (!err5) {
+                      //                               // Updating seller balance
+                      //                               db.query("SELECT * FROM `shop_balance` WHERE `shop_balance`.`shop_id` = ?", [res4[0].seller_id], (err7, res7) => {
+                      //                                 if (!err7) {
+                      //                                   const newBalance = res7[0].own_balance + (resOrder[0].deliveryCharge + resOrder[0].total_price)
+                      //                                   console.log("New balance : ", newBalance)
 
-                    //                         // adding sent money history in buyers account
-                    //                         db.query("INSERT INTO `payment_history` (`history_id`, `shop_id`, `amount`, `type`, `date`, `order_id`, `ref_user_id`, `sent_user_id`) VALUES (NULL, ?, ?, ?, ?, ?, NULL, ?)",
-                    //                           [
-                    //                             seller_id,
-                    //                             (resOrder[0].deliveryCharge + resOrder[0].total_price),
-                    //                             4,    // 4 means sent money to shop
-                    //                             new Date(),
-                    //                             order_id,
-                    //                             res4[0].seller_user_id,
-                    //                           ], (err6, res6) => {
-                    //                             if (!err6) {
+                      //                                   db.query("UPDATE `shop_balance` SET `own_balance` = ? WHERE `shop_balance`.`shop_id` = ?", [newBalance, res4[0].seller_id], (err8, res8) => {
+                      //                                     if (!err8) {
+                      //                                       res.redirect("back");
+                      //                                     } else {
+                      //                                       console.error(err8)
+                      //                                       res.send(err8)
+                      //                                     }
+                      //                                   })
+                      //                                 } else {
+                      //                                   console.error(err7)
+                      //                                   res.send(err7)
+                      //                                 }
+                      //                               })
+                      //                               // Updating seller balance END
 
-                    //                               // Updating seller balance
-                    //                               db.query("SELECT * FROM `shop_balance` WHERE `shop_balance`.`shop_id` = ?", [res4[0].seller_id], (err7, res7) => {
-                    //                                 if (!err7) {
-                    //                                   const newBalance = res7[0].own_balance + (resOrder[0].deliveryCharge + resOrder[0].total_price)
-                    //                                   console.log("New balance : ", newBalance)
+                      //                             } else {
+                      //                               console.error(err6)
+                      //                               res.send(err6)
+                      //                             }
+                      //                           })
+                      //                         // adding sent money history in buyers account END
 
-                    //                                   db.query("UPDATE `shop_balance` SET `own_balance` = ? WHERE `shop_balance`.`shop_id` = ?", [newBalance, res4[0].seller_id], (err8, res8) => {
-                    //                                     if (!err8) {
-                    //                                       res.redirect("back");
-                    //                                     } else {
-                    //                                       console.error(err8)
-                    //                                       res.send(err8)
-                    //                                     }
-                    //                                   })
-                    //                                 } else {
-                    //                                   console.error(err7)
-                    //                                   res.send(err7)
-                    //                                 }
-                    //                               })
-                    //                               // Updating seller balance END
+                      //                       } else {
+                      //                         console.error(err5)
+                      //                         res.send(err5)
+                      //                       }
+                      //                     })
+                      //                   // adding received money history in sellers account END
+                      //                 } else {
+                      //                   console.error(err4)
+                      //                   res.send(err4)
+                      //                 }
+                      //               })
 
-                    //                             } else {
-                    //                               console.error(err6)
-                    //                               res.send(err6)
-                    //                             }
-                    //                           })
-                    //                         // adding sent money history in buyers account END
+                      //           } else {
+                      //             console.error(err3)
+                      //             res.send(err3);
+                      //           }
+                      //         }
+                      //       );
+                      //     } else {
+                      //       console.error(errUpdateBal)
+                      //       res.send(errUpdateBal)
+                      //     }
+                      //   })
 
-                    //                       } else {
-                    //                         console.error(err5)
-                    //                         res.send(err5)
-                    //                       }
-                    //                     })
-                    //                   // adding received money history in sellers account END
-                    //                 } else {
-                    //                   console.error(err4)
-                    //                   res.send(err4)
-                    //                 }
-                    //               })
+                      // } else {
 
-                    //           } else {
-                    //             console.error(err3)
-                    //             res.send(err3);
-                    //           }
-                    //         }
-                    //       );
-                    //     } else {
-                    //       console.error(errUpdateBal)
-                    //       res.send(errUpdateBal)
-                    //     }
-                    //   })
-
-                    // } else {
-
-// Online SSL payment section or COD
-                // if paid, then set the value is_paid to 1 for COD is_paid = 2
+                      // Online SSL payment section or COD
+                      // if paid, then set the value is_paid to 1 for COD is_paid = 2
                       db.query(
                         "UPDATE `orders` SET `order_status` = '3', `request_review` = '0', `is_paid` = '2' WHERE `orders`.`order_id` = ?",
                         [order_id],
                         (err3, res3) => {
                           if (!err3) {
-                            db.query("SELECT * FROM `orders` INNER JOIN `shop` ON `shop`.`id` = `orders`.`seller_id` INNER JOIN `user` ON `user`.`user_id` = `shop`.`seller_user_id` WHERE `orders`.`order_id` = ?",
-                              [order_id], (err4, res4) => {
+                            db.query(
+                              "SELECT * FROM `orders` INNER JOIN `shop` ON `shop`.`id` = `orders`.`seller_id` INNER JOIN `user` ON `user`.`user_id` = `shop`.`seller_user_id` WHERE `orders`.`order_id` = ?",
+                              [order_id],
+                              (err4, res4) => {
                                 if (!err4) {
                                   // set notification(user_id, message, link)
-                                  setNotification(res4[0].seller_user_id, `Order ${order_id} has been Accepted by the Buyer. Cash On Delivery (COD) for this order.`, `/order_details/${order_id}`)
+                                  setNotification(
+                                    res4[0].seller_user_id,
+                                    `Order ${order_id} has been Accepted by the Buyer. Cash On Delivery (COD) for this order.`,
+                                    `/order_details/${order_id}`
+                                  );
                                   res.redirect("back");
                                 } else {
-                                  console.error(err4)
-                                  res.send(err4)
+                                  console.error(err4);
+                                  res.send(err4);
                                 }
-                              })
+                              }
+                            );
                           } else {
-                            console.error(err3)
+                            console.error(err3);
                             res.send(err3);
                           }
                         }
                       );
-                    // }
-                  } else {
-                    console.error(errOrder)
-                    res.send(errOrder)
+                      // }
+                    } else {
+                      console.error(errOrder);
+                      res.send(errOrder);
+                    }
                   }
-                })
-            } else {
-              console.error(errShop)
-              res.send(errShop)
+                );
+              } else {
+                console.error(errShop);
+                res.send(errShop);
+              }
             }
-          })
-
+          );
         } else {
-          console.error(err1)
+          console.error(err1);
           res.send(err1);
         }
       }

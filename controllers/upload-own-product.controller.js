@@ -139,7 +139,7 @@ exports.uploadOwnProductPost = async (req, res) => {
       if (req.files["productImages"]) {
         console.log("Featured index: ", featured_index);
         picUrls = req.files["productImages"].map(
-          (file) => "https://save71.com/images/products/" + file.filename
+          (file) => "http://localhost:3000/images/products/" + file.filename
         );
         featured_image_index =
           featured_index == undefined ? 0 : parseInt(featured_index);
@@ -150,7 +150,7 @@ exports.uploadOwnProductPost = async (req, res) => {
 
       // console.log("f : ", featured_image_index, " body : ", featured_index)
       var video_url = req.files["product_video"]
-        ? "https://save71.com/images/products/" +
+        ? "http://localhost:3000/images/products/" +
           req.files["product_video"][0].filename
         : null;
 

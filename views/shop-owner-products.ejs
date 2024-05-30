@@ -8,7 +8,8 @@
     ">
   <div class="position-absolute w-100 h-100 top-0" style="background: rgba(26, 99, 166, 0.9)"></div>
   <div class="container h-100 d-flex justify-content-center" style="z-index: 100">
-    <div class="h-100 shop-owner-products-name-container w-50 text-white d-flex flex-column justify-content-center align-items-center">
+    <div
+      class="h-100 shop-owner-products-name-container w-50 text-white d-flex flex-column justify-content-center align-items-center">
       <h1 class="fs-3 text-white" style="z-index: 100">
         <%= shop==undefined ? "" : shop[0].shop_name %>
       </h1>
@@ -20,8 +21,10 @@
         <%= shop[0].distanceKm %> KM
         <% } %>
       </p>
-      <div class=" shop-owner-products-search d-flex rounded-3" style="z-index: 100; border: 1px solid white; color: white;">
-        <input type="text" class="form-control text-white bg-transparent border grocery-search border-0" placeholder="Search Products..." id="searchInput" />
+      <div class=" shop-owner-products-search d-flex rounded-3"
+        style="z-index: 100; border: 1px solid white; color: white;">
+        <input type="text" class="form-control text-white bg-transparent border grocery-search border-0"
+          placeholder="Search Products..." id="searchInput" />
         <a class="btn rounded-start-0" style="background: #fff; color: #1a63a6;">Search</a>
       </div>
     </div>
@@ -38,11 +41,14 @@
         <i class="bi bi-chevron-right d-lg-none"></i>
       </h1>
       <div class="dropdown-container w-100 p-2 p-lg-0 all-products-sidebar-dropdown-container">
-        <a id="all" href="#allProducts" class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button" onclick="updateDisplay(this.id)">
+        <a id="all" href="#allProducts" class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2"
+          type="button" onclick="updateDisplay(this.id)">
           All Products
         </a>
         <% for (var i=0; i < filteredExtraCat.length; i++) { %>
-        <a id="<%= filteredExtraCat[i].extra_cat_id %>" href="#all" class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button" onclick="updateDisplay(this.id)">
+        <a id="<%= filteredExtraCat[i].extra_cat_id %>" href="#all"
+          class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button"
+          onclick="updateDisplay(this.id)">
           <%= filteredExtraCat[i].extra_cat_name %>
         </a>
         <% } %>
@@ -79,7 +85,8 @@
     <div id="notAll" class="products flex-grow-1" style="display: none;">
       <!-- This section will be populated dynamically based on categories -->
       <% for (var i=0; i < filteredExtraCat.length; i++) { %>
-      <div id="display_<%= filteredExtraCat[i].extra_cat_id %>" class="container mb-5 extraCatProduct" style="display: none">
+      <div id="display_<%= filteredExtraCat[i].extra_cat_id %>" class="container mb-5 extraCatProduct"
+        style="display: none">
         <!--  only area products -->
         <!-- Products Of a category Section -->
         <div class="products flex-grow-1">
@@ -98,11 +105,13 @@
                   <div class="text-center position-relative">
                     <% for (var f=0; f < images.length; f++) { %>
                     <% if (images[f].product_id==products[j].product_id) { %>
-                    <img src="<%= images[f].product_image_url %>" class="card-img-top h-100" style="object-fit: contain;" />
+                    <img src="<%= images[f].product_image_url %>" class="card-img-top h-100"
+                      style="object-fit: contain;" />
                     <% } %> <% } %>
                   </div>
                   <h2 class="fs-6">
-                    <a href="/product-details/<%= products[j].product_name %>/<%= encodeURIComponent(products[j].product_id) %>" class="text-inherit text-decoration-none" style="color: #1a63a6;">
+                    <a href="/product-details/<%= products[j].product_name %>/<%= encodeURIComponent(products[j].product_id) %>"
+                      class="text-inherit text-decoration-none" style="color: #1a63a6;">
                       <%= products[j].product_name %>
                     </a>
                   </h2>
@@ -126,8 +135,11 @@
                       </span>
                     </div>
                     <div>
-                      <a href="/cart/<%= products[j].id %>/<%= encodeURIComponent(products[j].product_id)  %>" class="btn btn-sm primary-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                      <a href="/cart/<%= products[j].id %>/<%= encodeURIComponent(products[j].product_id)  %>"
+                        class="btn btn-sm primary-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-plus">
                           <line x1="12" y1="5" x2="12" y2="19"></line>
                           <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
@@ -156,7 +168,7 @@
     link.addEventListener('click', (event) => {
       event.preventDefault();
       const categoryElement = document.querySelector(event.target.hash);
-      categoryElement.scrollIntoView({
+      categoryElement?.scrollIntoView({
         behavior: 'smooth'
       });
     });
@@ -185,12 +197,12 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function() {
-    $('#searchInput').on('input', function() {
+  $(document).ready(function () {
+    $('#searchInput').on('input', function () {
       var searchTerm = $(this).val().toLowerCase().trim();
 
       // Loop through each section
-      $('.products').each(function() {
+      $('.products').each(function () {
         var section = $(this);
 
         // Select product cards within the current section
@@ -201,7 +213,7 @@
           productCards.show();
         } else {
           // Otherwise, filter product cards based on the search term
-          productCards.each(function() {
+          productCards.each(function () {
             var productName = $(this).find('.card-title').text().toLowerCase();
 
             // If the product name includes the search term, show the card, otherwise hide it

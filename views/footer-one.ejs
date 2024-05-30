@@ -22,7 +22,8 @@
           <input class="w-100 py-2" type="date" id="transactionDate" name="transactionDate">
         </div>
         <div>
-          <button id="applyFilterBtn" class="w-100 border-0 py-3 rounded btn btn-primary text-white" disabled>Apply Filter</button>
+          <button id="applyFilterBtn" class="w-100 border-0 py-3 rounded btn btn-primary text-white" disabled>Apply
+            Filter</button>
         </div>
       </div>
     </div>
@@ -36,22 +37,22 @@
 
 
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     var selectedOption = null;
     var applyFilterBtn = $("#applyFilterBtn");
 
-    $("#orderBtnModal, #referralBtnModal, #withdrawBtnModal").click(function() {
+    $("#orderBtnModal, #referralBtnModal, #withdrawBtnModal").click(function () {
       var buttonId = $(this).attr("id");
       selectedOption = buttonId === "orderBtnModal" ? 1 : (buttonId === "referralBtnModal" ? 2 : 3);
       toggleButtonSelection("#orderBtnModal, #referralBtnModal, #withdrawBtnModal", buttonId);
       checkApplyFilterButtonStatus();
     });
 
-    $("#transactionDate").change(function() {
+    $("#transactionDate").change(function () {
       checkApplyFilterButtonStatus();
     });
 
-    applyFilterBtn.click(function() {
+    applyFilterBtn.click(function () {
       var selectedDate = $("#transactionDate").val();
 
       var requestData = {
@@ -63,7 +64,7 @@
         url: "/applyCustomFilter",
         type: "POST",
         data: requestData,
-        success: function(response) {
+        success: function (response) {
           var options = ['Orders', 'Referrals', 'Withdraws'];
           var modalTitle = options[selectedOption - 1] + " | " + selectedDate;
           $(".modal-title").text(modalTitle);
@@ -102,7 +103,7 @@
           applyFilterBtn.prop("disabled", true);
         },
 
-        error: function() {
+        error: function () {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -113,7 +114,7 @@
     });
 
     function toggleButtonSelection(selector, selectedButtonId) {
-      $(selector).each(function() {
+      $(selector).each(function () {
         var buttonId = $(this).attr("id");
         var isSelected = buttonId === selectedButtonId;
         $(this).toggleClass("btn-primary border-primary", isSelected);
@@ -138,5 +139,6 @@
 </script>
 
 </body>
+
 </html>
 <script src=" /js/index.js"></script>

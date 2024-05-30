@@ -15,7 +15,8 @@
       <% for (var i = 0; i < 6; i++) { %>
       <div class="col-md-2">
         <ul class="list-unstyled fs-6">
-          <li><a style="color: #085399" class="footer-category-items" href="/product/<%= extraCat[i+j].extra_cat_id %>"><%= extraCat[i+j].extra_cat_name %></a></li>
+          <li><a style="color: #085399" class="footer-category-items"
+              href="/product/<%= extraCat[i+j].extra_cat_id %>"><%= extraCat[i+j].extra_cat_name %></a></li>
         </ul>
       </div>
       <% } %>
@@ -25,7 +26,8 @@
 </footer>
 
 <!-- Footer Section -->
-<div class="footer" style="background: linear-gradient(180deg, #2D2E2F 0%, #001E2E 9.38%, #001E2E 20.31%, #003F63 100%); height: fit-content;">
+<div class="footer"
+  style="background: linear-gradient(180deg, #2D2E2F 0%, #001E2E 9.38%, #001E2E 20.31%, #003F63 100%); height: fit-content;">
   <div class="container h-100 pb-3">
     <div class="row h-100 justify-content-between footer-body">
       <!-- Company Logo -->
@@ -134,13 +136,15 @@
 </div>
 
 <!-- Cart section -->
-<div class="cart bg-white border border-secondary-subtle hidden" style="z-index: 200; overflow-y: auto; max-height: 100vh ;">
+<div class="cart bg-white border border-secondary-subtle hidden"
+  style="z-index: 200; overflow-y: auto; max-height: 100vh ;">
   <div class="w-100 d-flex flex-column position-relative ">
     <div class="ps-3 d-flex justify-content-between align-items-center" style="background-color: #003F63;">
       <h1 class=" fs-6 mt-3 text-white">
         <%= cart==undefined ? "0" : cart.length %> items
       </h1>
-      <button class="btn p-3 px-4 cart-close h-100 bg-danger text-white" style="border-radius: 0px; border-bottom-left-radius: 50%;">
+      <button class="btn p-3 px-4 cart-close h-100 bg-danger text-white"
+        style="border-radius: 0px; border-bottom-left-radius: 50%;">
         Close
       </button>
     </div>
@@ -157,7 +161,8 @@
             <div class=" align-items-center">
               <% for (var k = 0; k < images.length; k++) { %>
               <% if (images[k].product_id === cart[i].product_id) { %>
-              <img src="<%= images[k].product_image_url %>" style="width: 3rem; height: fit-content; object-fit: cover;" />
+              <img src="<%= images[k].product_image_url %>"
+                style="width: 3rem; height: fit-content; object-fit: cover;" />
               <% } %>
               <% } %>
 
@@ -179,18 +184,22 @@
 
 
             <div class="col d-flex align-items-center justify-content-center">
-              <a href="/cart_del/<%= cart[i].order_details_id %>"> <i class="bi bi-x fs-4 fw-bold" style="--clr: #dc3545"></i></a>
+              <a href="/cart_del/<%= cart[i].order_details_id %>"> <i class="bi bi-x fs-4 fw-bold"
+                  style="--clr: #dc3545"></i></a>
             </div>
           </div>
 
           <div class="d-flex mt-2">
-            <button class="border btn p-0 px-1 rounded-0" onclick="increaseQuantity('<%= cart[i].order_details_id %>', '<%= cart[i].product_price %>', '<%= currRate %>', '<%= currencyCode %>')">
+            <button class="border btn p-0 px-1 rounded-0"
+              onclick="increaseQuantity('<%= cart[i].order_details_id %>', '<%= cart[i].product_price %>', '<%= currRate %>', '<%= currencyCode %>')">
               <i class="bi bi-plus" style="--clr: #0d6efd"></i>
             </button>
-            <p class="m-0 px-3 py-1 d-flex align-items-center justify-content-center border" style="font-size: 14px; " id="quantity_<%= cart[i].order_details_id %>">
+            <p class="m-0 px-3 py-1 d-flex align-items-center justify-content-center border" style="font-size: 14px; "
+              id="quantity_<%= cart[i].order_details_id %>">
               <%= cart[i].product_quantity %>
             </p>
-            <button class="border btn p-0 px-1 rounded-0" onclick="decreaseQuantity('<%= cart[i].order_details_id %>', '<%= cart[i].product_price %>', '<%= currRate %>', '<%= currencyCode %>')">
+            <button class="border btn p-0 px-1 rounded-0"
+              onclick="decreaseQuantity('<%= cart[i].order_details_id %>', '<%= cart[i].product_price %>', '<%= currRate %>', '<%= currencyCode %>')">
               <i class="bi bi-dash" style="--clr: #0d6efd"></i>
             </button>
           </div>
@@ -205,7 +214,8 @@
       <a href="#" class="btn rounded-3 px-5 rounded-0 py-2 justify-self-center" style="background-color: #1a63a6;">
         <div class="text-white" id="placeOrderBtn">Place Order</div>
       </a>
-      <a href="/cancelOrder" class="btn rounded-3 px-5 rounded-0 py-2 justify-self-center" style="background-color: #1a63a6;">
+      <a href="/cancelOrder" class="btn rounded-3 px-5 rounded-0 py-2 justify-self-center"
+        style="background-color: #1a63a6;">
         <div class="text-white">Cancel Order</div>
       </a>
     </div>
@@ -216,7 +226,7 @@
 
 
 <!-- Place Order Popup -->
-<div id="placeOrderPopup" class="modal fade" tabindex="-1">
+<div id="placeOrderPopup" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -227,7 +237,8 @@
         <form id="deliveryForm">
           <div class="mb-3">
             <label for="address" class="form-label">Delivery Address and Instructions:</label>
-            <textarea type="text" id="currentLocationName" name="deliveryAddress" class="form-control" required></textarea>
+            <textarea type="text" id="currentLocationName" name="deliveryAddress" class="form-control"
+              required></textarea>
           </div>
           <button type="submit" class="btn btn-primary" id="deliveryForm">Confirm</button>
         </form>
@@ -236,12 +247,17 @@
   </div>
 </div>
 
-<!-- Script Section -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
-<script src="/js/index.js"></script>
-</body>
 
+
+<!-- Script Section -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+  integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js"
+  integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+<script src="/js/index.js"></script>
+
+
+</body>
 
 
 <script>
@@ -297,6 +313,8 @@
     });
     placeOrderModal.show();
 
+    console.log("showing place order popup", placeOrderModal);
+
     try {
       const currentLocationName = await getLocationFromCookie();
       document.getElementById("currentLocationName").value = currentLocationName;
@@ -318,12 +336,12 @@
     };
 
     fetch("/deliveryAddress", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
       .then(response => {
         if (response.ok) {
           window.location.href = "/placeOrder";
@@ -369,7 +387,7 @@
     const quantity = parseInt(quantityInput.innerText);
     const totalPriceElement = document.getElementById(`totalPrice_${productId}`);
     const totalPrice = quantity * price;
-    totalPriceElement.textContent = `${(quantity * price *currRate).toFixed(2)} ${currency_code}`
+    totalPriceElement.textContent = `${(quantity * price * currRate).toFixed(2)} ${currency_code}`
     // totalPriceElement.innerText = totalPrice;
 
     // Send updated data to server
@@ -379,12 +397,12 @@
       price: totalPrice
     };
     fetch('/update_cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
       .then(response => {
         if (response.ok) {
           console.log("Value Changed by One")
@@ -431,5 +449,7 @@
     yearSpan.innerHTML = year.toString();
   }, 60000)
 </script>
+
+
 
 </html>

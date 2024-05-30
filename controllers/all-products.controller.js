@@ -138,10 +138,10 @@ exports.allProducts = async (req, res) => {
 
                                           res.render("all-products", {
                                             ogImage:
-                                              "https://save71.com/images/logo-og.webp",
+                                              "http://localhost:3000/images/logo-og.webp",
                                             ogTitle:
                                               "Save71 Connects You and the World through Business.",
-                                            ogUrl: "https://save71.com/",
+                                            ogUrl: "http://localhost:3000/",
                                             extraId,
                                             currencyCode,
                                             currRate,

@@ -1,10 +1,12 @@
 <%- include('header'), {navId:navId, ogImage, ogTitle, ogUrl}; -%>
-<meta property="og:title" content="Empower Your Business Journey with Save71 - Affordable Excellence for Everyone, from Beginners to Wholesalers">
+<meta property="og:title"
+  content="Empower Your Business Journey with Save71 - Affordable Excellence for Everyone, from Beginners to Wholesalers">
 <meta property="og:site_name" content="Save-71">
-<meta property="og:url" content="https://save71.com/area-shop">
-<meta property="og:description" content="At Save71, we're your go-to destination for hassle-free and budget-friendly business solutions. Whether you're just starting out or managing a wholesale operation, we've got the perfect services for you. Our platform is designed to be super beginner-friendly, ensuring a seamless experience for all. Explore, succeed, and save with Save71 – where affordable excellence is accessible to every entrepreneur, from beginners to seasoned wholesalers.">
+<meta property="og:url" content="http://localhost:3000/area-shop">
+<meta property="og:description"
+  content="At Save71, we're your go-to destination for hassle-free and budget-friendly business solutions. Whether you're just starting out or managing a wholesale operation, we've got the perfect services for you. Our platform is designed to be super beginner-friendly, ensuring a seamless experience for all. Explore, succeed, and save with Save71 – where affordable excellence is accessible to every entrepreneur, from beginners to seasoned wholesalers.">
 <meta property="og:type" content="business.business">
-<meta property="og:image" content="https://save71.com/images/logo-og.webp">
+<meta property="og:image" content="http://localhost:3000/images/logo-og.webp">
 
 
 
@@ -28,7 +30,8 @@
           <!-- <div class="col-md-3">
               <div class="list-group"> -->
           <% for (var i=0; i < extraCat.length; i++) { %>
-          <a href="#<%= extraCat[i].extra_cat_id %>" class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button" id="dropdown-btn">
+          <a href="#<%= extraCat[i].extra_cat_id %>"
+            class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button" id="dropdown-btn">
             <%= extraCat[i].extra_cat_name %>
           </a>
           <% } %>
@@ -93,13 +96,13 @@
               <% // for (var k=0; k < shops.length; k++) { %>
               <% // if (product_count > 6) break;%>
               <% for (var j=0; j < products.length; j++) { %>
-                <% if (product_count > 6) break;%>
-                <% if (products[j].product_cat_id==extraCat[i].extra_cat_id) { %>
-                  <% product_count++ %>
+              <% if (product_count > 6) break;%>
+              <% if (products[j].product_cat_id==extraCat[i].extra_cat_id) { %>
+              <% product_count++ %>
               <!-- Mobile per product -->
-                <div class="w-50 p-2">
-                  <!-- Product_card Design Fix Needed -->
-                  <%- include('./components/product_card.ejs', {
+              <div class="w-50 p-2">
+                <!-- Product_card Design Fix Needed -->
+                <%- include('./components/product_card.ejs', {
                   product_details: {
                   product_id: products[j].product_id,
                   product_name: products[j].product_name,
@@ -110,8 +113,8 @@
                   seller_id: products[j].seller_id
                   }
                   }); %>
-                </div>
-                <% } %>
+              </div>
+              <% } %>
               <% } %>
               <%// } %>
               <!-- Mobile per product -->
@@ -129,16 +132,16 @@
   </div>
 </div>
 
-  <script>
-    const categoryLinks = document.querySelectorAll('a[href^="#"]');
-    categoryLinks.forEach((link) => {
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        const categoryElement = document.querySelector(event.target.hash);
-        categoryElement.scrollIntoView({
-          behavior: 'smooth'
-        });
+<script>
+  const categoryLinks = document.querySelectorAll('a[href^="#"]');
+  categoryLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const categoryElement = document.querySelector(event.target.hash);
+      categoryElement?.scrollIntoView({
+        behavior: 'smooth'
       });
     });
-  </script>
-  <%- include('footer'); -%>
+  });
+</script>
+<%- include('footer'); -%>

@@ -39,6 +39,9 @@ exports.printDetails = async (req, res, next) => {
     const userImage = crypto.decrypt(req.cookies.userImage || "");
     const userName = crypto.decrypt(req.cookies.userName);
 
+    const shopQuery = "SELECT * FROM `shop` WHERE `shop`.`id` = ?";
+    const shop = await queryAsync(shopQuery, [seller_id]);
+
     const [images, currRate, notification] = await Promise.all([
       catModel.fetchFeaturedImages(),
       catModel.fetchCurrencyRate(currencyCode),
@@ -95,13 +98,16 @@ exports.printDetails = async (req, res, next) => {
       return res.redirect("/balance");
     }
 
-    const userOrderAndOrderDetails = orders.map((order) => {
-      const orderDetails = order_details.filter(
+    const userOrderAndOrderDetails = filteredOrders.map((order) => {
+      const orderDetails = filteredOrderDetails.filter(
         (orderDetail) => orderDetail.order_id === order.order_id
       );
       const user = userInfo[order.user_id];
+      // console.log({ order });
       return { order, orderDetails, user };
     });
+
+    // console.log({ userOrderAndOrderDetails });
 
     return res.status(200).render("new_orders", {
       ogImage: "https://www.localhost:3000/images/logo-og.webp",
@@ -113,12 +119,13 @@ exports.printDetails = async (req, res, next) => {
       order_details: filteredOrderDetails,
       userOrderAndOrderDetails,
       orders: filteredOrders,
-      image: encImages,
+      image: images,
       userInfo,
       currRate,
       currencyCode,
       name: "Sellings",
       notification: notification,
+      shop: shop[0],
     });
   } catch (e) {
     console.error(e);

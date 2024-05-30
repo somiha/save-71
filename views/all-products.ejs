@@ -8,17 +8,19 @@
 <!-- Hero Section -->
 <div class="w-100 position-relative" style="
 		height: 10rem;
-		background-image: url('https://save71.com/images/Rectangle/27.png');
+		background-image: url('http://localhost:3000/images/Rectangle/27.png');
 		background-size: cover;
 	">
   <div class="position-absolute w-100 h-100 top-0" style="background: rgba(26, 99, 166, 0.9); z-index: 1"></div>
   <div class="px-5 h-100 d-flex justify-content-center" style="z-index: 100">
-    <div class="h-100 w-50 text-white d-flex flex-column justify-content-center align-items-center products-page-search-div">
+    <div
+      class="h-100 w-50 text-white d-flex flex-column justify-content-center align-items-center products-page-search-div">
       <h1 class="fs-3 text-white" style="z-index: 100">
         <%= extra_cat[0].extra_cat_name %>
       </h1>
       <div class="w-75 d-flex rounded-3" style="z-index: 100; border: 1px solid white; color: white;">
-        <input type="text" class="form-control bg-transparent border grocery-search border-0" placeholder="Search Products..." />
+        <input type="text" class="form-control bg-transparent border grocery-search border-0"
+          placeholder="Search Products..." />
         <a class="btn rounded-start-0" style="background: #fff; color: #1a63a6;">Search</a>
       </div>
     </div>
@@ -29,16 +31,19 @@
 <div class="container d-flex flex-column">
   <div class="d-flex flex-lg-row flex-column column-gap-5">
     <!-- Side Category bar -->
-    <div class="sidebar d-flex flex-column fs-6 all-products-sidebar position-relative  pt-5 rounded-2" style=" align-self: stretch; ">
+    <div class="sidebar d-flex flex-column fs-6 all-products-sidebar position-relative  pt-5 rounded-2"
+      style=" align-self: stretch; ">
       <h1 class="fs-5 mb-lg-4 mb-0 all-products-sidebar-h1" style="user-select: none">
         <%= extra_cat[0].sub_cat_name %> Categories
         <i class="bi bi-chevron-right d-lg-none"></i>
       </h1>
-      <div class="dropdown-container w-100 p-4 p-lg-0 all-products-sidebar-dropdown-container" style="max-height: 90vh; overflow-y: auto;">
+      <div class="dropdown-container w-100 p-4 p-lg-0 all-products-sidebar-dropdown-container"
+        style="max-height: 90vh; overflow-y: auto;">
         <% for (var i=0; i < allExtraCat.length; i++) { %>
         <% if (allExtraCat[i].extra_cat_ref==extra_cat[0].sub_cat_id) { %>
         <!-- href="/product/<%= //allExtraCat[i].extra_cat_id %>" -->
-        <a class="fs-6 w-100 py-1 d-flex align-items-center justify-content-between mb-2" type="button" id="dropdown-btn" href="/product/<%= allExtraCat[i].extra_cat_id %>">
+        <a class="fs-6 w-100 py-1 d-flex align-items-center justify-content-between mb-2" type="button"
+          id="dropdown-btn" href="/product/<%= allExtraCat[i].extra_cat_id %>">
           <%= allExtraCat[i].extra_cat_name %> Products
           <!-- <i class="bi bi-chevron-right" style="font-size: 0.7rem"></i> -->
         </a>
@@ -69,14 +74,14 @@
       <!-- Products Section for mobile screen -->
       <div class="w-100 d-flex flex-wrap d-md-none ">
         <% for (var i=0; i < (products==undefined ? 0 : products.length); i++ ) { %>
-            <!-- Mobile per product -->
-            <div class="w-50 p-2">
-              <!-- Product_card Design Fix Needed -->
-              <%- include('./components/product_card.ejs', {
+        <!-- Mobile per product -->
+        <div class="w-50 p-2">
+          <!-- Product_card Design Fix Needed -->
+          <%- include('./components/product_card.ejs', {
               product_details: products[i]
               }); -%>
-            </div>
-          <% } %>
+        </div>
+        <% } %>
 
         <!-- Mobile per product -->
       </div>

@@ -93,7 +93,8 @@ exports.getSortedShopsAndProductsByDistance = (
   limit_per_shop
 ) => {
   return new Promise((resolve, reject) => {
-    let params = [userLat, userLng, userLng];
+    let params = [userLat, userLat, userLng];
+
     let sql =
       "SELECT * FROM ( \
     SELECT *, \

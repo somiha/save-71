@@ -12,6 +12,14 @@
       color: red;
       /* You can adjust the color as needed */
     }
+
+    .modal {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-backdrop {
+      display: none;
+    }
   </style>
 
   <div class="my-5 px-3 px-lg-5">
@@ -20,33 +28,41 @@
         <b><i> <%= img_message %> </i></b>
       </h5>
       <!-- <h5 class="fw-bold mb-3"> Image Upload</h5> -->
-      <div class="d-flex align-items-center justify-content-center position-relative" style="width: 10rem; height: 10rem">
+      <div class="d-flex align-items-center justify-content-center position-relative"
+        style="width: 10rem; height: 10rem">
         <label for="file-input" class="mb-2 position-relative">
           <% if (info !== undefined && info[0].pic_url !== null && info[0].pic_url !== 'null' && info[0].pic_url !== undefined) { %>
-          <img id="pp" src="<%= info[0].pic_url %>" class="rounded-circle" style="width: 10rem; height: 10rem" alt="img" />
+          <img id="pp" src="<%= info[0].pic_url %>" class="rounded-circle" style="width: 10rem; height: 10rem"
+            alt="img" />
           <% } else { %>
-          <img id="pp" src="https://save71.com/images/placeholder.webp" style="height: 100%; width: 100%" />
+          <img id="pp" src="http://localhost:3000/images/placeholder.webp" style="height: 100%; width: 100%" />
           <% } %>
           <!-- Edit Picture Icon -->
           <span class="edit-icon position-absolute text-primary" style="bottom: 0; right: 0">
             <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
-              <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" fill="#086BAE" />
+              <path
+                d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"
+                fill="#086BAE" />
             </svg>
           </span>
           <input id="file-input" type="file" name="user_img" style="display: none" onchange="previewImage(this);" />
         </label>
       </div>
 
-      <button class="border-0 rounded-pill text-white px-3 py-1 mt-2 d-flex gap-2 align-items-center" style="background-color: #086bae">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16">
+      <button class="border-0 rounded-pill text-white px-3 py-1 mt-2 d-flex gap-2 align-items-center"
+        style="background-color: #086bae">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy"
+          viewBox="0 0 16 16">
           <path d="M11 2H9v3h2V2Z" />
-          <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0ZM1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5Zm3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4v4.5ZM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5V15Z" />
+          <path
+            d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0ZM1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5Zm3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4v4.5ZM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5V15Z" />
         </svg>
         Save Picture
       </button>
     </form>
 
-    <div class="d-flex flex-lg-row justify-content-between settings-page-main-section gap-5 gap-lg-2" style="flex-direction: column">
+    <div class="d-flex flex-lg-row justify-content-between settings-page-main-section gap-5 gap-lg-2"
+      style="flex-direction: column">
       <div class="col-6 pe-lg-4">
         <div>
           <h5 class="fw-bold mb-3">Personal information</h5>
@@ -56,15 +72,19 @@
           <form action="/personalInfo" method="POST">
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Name</label>
-              <input type="text" value="<%= info != undefined ? info[0].user_name : '' %>" name="name" class="form-control" id="exampleFormControlInput1" placeholder="Enter Your Name" />
+              <input type="text" value="<%= info != undefined ? info[0].user_name : '' %>" name="name"
+                class="form-control" id="exampleFormControlInput1" placeholder="Enter Your Name" />
             </div>
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Email address</label>
-              <input type="email" value="<%= info != undefined ? info[0].user_email : '' %>" name="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
+              <input type="email" value="<%= info != undefined ? info[0].user_email : '' %>" name="email"
+                class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
             </div>
             <div class="mb-3">
-              <label for="exampleFormControlInput1" class="form-label color8 fw-semibold required-label">Reference ID</label>
-              <input type="text" value="<%= info != undefined ? info[0].own_ref_id : '' %>" name="ref" class="form-control" id="exampleFormControlInput1" readonly />
+              <label for="exampleFormControlInput1" class="form-label color8 fw-semibold required-label">Reference
+                ID</label>
+              <input type="text" value="<%= info != undefined ? info[0].own_ref_id : '' %>" name="ref"
+                class="form-control" id="exampleFormControlInput1" readonly />
             </div>
             <button class="border-0 rounded-4 text-white px-3 py-1" style="background-color: #086bae">
               <i class="fa-solid fa-pen me-1" style="font-size: 10px"></i>
@@ -82,24 +102,33 @@
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Old Password</label>
               <div style="position:relative;">
-                <input type="password" class="form-control" name="oldpass" id="exampleFormControlInput1" placeholder="Old Password" />
-                <p class="password-show-btn" style="position:absolute; right:2%; top:50%; transform: translateY(-50%); cursor:pointer"><i class="bi bi-eye-fill"></i></p>
+                <input type="password" class="form-control" name="oldpass" id="exampleFormControlInput1"
+                  placeholder="Old Password" />
+                <p class="password-show-btn"
+                  style="position:absolute; right:2%; top:50%; transform: translateY(-50%); cursor:pointer"><i
+                    class="bi bi-eye-fill"></i></p>
               </div>
             </div>
 
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">New Password</label>
               <div style="position:relative;">
-                <input type="password" class="form-control" name="newpass" id="exampleFormControlInput1" placeholder="New Password" />
-                <p class="password-show-btn" style="position:absolute; right:2%; top:50%; transform: translateY(-50%); cursor:pointer"><i class="bi bi-eye-fill"></i></p>
+                <input type="password" class="form-control" name="newpass" id="exampleFormControlInput1"
+                  placeholder="New Password" />
+                <p class="password-show-btn"
+                  style="position:absolute; right:2%; top:50%; transform: translateY(-50%); cursor:pointer"><i
+                    class="bi bi-eye-fill"></i></p>
               </div>
             </div>
 
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Repeat New Password</label>
               <div style="position:relative;">
-                <input type="password" class="form-control" name="reppass" id="exampleFormControlInput1" placeholder="Repeat New Password" />
-                <p class="password-show-btn" style="position:absolute; right:2%; top:50%; transform: translateY(-50%); cursor:pointer"><i class="bi bi-eye-fill"></i></p>
+                <input type="password" class="form-control" name="reppass" id="exampleFormControlInput1"
+                  placeholder="Repeat New Password" />
+                <p class="password-show-btn"
+                  style="position:absolute; right:2%; top:50%; transform: translateY(-50%); cursor:pointer"><i
+                    class="bi bi-eye-fill"></i></p>
               </div>
             </div>
             <button class="border-0 rounded-4 text-white px-3 py-1" style="background-color: #086bae">
@@ -118,27 +147,37 @@
           <form action="/updateBankInfo" method="POST">
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Bank Name</label>
-              <input type="text" class="form-control" name="bankName" id="exampleFormControlInput1" value="<%= typeof banks == 'undefined' ? '' : banks.bank_name %>" placeholder="Enter Bank Name" required />
+              <input type="text" class="form-control" name="bankName" id="exampleFormControlInput1"
+                value="<%= typeof banks == 'undefined' ? '' : banks.bank_name %>" placeholder="Enter Bank Name"
+                required />
             </div>
 
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Account Name</label>
-              <input type="text" class="form-control" name="accName" id="exampleFormControlInput1" value="<%= typeof banks == 'undefined' ? '' : banks.account_name %>" placeholder="Enter Account Name" required />
+              <input type="text" class="form-control" name="accName" id="exampleFormControlInput1"
+                value="<%= typeof banks == 'undefined' ? '' : banks.account_name %>" placeholder="Enter Account Name"
+                required />
             </div>
 
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Branch Name</label>
-              <input type="text" class="form-control" name="branchName" id="exampleFormControlInput1" value="<%= typeof banks == 'undefined' ? '' : banks.branch_name %>" placeholder="Enter Bank Branch Name" required />
+              <input type="text" class="form-control" name="branchName" id="exampleFormControlInput1"
+                value="<%= typeof banks == 'undefined' ? '' : banks.branch_name %>" placeholder="Enter Bank Branch Name"
+                required />
             </div>
 
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Account number</label>
-              <input type="number" class="form-control" name="accountNumber" id="exampleFormControlInput1" value="<%= typeof banks == 'undefined' ? '' : banks.account_number %>" placeholder="37XXXXXXXXX" required />
+              <input type="number" class="form-control" name="accountNumber" id="exampleFormControlInput1"
+                value="<%= typeof banks == 'undefined' ? '' : banks.account_number %>" placeholder="37XXXXXXXXX"
+                required />
             </div>
 
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Routing number</label>
-              <input type="number" class="form-control" name="routingNumber" id="exampleFormControlInput1" value="<%= typeof banks == 'undefined' ? '' : banks.routing_number %>" placeholder="09XXXXXXXXX" required />
+              <input type="number" class="form-control" name="routingNumber" id="exampleFormControlInput1"
+                value="<%= typeof banks == 'undefined' ? '' : banks.routing_number %>" placeholder="09XXXXXXXXX"
+                required />
             </div>
             <button class="border-0 rounded-4 text-white px-3 py-1" style="background-color: #086bae">
               <i class="fa-solid fa-pen me-1" style="font-size: 10px"></i>
@@ -177,7 +216,8 @@
 
         <!-- Email OTP Modal -->
         <form action="/personalInfoOTPApi" method="POST">
-          <div class="modal fade" id="emailOtpModal" tabindex="-1" aria-labelledby="emailOtpModalLabel" aria-hidden="true">
+          <div class="modal fade" id="emailOtpModal" tabindex="-1" aria-labelledby="emailOtpModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -217,17 +257,24 @@
               </label>
               <% for ( var i=0; i < shop.length; i++) { %> <% if
 						((i+1)==info[0].shop_type) { %>
-              <input type="text" value="<%= shop[i].type_name %>" class="form-control" id="exampleFormControlInput1" readonly />
+              <input type="text" value="<%= shop[i].type_name %>" class="form-control" id="exampleFormControlInput1"
+                readonly />
               <% } %> <% } %>
             </div>
 
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Shop Name</label>
-              <input type="text" name="shop_name" class="form-control" value="<%= info != undefined ? info[0].shop_name : '' %>" id="exampleFormControlInput1" placeholder="Enter your shop name" />
+              <input type="text" name="shop_name" class="form-control"
+                value="<%= info != undefined ? info[0].shop_name : '' %>" id="exampleFormControlInput1"
+                placeholder="Enter your shop name" />
             </div>
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">Shop Custom URL</label>
-              <input type="text" name="shop_custom_url" class="form-control" value="<%= info != undefined ? info[0].shop_custom_url : '' %>" id="exampleFormControlInput1" pattern="[A-Za-z0-9]+" oninvalid="setCustomValidity('Please enter only alphanumeric characters [A-Z, a-z, 0-9]')" onchange="try{setCustomValidity('')}catch(e){}" placeholder="Enter your shop custom URL" required />
+              <input type="text" name="shop_custom_url" class="form-control"
+                value="<%= info != undefined ? info[0].shop_custom_url : '' %>" id="exampleFormControlInput1"
+                pattern="[A-Za-z0-9]+"
+                oninvalid="setCustomValidity('Please enter only alphanumeric characters [A-Z, a-z, 0-9]')"
+                onchange="try{setCustomValidity('')}catch(e){}" placeholder="Enter your shop custom URL" required />
             </div>
             <button class="border-0 rounded-4 text-white px-3 py-1 mb-5" style="background-color: #086bae">
               <i class="fa-solid fa-pen me-1" style="font-size: 10px"></i>
@@ -240,13 +287,16 @@
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold required-label">
                 Shop Phone Number
               </label>
-              <input type="text" name="shop_number" value="<%= info != undefined ? info[0].shop_number || info[0].phone : '' %>" class="form-control" id="exampleFormControlInput1" placeholder="Shop Phone Number" readonly />
+              <input type="text" name="shop_number"
+                value="<%= info != undefined ? info[0].shop_number || info[0].phone : '' %>" class="form-control"
+                id="exampleFormControlInput1" placeholder="Shop Phone Number" readonly />
             </div>
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label color8 fw-semibold">
                 Shop Location
               </label>
-              <input type="text" value="<%= info[0].shop_location_lt %>, <%= info[0].shop_location_long %>" class="form-control" id="shopLocation" placeholder="" readonly />
+              <input type="text" value="<%= info[0].shop_location_lt %>, <%= info[0].shop_location_long %>"
+                class="form-control" id="shopLocation" placeholder="" readonly />
             </div>
           </form>
         </div>
@@ -266,7 +316,8 @@
               <input type="text" id="longitude" name="longitude" placeholder="longitude" required readonly hidden />
             </div>
           </div>
-          <button type="button" class="border-0 rounded-4 text-white my-2 px-3 py-2" onclick="upStoreLoc()" style="background-color: #d82929">
+          <button type="button" class="border-0 rounded-4 text-white my-2 px-3 py-2" onclick="upStoreLoc()"
+            style="background-color: #d82929">
             Update Shop Location
           </button>
         </form>
@@ -381,7 +432,7 @@
   }
 
   // get from user db
-  window.onload = function() {
+  window.onload = function () {
     // const shopLocationData = getCookie("location");
     const shopLocationData = document.getElementById('shopLocation');
     const shopLocationValue = shopLocationData.value.split(',');
@@ -393,9 +444,9 @@
       Number(shopLocationValue[1])
     ) {
       getCurrentLocationName(
-          Number(shopLocationValue[0]),
-          Number(shopLocationValue[1])
-        )
+        Number(shopLocationValue[0]),
+        Number(shopLocationValue[1])
+      )
         .then((locationName) => {
           setInputValue('shopLocation', locationName);
         })
@@ -419,7 +470,7 @@
     if (fileInput.files && fileInput.files[0]) {
       var reader = new FileReader();
 
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         imageContainer.find('#pp').attr('src', e.target.result);
         imageContainer.find('#pp').addClass('rounded-circle');
       };
@@ -430,13 +481,13 @@
 </script>
 
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     if (window.location.hash === '#bankOtp') {
       $('#otpModal').modal('show');
     }
   });
 
-  $(document).ready(function() {
+  $(document).ready(function () {
     if (window.location.hash === '#emailOtp') {
       $('#emailOtpModal').modal('show');
     }

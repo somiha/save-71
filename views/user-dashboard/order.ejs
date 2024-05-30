@@ -43,7 +43,8 @@
       <div class="row">
         <div class="col-sm-3 text-start">
           <div class="input-group mb-3">
-            <input id="search_text" type="text" class="form-control w-10" placeholder="Search Order ID" aria-label="Search">
+            <input id="search_text" type="text" class="form-control w-10" placeholder="Search Order ID"
+              aria-label="Search">
           </div>
         </div>
         <div class="col-sm-6 text-start">
@@ -60,23 +61,33 @@
       </div>
 
       <div class="d-flex gap-2 fs-6 products-tab " id="nav-tab" role="tablist">
-        <a class="nav-link active btn p-2 px-3" id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#review-order" type="button">
+        <a class="nav-link active btn p-2 px-3" id="nav-description-tab" data-bs-toggle="tab"
+          data-bs-target="#review-order" type="button">
           Review Order (<%= review %>)
         </a>
-        <a class="nav-link btn p-2 px-3" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#new-order" type="button">
+        <a class="nav-link btn p-2 px-3" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#new-order"
+          type="button">
           New Order (<%= orderCount[2]  %>) </br> [<%= (totalPrice[2] * currRate).toFixed(2) %> <%= currencyCode  %> ]
         </a>
-        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#accept-order" type="button">
-          Shipped Order (<%= orderCount[3]  %>) </br> [<%= (totalPrice[3] * currRate).toFixed(2) %> <%= currencyCode  %> ]
+        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#accept-order"
+          type="button">
+          Shipped Order (<%= orderCount[3]  %>) </br> [<%= (totalPrice[3] * currRate).toFixed(2) %> <%= currencyCode  %>
+          ]
         </a>
-        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#confirmed-order" type="button">
-          Completed Order (<%= orderCount[0]  %>) </br> [<%= (totalPrice[0] * currRate).toFixed(2) %> <%= currencyCode  %> ]
+        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#confirmed-order"
+          type="button">
+          Completed Order (<%= orderCount[0]  %>) </br> [<%= (totalPrice[0] * currRate).toFixed(2) %>
+          <%= currencyCode  %> ]
         </a>
-        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#rejected-order" type="button">
-          Rejected Order (<%= orderCount[1]  %>) </br> [<%= (totalPrice[1] * currRate).toFixed(2) %> <%= currencyCode  %> ]
+        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#rejected-order"
+          type="button">
+          Rejected Order (<%= orderCount[1]  %>) </br> [<%= (totalPrice[1] * currRate).toFixed(2) %>
+          <%= currencyCode  %> ]
         </a>
-        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#returned-order" type="button">
-          Returned Order (<%= orderCount[4]  %>) </br> [<%= (totalPrice[4] * currRate).toFixed(2) %> <%= currencyCode  %> ]
+        <a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab" data-bs-target="#returned-order"
+          type="button">
+          Returned Order (<%= orderCount[4]  %>) </br> [<%= (totalPrice[4] * currRate).toFixed(2) %>
+          <%= currencyCode  %> ]
         </a>
       </div>
 
@@ -84,12 +95,148 @@
     <div class="tab-content w-100 px-5" id="nav-tabContent">
       <!-- review order -->
       <div class="tab-pane fade show active  rounded-3" id="review-order" role="tabpanel" tabindex="0">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-wrap" style="overflow-x: auto;">
+              <table class="table table-responsive">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col"><label class="checkbox-wrap checkbox-primary m-2">
+                        <input type="checkbox" class="selectAll1">
+                        <span class="checkmark"></span>
+                      </label></th> -->
+                    <th scope="col">Order</th>
+
+                    <th scope="col">Placed Date</th>
+                    <th scope="col">Delivey Date</th>
+
+                    <th scope="col">Shop Name</th>
+                    <th scope="col">Shop Contact Number</th>
+                    <th scope="col" hidden>Total Price</th>
+
+                    <th scope="col">Total Order Price</th>
+                    <th scope="col">Delivery Charge</th>
+                    <!-- <th scope="col">Status</th> -->
+
+                    <th scope="col" hidden>product name</th>
+                    <th scope="col">Action</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <% for (var i=0; i < order.length; i++) { %>
+                  <% if (order[i].in_cart == 0) { %>
+                  <% var oID=0 %>
+                  <% if (order[i].request_review==1 && order[i].order_status==3) { %>
+                  <tr>
+
+                    <!-- <td style="vertical-align: middle;">
+                      <label class="checkbox-wrap checkbox-primary m-2">
+                        <input type="checkbox" class="orderCheckbox1">
+                        <span class="checkmark"></span>
+                      </label>
+                    </td> -->
+                    <td style="vertical-align: middle;">
+                      <%= order[i].order_id %>
+                    </td>
+
+                    <td style="vertical-align: middle;">
+                      <%= order[i].placed_date.toISOString().split('T')[0] %></td>
+                    <td style="vertical-align: middle;">
+                      <%= order[i].delivery_date.toISOString().split('T')[0] %></td>
+                    <!-- <td style="vertical-align: middle;">
+                      <% for (var j=0; j < orderDetails.length; j++) { %>
+                      <% if (orderDetails[j].order_id==order[i].order_id) { %>
+                      <% if (orderDetails[j].stock_out==1) {
+                                                                          %>
+                      <span class="badge rounded-pill text-bg-danger">Stock
+                        Out</span>
+                      <% } else { %>
+                      <span class="badge rounded-pill text-bg-success">Available</span>
+                      <% } %>
+            </div>
+            <% } %>
+            <% } %>
+            </td> -->
+                    <td style="vertical-align: middle;">
+
+                      <%= order[i].shop_name %>
+
+
+                    </td>
+                    <td style="vertical-align: middle;">
+
+                      <%= order[i].shop_number %>
+
+
+                    </td>
+
+                    <td style="vertical-align: middle;" hidden>
+                      <% var total_price= 0 %>
+                      <% var current_order_details = orderDetails.filter(detail => detail.order_id === order[i].order_id) %>
+                      <% for (var j=0; j < current_order_details.length; j++) { %>
+                      <% if (current_order_details[j].stock_out==0) { %>
+                      <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                      <% } %>
+                      <% } %>
+                      <p><%= total_price %></p>
+                    </td>
+
+                    <td style="vertical-align: middle;">
+                      <%= (parseFloat(total_price) ).toFixed(2) %>
+                    </td>
+                    <td style="vertical-align: middle;">
+                      <% deliveryCharge = (parseFloat(order[i].deliveryCharge) * currRate).toFixed(2) %>
+                      <p>
+                        <%= deliveryCharge %>
+                      </p>
+                    </td>
+                    <!-- <td style="vertical-align: middle;" data-status="<%= order[i].is_paid %>""><% if (order[i].is_paid==0) { %>
+                                  <span class=" badge rounded-pill"
+                      style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                      <% } else if (order[i].is_paid==1) { %>
+                      <span class="badge rounded-pill"
+                        style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                      <% } else if (order[i].is_paid==2) { %>
+                      <abbr title="Cash On Delivery" class="badge rounded-pill"
+                        style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                      <% } %>
+                      <% if (order[i].seller_confirm == 0) { %>
+                      <span class="badge rounded-pill"
+                        style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                      <% } %>
+                    </td> -->
+                    <td hidden>
+                      <% for (var j=0; j < orderDetails.length; j++) { %>
+                      <% if (orderDetails[j].order_id==order[i].order_id) { %>
+
+                      <%= orderDetails[j].product_name %> x<%= orderDetails[j].product_quantity %>
+                      <% } %>
+                      <% } %>
+                    </td>
+                    <td style="vertical-align: middle;"><a href="/purchase_details/<%= order[i].order_id %>"
+                        class="btn border fw-semibold view-eye-btn">
+                        <i class="bi bi-eye"></i>
+
+                      </a></td>
+
+                  </tr>
+                  <% } %>
+                  <% } %>
+                  <% } %>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         <div class="mt-5">
           <!-- Start of Single Order -->
-          <% for (var j=0; j < order.length; j++) { %>
+          <!-- <% for (var j=0; j < order.length; j++) { %>
           <% if (order[j].request_review==1 && order[j].order_status==3) { %>
           <div class="w-100 mb-4 order">
-            <!-- Order Date & delivery date section -->
+
             <div class="w-100 text-secondary d-flex flex-column flex-lg-row fs-6">
               <p id="order_id" class="border-lg-end border-secondary pe-5">
                 Order ID: <%= order[j].order_id %>
@@ -114,49 +261,53 @@
               <p class="ps-lg-5">Seller Contact : <%= (order[j].shop_number) %>
               </p>
             </div>
-            <!-- Order details section -->
 
-            <div class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
+
+            <div
+              class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
               <div class="d-flex flex-column gap-2">
-                <!-- Single Product -->
+
                 <% for (var i=0; i < orderDetails.length; i++) { %>
-                  <% if (orderDetails[i].order_id==order[j].order_id) { %>
-                  <div class="d-flex gap-2 align-items-start">
-                    <% for (var k=0; k < image.length; k++) { %>
-                      <% if (image[k].product_id==orderDetails[i].product_id) { %>
-                        <img src="<%= image[k].product_image_url %>" style="width: 4rem" />
-                      <% } %>
-                    <% } %>
-                    <div class="d-flex-flex-column">
-                      <a class="text-black" href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
-                        <p class="m-0">
-                          <%= orderDetails[i].product_name %>
-                        </p>
-                      </a>
-                      <p>x<%= orderDetails[i].product_quantity %>
-                      </p>
-                    </div>
-                    <% if (orderDetails[i].stock_out==1) {
-                                            %>
-                    <span class="badge rounded-pill text-bg-danger">Stock
-                      Out</span>
-                    <% } else { %>
-                    <span class="badge rounded-pill text-bg-success">Available</span>
-                    <% } %>
-                  </div>
+                <% if (orderDetails[i].order_id==order[j].order_id) { %>
+                <div class="d-flex gap-2 align-items-start">
+                  <% for (var k=0; k < image.length; k++) { %>
+                  <% if (image[k].product_id==orderDetails[i].product_id) { %>
+                  <img src="<%= image[k].product_image_url %>" style="width: 4rem" />
                   <% } %>
+                  <% } %>
+                  <div class="d-flex-flex-column">
+                    <a class="text-black"
+                      href="/product-details/<%= orderDetails[i]?.product_name %>/<%= encodeURIComponent(orderDetails[i].product_id) %>">
+                      <p class="m-0">
+                        <%= orderDetails[i].product_name %>
+                      </p>
+                    </a>
+                    <p>x<%= orderDetails[i].product_quantity %>
+                    </p>
+                  </div>
+                  <% if (orderDetails[i].stock_out==1) {
+                                            %>
+                  <span class="badge rounded-pill text-bg-danger">Stock
+                    Out</span>
+                  <% } else { %>
+                  <span class="badge rounded-pill text-bg-success">Available</span>
+                  <% } %>
+                </div>
                 <% } %>
-                <!-- Single Product -->
+                <% } %> -->
+          <!-- Single Product -->
 
 
-              </div>
+          <!-- </div>
               <% if (order[j].seller_confirm==1) { %>
               <div class="d-flex gap-2">
-                <a href="/user_delOrder/<%= order[j].order_id %>" class="btn btn-outline-danger d-flex align-items-center gap-2">
+                <a href="/user_delOrder/<%= order[j].order_id %>"
+                  class="btn btn-outline-danger d-flex align-items-center gap-2">
                   Cancel Order
                   <i class="bi bi-trash"></i>
                 </a>
-                <a href="/user_acceptOrder/<%= order[j].order_id %>" class="btn btn-outline-success d-flex align-items-center gap-2">
+                <a href="/user_acceptOrder/<%= order[j].order_id %>"
+                  class="btn btn-outline-success d-flex align-items-center gap-2">
                   Accept Order
                   <i class="bi bi-cart-check"></i>
                 </a>
@@ -165,7 +316,7 @@
             </div>
           </div>
           <% } %>
-          <% } %>
+          <% } %> -->
           <!-- Ending of Single Order -->
         </div>
       </div>
@@ -175,12 +326,123 @@
       <div class="tab-pane fade" id="new-order" role="tabpanel" tabindex="0">
         <div class="mt-5 ">
 
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
 
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Shop Name</th>
+                      <th scope="col">Shop Contact Number</th>
+                      <th scope="col" hidden>Total Price</th>
+
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Delivery Charge</th>
+                      <!-- <th scope="col">Status</th> -->
+
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < order.length; i++) { %>
+                    <!-- <% if (order[i].in_cart == 0) { %>
+                    <% var oID=0 %> -->
+                    <% if (order[i].order_status==3 && order[i].in_cart == 0 && order[i].request_review==0 && orderCount[2]) { %>
+                    <tr>
+
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= order[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_name %>
+
+
+                      </td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_number %>
+
+
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = orderDetails.filter(detail => detail.order_id === order[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) ).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <% deliveryCharge = (parseFloat(order[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <!-- <td style="vertical-align: middle;" data-status="<%= order[i].is_paid %>""><% if (order[i].is_paid==0) { %>
+                                                      <span class=" badge rounded-pill"
+                                          style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                                          <% } else if (order[i].is_paid==1) { %>
+                                          <span class="badge rounded-pill"
+                                            style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                                          <% } else if (order[i].is_paid==2) { %>
+                                          <abbr title="Cash On Delivery" class="badge rounded-pill"
+                                            style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                                          <% } %>
+                                          <% if (order[i].seller_confirm == 0) { %>
+                                          <span class="badge rounded-pill"
+                                            style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                                          <% } %>
+                                        </td> -->
+                      <td hidden>
+                        <% for (var j=0; j < orderDetails.length; j++) { %>
+                        <% if (orderDetails[j].order_id==order[i].order_id) { %>
+
+                        <%= orderDetails[j].product_name %> x<%= orderDetails[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/purchase_details/<%= order[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <!-- <% } %> -->
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           <!-- Start of Single Order -->
-          <% for (var i=0; i < order.length; i++) { %>
+          <!-- <% for (var i=0; i < order.length; i++) { %>
           <% if (order[i].order_status==3 && order[i].in_cart == 0 && order[i].request_review==0 && orderCount[2]) { %>
           <div class="w-100 mb-4 order">
-            <!-- Order Date & delivery date section -->
+
             <div class="w-100 text-secondary d-flex flex-column flex-lg-row fs-6">
               <p id="order_id" class="border-lg-end border-secondary pe-5">
                 Order ID: <%= order[i].order_id %>
@@ -201,10 +463,11 @@
                 <%= currencyCode %>
               </p>
             </div>
-            <!-- Order details section -->
-            <div class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
+        
+            <div
+              class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
               <div class="d-flex flex-column gap-2">
-                <!-- Single Product -->
+            
                 <% for (var j=0; j < orderDetails.length; j++) { %>
                 <% if (orderDetails[j].order_id==order[i].order_id) { %>
                 <div class="d-flex gap-2 align-items-start">
@@ -216,7 +479,8 @@
                   <% } %>
                   <% } %>
                   <div class="d-flex-flex-column">
-                    <a class="text-black" href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
+                    <a class="text-black"
+                      href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
                       <p class="m-0">
                         <%= orderDetails[j].product_name
                                                 %>
@@ -229,22 +493,22 @@
                 </div>
                 <% } %>
                 <% } %>
-                <!-- Single Product -->
+          
 
 
               </div>
-              <!-- <div class="d-flex gap-2">
+              <div class="d-flex gap-2">
               <button
                 class="btn btn-outline-primary d-flex align-items-center gap-2"
               >
                 View Order
                 <i class="bi bi-eye"></i>
               </button>
-            </div> -->
+            </div>
             </div>
           </div>
           <% } %>
-          <% } %>
+          <% } %> -->
           <!-- Ending of Single Order -->
         </div>
 
@@ -257,12 +521,123 @@
       <div class="tab-pane fade" id="accept-order" role="tabpanel" tabindex="0">
         <div class="mt-5">
 
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
 
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Shop Name</th>
+                      <th scope="col">Shop Contact Number</th>
+                      <th scope="col" hidden>Total Price</th>
+
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Delivery Charge</th>
+                      <!-- <th scope="col">Status</th> -->
+
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < order.length; i++) { %>
+                    <!-- <% if (order[i].in_cart == 0) { %>
+                    <% var oID=0 %> -->
+                    <% if (order[i].order_status==4 && order[i].request_review==0) { %>
+                    <tr>
+
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= order[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_name %>
+
+
+                      </td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_number %>
+
+
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = orderDetails.filter(detail => detail.order_id === order[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) ).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <% deliveryCharge = (parseFloat(order[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <!-- <td style="vertical-align: middle;" data-status="<%= order[i].is_paid %>""><% if (order[i].is_paid==0) { %>
+                                                      <span class=" badge rounded-pill"
+                                          style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                                          <% } else if (order[i].is_paid==1) { %>
+                                          <span class="badge rounded-pill"
+                                            style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                                          <% } else if (order[i].is_paid==2) { %>
+                                          <abbr title="Cash On Delivery" class="badge rounded-pill"
+                                            style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                                          <% } %>
+                                          <% if (order[i].seller_confirm == 0) { %>
+                                          <span class="badge rounded-pill"
+                                            style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                                          <% } %>
+                                        </td> -->
+                      <td hidden>
+                        <% for (var j=0; j < orderDetails.length; j++) { %>
+                        <% if (orderDetails[j].order_id==order[i].order_id) { %>
+
+                        <%= orderDetails[j].product_name %> x<%= orderDetails[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/purchase_details/<%= order[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <!-- <% } %> -->
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           <!-- Start of Single Order -->
-          <% for (var i=0; i < order.length; i++) { %>
+          <!-- <% for (var i=0; i < order.length; i++) { %>
           <% if (order[i].order_status==4 && order[i].request_review==0) { %>
           <div class="w-100 mb-4 order">
-            <!-- Order Date & delivery date section -->
+
             <div class="w-100 text-secondary d-flex flex-column flex-lg-row fs-6">
               <p id="order_id" class="border-lg-end border-secondary pe-5">
                 Order ID: <%= order[i].order_id %>
@@ -283,35 +658,40 @@
                 <%= currencyCode %>
               </p>
             </div>
-            <!-- Order details section -->
-            <div class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
+         
+            <div
+              class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
               <div class="d-flex flex-column gap-2">
-                <!-- Single Product -->
+          
                 <% for (var j=0; j < orderDetails.length; j++) { %>
-                  <% if (orderDetails[j].order_id==order[i].order_id) { %>
-                  <div class="d-flex gap-2 align-items-start">
-                    <% for (var k=0; k < image.length; k++) { %>
-                      <% if (image[k].product_id==orderDetails[j].product_id) { %>
-                        <img src="<%= image[k].product_image_url %>" style="width: 4rem" />
-                      <% } %>
-                    <% } %>
-                    <div class="d-flex-flex-column">
-                      <a class="text-black" href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
-                        <p class="m-0">
-                          <%= orderDetails[j].product_name %>
-                        </p>
-                      </a>
-                      <p>
-                        <form method="POST" action="/updateOrder/<%= orderDetails[j].order_details_id %>/<%= orderDetails[j].product_cat_id %>/0">
-                          x &nbsp; <input type="number" min="0" class="color1" name="update_quantity" style="width: 30px; text-align: center;" value="<%= orderDetails[j].product_quantity %>">
-                          <button title="update quantity" type="submit" class="btn btn-outline-primary"><i class="bi bi-arrow-repeat"></i></button>
-                        </form>
-                      </p>
-                    </div>
-                  </div>
+                <% if (orderDetails[j].order_id==order[i].order_id) { %>
+                <div class="d-flex gap-2 align-items-start">
+                  <% for (var k=0; k < image.length; k++) { %>
+                  <% if (image[k].product_id==orderDetails[j].product_id) { %>
+                  <img src="<%= image[k].product_image_url %>" style="width: 4rem" />
                   <% } %>
+                  <% } %>
+                  <div class="d-flex-flex-column">
+                    <a class="text-black"
+                      href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
+                      <p class="m-0">
+                        <%= orderDetails[j].product_name %>
+                      </p>
+                    </a>
+                    <p>
+                    <form method="POST"
+                      action="/updateOrder/<%= orderDetails[j].order_details_id %>/<%= orderDetails[j].product_cat_id %>/0">
+                      x &nbsp; <input type="number" min="0" class="color1" name="update_quantity"
+                        style="width: 30px; text-align: center;" value="<%= orderDetails[j].product_quantity %>">
+                      <button title="update quantity" type="submit" class="btn btn-outline-primary"><i
+                          class="bi bi-arrow-repeat"></i></button>
+                    </form>
+                    </p>
+                  </div>
+                </div>
                 <% } %>
-                <!-- Single Product -->
+                <% } %>
+   
               </div>
               <div id="divForReturn_<%= order[i].order_id %>">
                 <a id="returnOrderBtn_<%= order[i].order_id %>" data-index="<%= order[i].order_id %>">
@@ -324,8 +704,8 @@
             </div>
           </div>
           <% } %>
-          <% } %>
-          <!-- Ending of Single Order -->
+          <% } %> -->
+
         </div>
 
       </div>
@@ -336,12 +716,123 @@
       <div class="tab-pane fade" id="confirmed-order" role="tabpanel" tabindex="0">
         <div class="mt-5">
 
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
 
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Shop Name</th>
+                      <th scope="col">Shop Contact Number</th>
+                      <th scope="col" hidden>Total Price</th>
+
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Delivery Charge</th>
+                      <!-- <th scope="col">Status</th> -->
+
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < order.length; i++) { %>
+                    <!-- <% if (order[i].in_cart == 0) { %>
+                    <% var oID=0 %> -->
+                    <% if (order[i].order_status==1 && order[i].request_review==0 && orderCount[0]) { %>
+                    <tr>
+
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= order[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_name %>
+
+
+                      </td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_number %>
+
+
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = orderDetails.filter(detail => detail.order_id === order[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) ).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <% deliveryCharge = (parseFloat(order[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <!-- <td style="vertical-align: middle;" data-status="<%= order[i].is_paid %>""><% if (order[i].is_paid==0) { %>
+                                                      <span class=" badge rounded-pill"
+                                          style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                                          <% } else if (order[i].is_paid==1) { %>
+                                          <span class="badge rounded-pill"
+                                            style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                                          <% } else if (order[i].is_paid==2) { %>
+                                          <abbr title="Cash On Delivery" class="badge rounded-pill"
+                                            style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                                          <% } %>
+                                          <% if (order[i].seller_confirm == 0) { %>
+                                          <span class="badge rounded-pill"
+                                            style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                                          <% } %>
+                                        </td> -->
+                      <td hidden>
+                        <% for (var j=0; j < orderDetails.length; j++) { %>
+                        <% if (orderDetails[j].order_id==order[i].order_id) { %>
+
+                        <%= orderDetails[j].product_name %> x<%= orderDetails[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/purchase_details/<%= order[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <!-- <% } %> -->
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           <!-- Start of Single Order -->
-          <% for (var i=0; i < order.length; i++) { %>
+          <!-- <% for (var i=0; i < order.length; i++) { %>
           <% if (order[i].order_status==1 && order[i].request_review==0) { %>
           <div class="w-100 mb-4 order">
-            <!-- Order Date & delivery date section -->
+   
             <div class="w-100 text-secondary d-flex flex-column flex-lg-row fs-6">
               <p id="order_id" class="border-lg-end border-secondary pe-5">
                 Order ID: <%= order[i].order_id %>
@@ -362,10 +853,11 @@
                 <%= currencyCode %>
               </p>
             </div>
-            <!-- Order details section -->
-            <div class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
+  
+            <div
+              class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
               <div class="d-flex flex-column gap-2">
-                <!-- Single Product -->
+       
                 <% for (var j=0; j < orderDetails.length; j++) { %>
                 <% if (orderDetails[j].order_id==order[i].order_id) { %>
                 <div class="d-flex gap-2 align-items-start">
@@ -377,7 +869,8 @@
                   <% } %>
                   <% } %>
                   <div class="d-flex-flex-column">
-                    <a class="text-black" href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
+                    <a class="text-black"
+                      href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
                       <p class="m-0">
                         <%= orderDetails[j].product_name
                                               %>
@@ -390,14 +883,14 @@
                 </div>
                 <% } %>
                 <% } %>
-                <!-- Single Product -->
+             
 
 
               </div>
             </div>
           </div>
           <% } %>
-          <% } %>
+          <% } %> -->
           <!-- Ending of Single Order -->
         </div>
 
@@ -406,11 +899,123 @@
       <!-- rejected-order -->
       <div class="tab-pane fade" id="rejected-order" role="tabpanel" tabindex="0">
         <div class="mt-5">
-          <!-- Start of Single Order -->
-          <% for (var i=0; i < order.length; i++) { %>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
+
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Shop Name</th>
+                      <th scope="col">Shop Contact Number</th>
+                      <th scope="col" hidden>Total Price</th>
+
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Delivery Charge</th>
+                      <!-- <th scope="col">Status</th> -->
+
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < order.length; i++) { %>
+                    <!-- <% if (order[i].in_cart == 0) { %>
+                                        <% var oID=0 %> -->
+                    <% if (order[i].order_status==2 && order[i].request_review==0 && orderCount[1]) { %>
+                    <tr>
+
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= order[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_name %>
+
+
+                      </td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_number %>
+
+
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = orderDetails.filter(detail => detail.order_id === order[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) ).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <% deliveryCharge = (parseFloat(order[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <!-- <td style="vertical-align: middle;" data-status="<%= order[i].is_paid %>""><% if (order[i].is_paid==0) { %>
+                                                                          <span class=" badge rounded-pill"
+                                                              style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                                                              <% } else if (order[i].is_paid==1) { %>
+                                                              <span class="badge rounded-pill"
+                                                                style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                                                              <% } else if (order[i].is_paid==2) { %>
+                                                              <abbr title="Cash On Delivery" class="badge rounded-pill"
+                                                                style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                                                              <% } %>
+                                                              <% if (order[i].seller_confirm == 0) { %>
+                                                              <span class="badge rounded-pill"
+                                                                style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                                                              <% } %>
+                                                            </td> -->
+                      <td hidden>
+                        <% for (var j=0; j < orderDetails.length; j++) { %>
+                        <% if (orderDetails[j].order_id==order[i].order_id) { %>
+
+                        <%= orderDetails[j].product_name %> x<%= orderDetails[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/purchase_details/<%= order[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <!-- <% } %> -->
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- <% for (var i=0; i < order.length; i++) { %>
           <% if (order[i].order_status==2 && order[i].request_review==0) { %>
           <div class="w-100 mb-4 order">
-            <!-- Order Date & delivery date section -->
+     
             <div class="w-100 text-secondary d-flex flex-column flex-lg-row fs-6">
               <p id="order_id" class="border-lg-end border-secondary pe-5">
                 Order ID: <%= order[i].order_id %>
@@ -431,10 +1036,11 @@
                 <%= currencyCode %>
               </p>
             </div>
-            <!-- Order details section -->
-            <div class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
+
+            <div
+              class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
               <div class="d-flex flex-column gap-2">
-                <!-- Single Product -->
+
                 <% for (var j=0; j < orderDetails.length; j++) { %>
                 <% if (orderDetails[j].order_id==order[i].order_id) { %>
                 <div class="d-flex gap-2 align-items-start">
@@ -446,7 +1052,8 @@
                   <% } %>
                   <% } %>
                   <div class="d-flex-flex-column">
-                    <a class="text-black" href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
+                    <a class="text-black"
+                      href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
                       <p class="m-0">
                         <%= orderDetails[j].product_name
                                               %>
@@ -459,14 +1066,14 @@
                 </div>
                 <% } %>
                 <% } %>
-                <!-- Single Product -->
+    
 
 
               </div>
             </div>
           </div>
           <% } %>
-          <% } %>
+          <% } %> -->
           <!-- Ending of Single Order -->
         </div>
 
@@ -475,11 +1082,124 @@
       <!-- returned-order -->
       <div class="tab-pane fade" id="returned-order" role="tabpanel" tabindex="0">
         <div class="mt-5">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-wrap" style="overflow-x: auto;">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
+
+                      <th scope="col">Order</th>
+                      <th scope="col">Placed Date</th>
+                      <th scope="col">Delivey Date</th>
+                      <th scope="col">Shop Name</th>
+                      <th scope="col">Shop Contact Number</th>
+                      <th scope="col" hidden>Total Price</th>
+
+                      <th scope="col">Total Order Price</th>
+                      <th scope="col">Delivery Charge</th>
+                      <!-- <th scope="col">Status</th> -->
+
+                      <th scope="col" hidden>product name</th>
+                      <th scope="col">Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for (var i=0; i < order.length; i++) { %>
+                    <!-- <% if (order[i].in_cart == 0) { %>
+                              <% var oID=0 %> -->
+                    <% if (order[i].order_status==5 && order[i].request_review==0) { %>
+                    <tr>
+
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].order_id %>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= order[i].placed_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+                        <%= order[i].delivery_date.toISOString().split('T')[0] %></td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_name %>
+
+
+                      </td>
+                      <td style="vertical-align: middle;">
+
+                        <%= order[i].shop_number %>
+
+
+                      </td>
+
+                      <td style="vertical-align: middle;" hidden>
+                        <% var total_price= 0 %>
+                        <% var current_order_details = orderDetails.filter(detail => detail.order_id === order[i].order_id) %>
+                        <% for (var j=0; j < current_order_details.length; j++) { %>
+                        <% if (current_order_details[j].stock_out==0) { %>
+                        <% total_price= ((parseFloat(total_price) + parseFloat(current_order_details[j].product_price) * parseFloat(current_order_details[j].product_quantity)  * currRate)).toFixed(2) %>
+                        <% } %>
+                        <% } %>
+                        <p><%= total_price %></p>
+                      </td>
+
+                      <td style="vertical-align: middle;">
+                        <%= (parseFloat(total_price) ).toFixed(2) %>
+                      </td>
+                      <td style="vertical-align: middle;">
+                        <% deliveryCharge = (parseFloat(order[i].deliveryCharge) * currRate).toFixed(2) %>
+                        <p>
+                          <%= deliveryCharge %>
+                        </p>
+                      </td>
+                      <!-- <td style="vertical-align: middle;" data-status="<%= order[i].is_paid %>""><% if (order[i].is_paid==0) { %>
+                                                                <span class=" badge rounded-pill"
+                                                    style="background-color: rgb(249, 181, 181); color: rgb(170, 29, 29);">Unpaid</span>
+                                                    <% } else if (order[i].is_paid==1) { %>
+                                                    <span class="badge rounded-pill"
+                                                      style="background-color: rgb(169, 241, 217); color: darkgreen;">Paid</span>
+                                                    <% } else if (order[i].is_paid==2) { %>
+                                                    <abbr title="Cash On Delivery" class="badge rounded-pill"
+                                                      style="background-color: rgb(185, 169, 241); color: rgb(31, 13, 224);">COD</abbr>
+                                                    <% } %>
+                                                    <% if (order[i].seller_confirm == 0) { %>
+                                                    <span class="badge rounded-pill"
+                                                      style="background-color:bisque; color:rgb(138, 101, 5)">Unchecked</span>
+                                                    <% } %>
+                                                  </td> -->
+                      <td hidden>
+                        <% for (var j=0; j < orderDetails.length; j++) { %>
+                        <% if (orderDetails[j].order_id==order[i].order_id) { %>
+
+                        <%= orderDetails[j].product_name %> x<%= orderDetails[j].product_quantity %>
+                        <% } %>
+                        <% } %>
+                      </td>
+                      <td style="vertical-align: middle;"><a href="/purchase_details/<%= order[i].order_id %>"
+                          class="btn border fw-semibold view-eye-btn">
+                          <i class="bi bi-eye"></i>
+
+                        </a></td>
+
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <!-- <% } %> -->
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           <!-- Start of Single Order -->
-          <% for (var i=0; i < order.length; i++) { %>
+          <!-- <% for (var i=0; i < order.length; i++) { %>
           <% if (order[i].order_status==5 && order[i].request_review==0) { %>
           <div class="w-100 mb-4 order">
-            <!-- Order Date & delivery date section -->
+         
             <div class="w-100 text-secondary d-flex flex-column flex-lg-row fs-6">
               <p id="order_id" class="border-lg-end border-secondary pe-5">
                 Order ID: <%= order[i].order_id %>
@@ -500,10 +1220,11 @@
                 <%= currencyCode %>
               </p>
             </div>
-            <!-- Order details section -->
-            <div class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
+    
+            <div
+              class="py-2 w-100 d-flex justify-content-between align-items-start border-bottom border-secondary-subtle">
               <div class="d-flex flex-column gap-2">
-                <!-- Single Product -->
+          
                 <% for (var j=0; j < orderDetails.length; j++) { %>
                 <% if (orderDetails[j].order_id==order[i].order_id) { %>
                 <div class="d-flex gap-2 align-items-start">
@@ -515,7 +1236,8 @@
                   <% } %>
                   <% } %>
                   <div class="d-flex-flex-column">
-                    <a class="text-black" href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
+                    <a class="text-black"
+                      href="/product-details/<%= orderDetails[j].product_name %>/<%= encodeURIComponent(orderDetails[j].product_id) %>">
                       <p class="m-0">
                         <%= orderDetails[j].product_name
                                               %>
@@ -528,14 +1250,14 @@
                 </div>
                 <% } %>
                 <% } %>
-                <!-- Single Product -->
+          
 
 
               </div>
             </div>
           </div>
           <% } %>
-          <% } %>
+          <% } %> -->
           <!-- Ending of Single Order -->
         </div>
 
@@ -604,12 +1326,12 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 
 <script>
-  $(document).ready(function() {
-    $('input[aria-label="Search"]').on('keyup', function() {
+  $(document).ready(function () {
+    $('input[aria-label="Search"]').on('keyup', function () {
       var searchVal = $(this).val();
       console.log(searchVal)
-      $('#review-order, #returned-order, #rejected-order, #confirmed-order, #accepted-order, #new-order').each(function() {
-        $(this).find('.order').each(function() {
+      $('#review-order, #returned-order, #rejected-order, #confirmed-order, #accepted-order, #new-order').each(function () {
+        $(this).find('.order').each(function () {
           var orderId = $(this).find('#order_id').text();
           console.log(orderId)
           console.log(searchVal, ' - ', orderId, ' | ', orderId.includes(searchVal))
@@ -629,7 +1351,7 @@
 <script src="./js/daterangepicker.js" defer></script>
 
 <script type="text/javascript">
-  $(function() {
+  $(function () {
 
     var start = moment().subtract(29, 'days');
     var end = moment();
@@ -644,9 +1366,9 @@
       }
 
       // Iterate through each parent div and check if the order date is within the selected range
-      $('#review-order,#returned-order, #rejected-order, #confirmed-order, #accepted-order, #new-order').each(function() {
-        $(this).find('.order').each(function() {
-          var orderDate = moment($(this).find('#order_date').text().replace('Placed Date:', ), 'YYYY-MM-DD');
+      $('#review-order,#returned-order, #rejected-order, #confirmed-order, #accepted-order, #new-order').each(function () {
+        $(this).find('.order').each(function () {
+          var orderDate = moment($(this).find('#order_date').text().replace('Placed Date:',), 'YYYY-MM-DD');
           if (orderDate.isBetween(start, end, null, '[]')) {
             // Order date is within the selected range, show the parent div
             $(this).show();

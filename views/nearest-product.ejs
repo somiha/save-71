@@ -7,7 +7,7 @@
     link.addEventListener('click', (event) => {
       event.preventDefault();
       const categoryElement = document.querySelector(event.target.hash);
-      categoryElement.scrollIntoView({
+      categoryElement?.scrollIntoView({
         behavior: 'smooth'
       });
     });
@@ -32,11 +32,14 @@
           <i class="bi bi-chevron-right d-lg-none"></i>
         </h1>
         <div class="dropdown-container w-100 p-2 p-lg-0 all-products-sidebar-dropdown-container">
-          <a id="all" href="#allProducts" class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button" onclick="updateDisplay(this.id)">
+          <a id="all" href="#allProducts" class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2"
+            type="button" onclick="updateDisplay(this.id)">
             All Products
           </a>
           <% extraCat.forEach(exCat=>{ %>
-          <a id="<%= exCat.extra_cat_id %>" href="#all" class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button" onclick="updateDisplay(this.id)">
+          <a id="<%= exCat.extra_cat_id %>" href="#all"
+            class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button"
+            onclick="updateDisplay(this.id)">
             <%= exCat.extra_cat_name %>
           </a>
           <% }) %>
@@ -105,12 +108,12 @@
             <!-- Mobile per product -->
             <!-- Per product start -->
             <% shops.forEach(shop => { %>
-              <!-- New Product Card -->
-              <div class="w-50 p-2">
-                <%- include('./components/product_card.ejs', {
+            <!-- New Product Card -->
+            <div class="w-50 p-2">
+              <%- include('./components/product_card.ejs', {
                 product_details: shop,
                 })  -%>
-              </div>
+            </div>
             <% }) %>
             <!-- Per product end -->
             <!-- Mobile per product -->
@@ -127,8 +130,7 @@
   function updateDisplay(id) {
     const allProductElement = document.getElementById('allProducts')
     const otherProductsElement = document.getElementById('notAll')
-    console.log(window.location.hash)
-    console.log(id)
+
     if (id == 'all') {
       otherProductsElement.style.display = 'none'
       allProductElement.style.display = 'flex'

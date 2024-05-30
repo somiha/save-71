@@ -1236,8 +1236,8 @@ CREATE TABLE `product_temp_video` (
 --
 
 INSERT INTO `product_temp_video` (`id`, `product_temp_id`, `temp_video_url`) VALUES
-(1, 12, 'https://save71.com/images/products/1686130625823_919852464.mp4'),
-(2, 13, 'https://save71.com/images/products/1686157649274_308030822.mp4');
+(1, 12, 'http://localhost:3000/images/products/1686130625823_919852464.mp4'),
+(2, 13, 'http://localhost:3000/images/products/1686157649274_308030822.mp4');
 
 -- --------------------------------------------------------
 

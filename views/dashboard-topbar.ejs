@@ -21,7 +21,8 @@
 										}
                     %>
           <% if (notCnt > 0) { %>
-          <span class="position-absolute rounded-circle text-white fs-6 text-center" style="background-color: #1A63A6;min-height: 1.3rem;min-width: 1.3rem;left: 30%;top: -40%;"><%= notification == undefined ? "0" : notCnt  %></span>
+          <span class="position-absolute rounded-circle text-white fs-6 text-center"
+            style="background-color: #1A63A6;min-height: 1.3rem;min-width: 1.3rem;left: 30%;top: -40%;"><%= notification == undefined ? "0" : notCnt  %></span>
           <p class="m-0 fs-6" style="color: #1A63A6;"></p>
           <% } %>
         </a>
@@ -29,9 +30,11 @@
         <div class="notification-div-hide notification-div-dashboard rounded-2 shadow" id="notification-container">
           <% for (var i = 0; i < notification.length; i++) { %>
           <%= console.log(notification[i].is_read) %>
-          <div id="notification_<%= notification[i].notification_id %>" data-id="<%= notification[i].notification_id %>" class="d-flex <%= notification[i].is_read == 1 ? "" : "notification_unread_color" %> items-center gap-4 border-bottom p-3 notification">
+          <div id="notification_<%= notification[i].notification_id %>" data-id="<%= notification[i].notification_id %>"
+            class="d-flex <%= notification[i].is_read == 1 ? "" : "notification_unread_color" %> items-center gap-4 border-bottom p-3 notification">
             <!-- <p class="fs-5 fw-bold">Order</p> -->
-            <a href="<%= notification[i].url %>" class="<%= notification[i].is_read == 0 ? "text-light" : "text-dark" %>">
+            <a href="<%= notification[i].url %>"
+              class="<%= notification[i].is_read == 0 ? "text-light" : "text-dark" %>">
               <label class="form-label color8 <%= (notification[i].is_read == 0) ? 'required-label' : '' %>">
                 <%= notification[i].notification %>
               </label>
@@ -56,14 +59,14 @@
 </script>
 
 <script>
-  document.getElementById('reloadBtn').addEventListener('click', function(event) {
+  document.getElementById('reloadBtn').addEventListener('click', function (event) {
     event.preventDefault();
     location.reload();
   });
 </script>
 <script>
-  $(document).ready(function() {
-    $('#notification-container').on('click', '.notification', function() {
+  $(document).ready(function () {
+    $('#notification-container').on('click', '.notification', function () {
       var notificationId = $(this).data('id');
       $.ajax({
         type: 'POST',
@@ -71,10 +74,10 @@
         data: {
           notification_id: notificationId
         },
-        success: function(response) {
+        success: function (response) {
           console.log('Success:', response);
         },
-        error: function(error) {
+        error: function (error) {
           console.error('Error:', error);
         }
       });
