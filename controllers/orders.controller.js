@@ -62,10 +62,10 @@ const { queryAsync, queryAsyncWithoutValue } = require("../config/helper");
 
 //                         res.render("orders", {
 //                           ogImage:
-//                             "https://www.localhost:3000/images/logo-og.webp",
+//                             "https://admin-save71.lens-ecom.store/images/logo-og.webp",
 //                           ogTitle:
 //                             "Save71 Connects You and the World through Business.",
-//                           ogUrl: "https://www.localhost:3000",
+//                           ogUrl: "https://admin-save71.lens-ecom.store",
 //                           userImage: userImage,
 //                           userName: userName,
 //                           menuId: "shop-owner-orders",
@@ -162,9 +162,9 @@ exports.orders = async (req, res, next) => {
     }
 
     return res.status(200).render("orders", {
-      ogImage: "https://www.localhost:3000/images/logo-og.webp",
+      ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
       ogTitle: "Save71 Connects You and the World through Business.",
-      ogUrl: "https://www.localhost:3000",
+      ogUrl: "https://admin-save71.lens-ecom.store",
       userImage: userImage,
       userName: userName,
       menuId: "shop-owner-orders",
@@ -193,6 +193,8 @@ exports.orders1 = async (req, res, next) => {
     const orderId = req.query.orderIds;
 
     const orderIds = orderId.split(",");
+
+    console.log("orderIds", orderIds);
 
     const userId = crypto.decrypt(req.cookies.userId);
     const currencyCode = crypto.decrypt(req.cookies.currencyCode || "");
@@ -258,9 +260,9 @@ exports.orders1 = async (req, res, next) => {
     }
 
     return res.status(200).render("orders1", {
-      ogImage: "https://www.localhost:3000/images/logo-og.webp",
+      ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
       ogTitle: "Save71 Connects You and the World through Business.",
-      ogUrl: "https://www.localhost:3000",
+      ogUrl: "https://admin-save71.lens-ecom.store",
       userImage: userImage,
       userName: userName,
       menuId: "shop-owner-orders",

@@ -83,10 +83,11 @@ exports.edit_product = async (req, res) => {
 
                                   res.render("edit-product", {
                                     ogImage:
-                                      "https://www.localhost:3000/images/logo-og.webp",
+                                      "https://admin-save71.lens-ecom.store/images/logo-og.webp",
                                     ogTitle:
                                       "Save71 Connects You and the World through Business.",
-                                    ogUrl: "https://www.localhost:3000",
+                                    ogUrl:
+                                      "https://admin-save71.lens-ecom.store",
                                     currencyCode,
                                     currRate,
                                     images: images,

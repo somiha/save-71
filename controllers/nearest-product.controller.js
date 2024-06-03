@@ -107,9 +107,9 @@ exports.getNearestManufacturer = async (req, res) => {
 
       // Render the template securely
       res.render("nearest-product", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         currRate,
         currencyCode,
         images: encImages,
@@ -236,9 +236,9 @@ exports.getNearestProducts = async (req, res) => {
 
       // Render the template securely
       res.render("nearest-product", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         currRate,
         currencyCode,
         images: encImages,

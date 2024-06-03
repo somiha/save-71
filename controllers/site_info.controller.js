@@ -6,9 +6,9 @@ exports.aboutUs = (req, res) => {
       console.log(err);
     } else {
       res.render("site_info", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         site_info: result[0].about_us,
       });
     }
@@ -21,9 +21,9 @@ exports.policy = (req, res) => {
       console.log(err);
     } else {
       res.render("site_info", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         site_info: result[0].privacy_policy,
       });
     }
@@ -36,9 +36,9 @@ exports.terms_and_condition = (req, res) => {
       console.log(err);
     } else {
       res.render("site_info", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         site_info: result[0].terms_and_condition,
       });
     }
@@ -51,9 +51,9 @@ exports.contact_us = (req, res) => {
       console.log(err);
     } else {
       res.render("site_info", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         site_info: result[0].contact_us,
       });
     }
@@ -66,9 +66,9 @@ exports.brand_guidelines = (req, res) => {
       console.log(err);
     } else {
       res.render("site_info", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         site_info: result[0].brand_guidelines,
       });
     }
@@ -81,9 +81,9 @@ exports.notice = (req, res) => {
       console.log(err);
     } else {
       res.render("site_info", {
-        ogImage: "https://www.localhost:3000/images/logo-og.webp",
+        ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
         ogTitle: "Save71 Connects You and the World through Business.",
-        ogUrl: "https://www.localhost:3000",
+        ogUrl: "https://admin-save71.lens-ecom.store",
         site_info: result[0].notice,
       });
     }

@@ -1,75 +1,120 @@
 <%- include('header-one'),{menuId:menuId}; -%>
 
-	<div class="w-100 min-vh-100 bg-light">
-		<%- include('dashboard-topbar'),{menuId:menuId}; -%>
+<div class="w-100 min-vh-100 bg-light">
+	<%- include('dashboard-topbar'),{menuId:menuId}; -%>
+	<%
+	var value=[0, 0, 0, 0]
+	var orderCount = [0, 0, 0, 0, 0, 0];
+	var totalPrice = [0, 0, 0, 0, 0, 0];
+	var review = 0;
+	for (var i = 0; i < orders.length; i++) { value[orders[i].order_status]++; 
+		if (orders[i].in_cart==0) { 
+			review=review+ orders[i].request_review; 
+			var matchingOrderDetails=allOrders.filter(function(detail) { 
+				return detail.order_id===orders[i].order_id; }); 
+				if (matchingOrderDetails.length> 0) {
+					orderCount[orders[i].order_status - 1]++;
+					matchingOrderDetails.forEach(function(detail) {
+						totalPrice[orders[i].order_status - 1] += detail.product_total_price;
+					});
+					totalPrice[orders[i].order_status - 1] += orders[i].deliveryCharge;
 
-		<div class="px-5 flex-grow-1 py-5">
-			<div class="mb-5 row row-cols-2 row-cols-lg-5 gap-lg-5 gap-2 align-items-stretch">
+				}
+			}
+		}
+		%>
+	<div class="px-5 flex-grow-1 py-5">
+		<div class="mb-5 row row-cols-2 row-cols-lg-5 gap-lg-5 gap-2 align-items-stretch">
+			<a href="/orders#newOrder" class="text-white col border rounded p-3" style="background-color: #1a63a6;">
+				<i class="bi bi-clipboard-plus fs-2" style="color: #fff"></i>
+				<p class="py-2 m-0">New Orders (<%= orderCount[2] %>)</p>
 
+				<p class="py-2 m-0">[<%= (totalPrice[2] * currRate).toFixed(2) %>
+					<%= currencyCode  %> ]</p>
+
+			</a>
+			<a class="nav-link btn p-2 px-3" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#accepted-order"
+				type="button">
+				Shipped Order (<%= orderCount[3] %>) </br> [<%= (totalPrice[3] * currRate).toFixed(2) %>
+				<%= currencyCode  %>
+				]
+			</a>
+			<a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab"
+				data-bs-target="#confirmed-order" type="button">
+				Confirmed Order (<%= orderCount[0] %>) </br> [<%= (totalPrice[0] * currRate).toFixed(2) %>
+				<%= currencyCode  %> ]
+			</a>
+			<a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab"
+				data-bs-target="#rejected-order" type="button">
+				Rejected Order (<%= orderCount[1] %>) </br> [<%= (totalPrice[1] * currRate).toFixed(2) %>
+				<%= currencyCode  %>
+				]
+			</a>
+		</div>
+		<div class="mb-5 row row-cols-2 row-cols-lg-5 gap-lg-5 gap-2 align-items-stretch">
+
+			<% var value=[0, 0, 0, 0] %>
+			<% for (var i=0; i < orders.length; i++) { %>
+			<% value[orders[i].order_status]++ }%>
+
+
+			<a href="/orders#newOrder" class="text-dark col border rounded p-3 bg-white">
+
+				<i class="bi bi-clipboard-plus fs-2" style="color: #3B71CA"></i>
+				<p class="py-2 m-0">New Orders</p>
+				<p class="fw-bold fs-3 text-black m-0">
+					<%= value[3] %>
+				</p>
+
+			</a>
+
+			<a href="/orders#confirmed" class="text-dark col border rounded p-3 bg-white">
+
+				<i class="bi bi-clipboard-check fs-2" style="color: #14A44D;"></i>
+				<p class="py-2 m-0">Orders Completed</p>
 				<% var value=[0, 0, 0, 0] %>
 				<% for (var i=0; i < orders.length; i++) { %>
-					<% value[orders[i].order_status]++ }%>
+				<% value[orders[i].order_status]++ }%>
+				<p class="fw-bold fs-3 text-black m-0">
+					<%= value[1] %>
+				</p>
+
+			</a>
+
+			<a href="/orders#rejected" class="text-dark col border rounded p-3 bg-white">
+
+				<i class="bi bi-clipboard-x fs-2" style="color: #DC4C64;"></i>
+				<p class="py-2 m-0">Orders Rejected</p>
+				<p class="fw-bold fs-3 text-black m-0">
+					<%= value[2] %>
+				</p>
+
+			</a>
+
+			<a href="/orders" class="text-dark col border rounded p-3 bg-white">
+
+				<i class="bi bi-clipboard fs-2" style="color: #1A63A6;"></i>
+				<p class="py-2 m-0">Total Orders</p>
+				<% var value=[0, 0, 0, 0] %>
+				<% for (var i=0; i < orders.length; i++) { %>
+				<% value[orders[i].order_status]++ }%>
+				<p class="fw-bold fs-3 text-black m-0">
+					<%= value[1]+value[2]+value[3] %>
+				</p>
+
+			</a>
 
 
-				<a href="/orders#newOrder" class="text-dark col border rounded p-3 bg-white">
+		</div>
 
-						<i class="bi bi-clipboard-plus fs-2" style="color: #3B71CA"></i>
-						<p class="py-2 m-0">New Orders</p>
-						<p class="fw-bold fs-3 text-black m-0">
-							<%= value[3] %>
-						</p>
+		<!-- Details -->
+		<!-- <div class="d-flex flex-column flex-lg-row gap-5 align-items-start dashboard-details">
 
-				</a>
-
-				<a href="/orders#confirmed" class="text-dark col border rounded p-3 bg-white">
-
-						<i class="bi bi-clipboard-check fs-2" style="color: #14A44D;"></i>
-						<p class="py-2 m-0">Orders Completed</p>
-						<% var value=[0, 0, 0, 0] %>
-						<% for (var i=0; i < orders.length; i++) { %>
-							<% value[orders[i].order_status]++ }%>
-							<p class="fw-bold fs-3 text-black m-0">
-								<%= value[1] %>
-							</p>
-
-				</a>
-
-				<a href="/orders#rejected" class="text-dark col border rounded p-3 bg-white">
-
-						<i class="bi bi-clipboard-x fs-2" style="color: #DC4C64;"></i>
-						<p class="py-2 m-0">Orders Rejected</p>
-						<p class="fw-bold fs-3 text-black m-0">
-							<%= value[2] %>
-						</p>
-
-				</a>
-
-				<a href="/orders" class="text-dark col border rounded p-3 bg-white">
-
-						<i class="bi bi-clipboard fs-2" style="color: #1A63A6;"></i>
-						<p class="py-2 m-0">Total Orders</p>
-						<% var value=[0, 0, 0, 0] %>
-						<% for (var i=0; i < orders.length; i++) { %>
-							<% value[orders[i].order_status]++ }%>
-							<p class="fw-bold fs-3 text-black m-0">
-								<%= value[1]+value[2]+value[3] %>
-							</p>
-
-				</a>
-
-
-			</div>
-
-			<!-- Details -->
-			<div class="d-flex flex-column flex-lg-row gap-5 align-items-start dashboard-details">
-
-				<!-- Popular Products -->
+		
 				<div class="w-50 bg-white border p-3 rounded">
 					<div class="d-flex justify-content-between align-items-center mb-4">
 						<h6 class="m-0 text-black fw-bolder fs-4">Popular Products</h6>
-						<!-- <a href="/favourite-products" class="text-black"
-						><button class="btn btn-sm">See All</button></a
-					> -->
+						
 					</div>
 
 					<div class="d-flex flex-column gap-4 w-100">
@@ -96,8 +141,8 @@
 							<% } %>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div> -->
 	</div>
+</div>
 
-	<%- include('footer-one'); -%>
+<%- include('footer-one'); -%>

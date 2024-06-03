@@ -55,9 +55,9 @@ exports.orderDetails = async (req, res) => {
     console.log("Seller Details : ", shop[0]);
     console.log("Order Details : ", orders[0]);
     return res.render("order-details", {
-      ogImage: "https://www.localhost:3000/images/logo-og.webp",
+      ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
       ogTitle: "Save71 Connects You and the World through Business.",
-      ogUrl: "https://www.localhost:3000",
+      ogUrl: "https://admin-save71.lens-ecom.store",
       currRate,
       currencyCode,
       menuId: "shop-owner-orders",
@@ -113,9 +113,9 @@ exports.orderDetails = async (req, res) => {
 //                           }
 //                           var matchingUser = users.find(function (user) { return user.user_id === res2[0].user_id; });
 //                           res.render("order-details", {
-//                             ogImage: "https://www.localhost:3000/images/logo-og.webp",
+//                             ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
 //                             ogTitle: "Save71 Connects You and the World through Business.",
-//                             ogUrl: "https://www.localhost:3000",
+//                             ogUrl: "https://admin-save71.lens-ecom.store",
 //                             currRate,
 //                             currencyCode,
 //                             menuId: "shop-owner-orders",

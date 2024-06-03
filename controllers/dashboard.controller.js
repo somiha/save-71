@@ -3,17 +3,18 @@ const catModel = require("../middlewares/cat");
 const crypto = require("../middlewares/crypto");
 
 exports.dashboard = async (req, res) => {
-  var isLogged = crypto.decrypt(req.cookies.login_status || '');
+  var isLogged = crypto.decrypt(req.cookies.login_status || "");
   if (isLogged) {
     try {
-      const userId = crypto.decrypt(req.cookies.userId)
+      const userId = crypto.decrypt(req.cookies.userId);
       const currencyCode = crypto.decrypt(req.cookies.currencyCode);
       const [fetchFeaturedImages, currRate, notification] = await Promise.all([
         catModel.fetchFeaturedImages(),
         catModel.fetchCurrencyRate(currencyCode),
         catModel.fetchAllNotifications(userId),
       ]);
-      var seller_id = crypto.decrypt(req.cookies.seller_id || '');
+      var seller_id = crypto.decrypt(req.cookies.seller_id || "");
+
       db.query(
         "SELECT * FROM `orders` WHERE `orders`.`seller_id` = ?",
         [seller_id],
@@ -30,10 +31,13 @@ exports.dashboard = async (req, res) => {
                     (err3, res3) => {
                       if (!err3) {
                         console.log("seller_id : ", seller_id);
+                        console.log(res3);
                         res.render("dashboard", {
-                          ogImage: "https://www.localhost:3000/images/logo-og.webp",
-                          ogTitle: "Save71 Connects You and the World through Business.",
-                          ogUrl: "https://www.localhost:3000",
+                          ogImage:
+                            "https://admin-save71.lens-ecom.store/images/logo-og.webp",
+                          ogTitle:
+                            "Save71 Connects You and the World through Business.",
+                          ogUrl: "https://admin-save71.lens-ecom.store",
                           currRate,
                           currencyCode,
                           images: fetchFeaturedImages,

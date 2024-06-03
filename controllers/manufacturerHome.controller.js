@@ -102,10 +102,11 @@ exports.manufacturerHome = async (req, res) => {
 
                 // INNER JOIN `extra_cat` ON `products`.`product_cat_id` = `extra_cat`.`extra_cat_id`
                 res.render("manufacturerHome", {
-                  ogImage: "https://www.localhost:3000/images/logo-og.webp",
+                  ogImage:
+                    "https://admin-save71.lens-ecom.store/images/logo-og.webp",
                   ogTitle:
                     "Save71 Connects You and the World through Business.",
-                  ogUrl: "https://www.localhost:3000",
+                  ogUrl: "https://admin-save71.lens-ecom.store",
                   navId: "manufacturerHome",
                   sortedShops: sortedShopsAndProductsByDistance,
                   sortedShopsByPopularity: sortedShopsAndProductsByPopularity,
@@ -139,9 +140,9 @@ exports.manufacturerHome = async (req, res) => {
     }
   } else {
     res.render("loadingHome", {
-      ogImage: "https://www.localhost:3000/images/logo-og.webp",
+      ogImage: "https://admin-save71.lens-ecom.store/images/logo-og.webp",
       ogTitle: "Save71 Connects You and the World through Business.",
-      ogUrl: "https://www.localhost:3000",
+      ogUrl: "https://admin-save71.lens-ecom.store",
     });
   }
 };

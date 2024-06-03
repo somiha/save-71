@@ -3,40 +3,46 @@ const catModel = require("../middlewares/cat");
 const crypto = require("../middlewares/crypto");
 
 exports.products = async (req, res) => {
-  var isLogged = crypto.decrypt(req.cookies.login_status || '');
+  var isLogged = crypto.decrypt(req.cookies.login_status || "");
   if (isLogged) {
-  try {
-    const userId = crypto.decrypt(req.cookies.userId)
-    const currencyCode = crypto.decrypt(req.cookies.currencyCode);
-    const [currRate, notification] = await Promise.all([
-      catModel.fetchCurrencyRate(currencyCode),
-      catModel.fetchAllNotifications(userId),
-    ]);
+    try {
+      const userId = crypto.decrypt(req.cookies.userId);
+      const currencyCode = crypto.decrypt(req.cookies.currencyCode);
+      const [currRate, notification] = await Promise.all([
+        catModel.fetchCurrencyRate(currencyCode),
+        catModel.fetchAllNotifications(userId),
+      ]);
       var uID = crypto.decrypt(req.cookies.userId);
       var userName = crypto.decrypt(req.cookies.userName);
-      var userImage = crypto.decrypt(req.cookies.userImage || '');
+      var userImage = crypto.decrypt(req.cookies.userImage || "");
       db.query(
         "SELECT * FROM `products` INNER JOIN `shop` ON `shop`.`id` = `products`.`seller_id` WHERE `shop`.`seller_user_id` = ? ORDER BY `products`.`product_name` ASC",
         [uID],
         (err1, res1) => {
           if (!err1) {
-            db.query("SELECT * FROM `products` INNER JOIN `shop` ON `shop`.`id` = `products`.`seller_id` INNER JOIN `product_image` ON `products`.`product_id` = `product_image`.`product_id` WHERE `shop`.`seller_user_id` = ? AND `product_image`.`featured_image` = 1", [uID],
+            db.query(
+              "SELECT * FROM `products` INNER JOIN `shop` ON `shop`.`id` = `products`.`seller_id` INNER JOIN `product_image` ON `products`.`product_id` = `product_image`.`product_id` WHERE `shop`.`seller_user_id` = ? AND `product_image`.`featured_image` = 1",
+              [uID],
               (err2, res2) => {
                 if (!err2) {
-                  var images = res2.map(image => {
+                  var images = res2.map((image) => {
                     image.product_id = crypto.smallEncrypt(image.product_id);
                     return image;
                   });
 
-                  var products = res1.map(product => {
-                    product.product_id = crypto.smallEncrypt(product.product_id);
+                  var products = res1.map((product) => {
+                    product.product_id = crypto.smallEncrypt(
+                      product.product_id
+                    );
                     return product;
                   });
 
                   res.render("products", {
-                    ogImage: "https://www.localhost:3000/images/logo-og.webp",
-                    ogTitle: "Save71 Connects You and the World through Business.",
-                    ogUrl: "https://www.localhost:3000",
+                    ogImage:
+                      "https://admin-save71.lens-ecom.store/images/logo-og.webp",
+                    ogTitle:
+                      "Save71 Connects You and the World through Business.",
+                    ogUrl: "https://admin-save71.lens-ecom.store",
                     currRate,
                     currencyCode,
                     userName: userName,
@@ -48,9 +54,10 @@ exports.products = async (req, res) => {
                     notification: notification,
                   });
                 } else {
-                  res.send(err2)
+                  res.send(err2);
                 }
-              })
+              }
+            );
           } else {
             res.send(err1);
           }
@@ -77,13 +84,17 @@ exports.del_product = (req, res) => {
         [pID],
         (err2, res2) => {
           if (!err2) {
-            db.query("DELETE FROM `product_video` WHERE `product_id` = ?", [pID], (err3, res3) => {
-              if (!err3) {
-                res.redirect("/products");
-              } else {
-                res.send(err3)
+            db.query(
+              "DELETE FROM `product_video` WHERE `product_id` = ?",
+              [pID],
+              (err3, res3) => {
+                if (!err3) {
+                  res.redirect("/products");
+                } else {
+                  res.send(err3);
+                }
               }
-            })
+            );
           } else {
             res.send(err2);
           }

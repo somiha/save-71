@@ -151,6 +151,7 @@
                   <input type="text" id="otp" name="otp" class="form-control" required />
                   <input type="text" id="encUserId" name="encUserId" class="form-control" value="" required hidden />
                   <button id="verifyOTPButton" class="btn btn-primary mt-2">Verify OTP</button>
+                  <button id="resendOTPButton" class="btn btn-primary mt-2">Resend OTP</button>
                 </div>
 
                 <!-- Step 3 : Reset Pass -->
@@ -374,6 +375,53 @@
       });
     });
 
+    $('#resendOTPButton').click(function () {
+      var encUserId = $('#encUserId').val();
+
+      // Perform Ajax request to resend the OTP
+      $.ajax({
+        type: 'GET',
+        url: '/resendOTP/' + encUserId, // Replace with the actual endpoint for OTP resend
+        success: function (response, status, xhr) {
+          // Handle success case
+          console.log('Response:', response);
+          console.log('Status:', status);
+          console.log('XHR:', xhr);
+
+          if (response.status === "success") {
+            // OTP resend successful
+            $('<p>')
+              .text('OTP resend successful')
+              .addClass('text-success')
+              .show();
+          } else {
+            // Handle other error cases
+            var error = $('<p>')
+              .text('OTP resend failed')
+              .addClass('text-danger');
+            $('#step3').append(error);
+          }
+        },
+        error: function (xhr, status, error) {
+          // Log additional information for debugging
+          console.log('Error:', error);
+          console.log('Status:', status);
+          console.log('XHR:', xhr);
+
+          // Handle Ajax request error
+          var errorMessage = 'An error occurred while resending the OTP.';
+          if (xhr.status === 302) {
+            errorMessage = 'Redirected to: ' + xhr.getResponseHeader('Location');
+          }
+          var errorElement = $('<p>')
+            .text(errorMessage)
+            .addClass('text-danger');
+          $('#step3').append(errorElement);
+        }
+      });
+    });
+
+
     // Toggle visibility of the new password
     // $('#toggleNewPassword').click(function() {
     //   var newPasswordInput = $('#newPassword');
@@ -390,6 +438,7 @@
 
   });
 </script>
+
 
 
 

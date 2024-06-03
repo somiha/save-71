@@ -73,6 +73,7 @@ exports.emailVerificationPostAPI = (req, res) => {
       [decUserId],
       (err1, res1) => {
         if (!err1) {
+          console.log("OTP : ", otp, res1);
           if (res1[0].otp_code == otp) {
             db.query(
               "DELETE FROM `otp` WHERE `otp`.`user_id` = ?",
@@ -130,6 +131,7 @@ exports.emailVerificationRequest = async (req, res) => {
       "SELECT * FROM `otp` WHERE `otp`.`user_id` = ?",
       [decUserId],
       (err11, res11) => {
+        console.log("OTP1111 : ", res11);
         if (!err11) {
           if (res11.length == 0) {
             const otp = helperFunctions.generateOTP();
@@ -147,10 +149,10 @@ exports.emailVerificationRequest = async (req, res) => {
                         sendMail(res2[0].user_email, otp, "Email Verification");
                         res.render("emailVerification", {
                           ogImage:
-                            "https://www.localhost:3000/images/logo-og.webp",
+                            "https://admin-save71.lens-ecom.store/images/logo-og.webp",
                           ogTitle:
                             "Save71 Connects You and the World through Business.",
-                          ogUrl: "https://www.localhost:3000",
+                          ogUrl: "https://admin-save71.lens-ecom.store",
                           verificationStatus,
                           encUserId,
                         });
@@ -169,9 +171,10 @@ exports.emailVerificationRequest = async (req, res) => {
             // const localTime = helperFunctions.formatTimestampToLocale(res11[0].generate_time)
 
             res.render("emailVerification", {
-              ogImage: "https://www.localhost:3000/images/logo-og.webp",
+              ogImage:
+                "https://admin-save71.lens-ecom.store/images/logo-og.webp",
               ogTitle: "Save71 Connects You and the World through Business.",
-              ogUrl: "https://www.localhost:3000",
+              ogUrl: "https://admin-save71.lens-ecom.store",
               verificationStatus: verificationStatus
                 ? verificationStatus
                 : "Already OTP requested. Check your mail !",
@@ -238,5 +241,53 @@ exports.emailVerificationPost = (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error !");
+  }
+};
+
+exports.resendOtp = async (req, res) => {
+  try {
+    console.log("resend otp");
+    let { userId } = req.params;
+    userId = crypto.decrypt(userId);
+
+    db.query(
+      "SELECT * FROM `user` WHERE `user_id` = ?",
+      [userId],
+      (err1, res1) => {
+        if (!err1) {
+          // delete existing otp
+          db.query(
+            "DELETE FROM `otp` WHERE `otp`.`user_id` = ?",
+            [userId],
+            (err2, res2) => {
+              if (!err2) {
+                const otp = helperFunctions.generateOTP();
+                db.query(
+                  "INSERT INTO `otp` (`otp_id`, `user_id`, `otp_code`, `generate_time`) VALUES (NULL, ?, ?, current_timestamp())",
+                  [userId, otp],
+                  (err2, res2) => {
+                    if (!err2) {
+                      const sendMail = helperFunctions.mailSend(
+                        res1[0].user_email,
+                        otp,
+                        "Resend OTP"
+                      );
+                      return res.status(200).send({ status: "success" });
+                    } else {
+                      return res.status(500).send({ status: "failed" });
+                    }
+                  }
+                );
+              }
+            }
+          );
+        } else {
+          return res.status(500).send({ status: "failed" });
+        }
+      }
+    );
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ status: "failed" });
   }
 };
