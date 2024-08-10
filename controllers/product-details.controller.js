@@ -5,6 +5,7 @@ const Shop = require("../middlewares/shop");
 const locationOptimizedDistance = require("../middlewares/locationOptimizedDistance");
 const crypto = require("../middlewares/crypto");
 const { enc } = require("crypto-js");
+const { queryAsync, queryAsyncWithoutValue } = require("../config/helper");
 
 exports.productDetails = async (req, res) => {
   var isLogged = crypto.decrypt(req.cookies.login_status || "");
@@ -47,6 +48,8 @@ exports.productDetails = async (req, res) => {
       var productID = req.params.id;
       var useProductID = crypto.smallDecrypt(productID);
 
+      console.log(useProductID);
+
       const relatedProducts =
         await locationOptimizedDistance.getRelatedProducts(useProductID);
 
@@ -54,6 +57,16 @@ exports.productDetails = async (req, res) => {
       var isLogged = crypto.decrypt(req.cookies.login_status || "");
       var userImage = crypto.decrypt(req.cookies.userImage || "");
       var userName = crypto.decrypt(req.cookies.userName);
+
+      const ratingsQuery =
+        "SELECT r.review_star, r.review_des, u.user_name, r.user_id FROM review r JOIN user u ON r.user_id = u.user_id WHERE r.product_id = ?";
+      const ratings = await queryAsync(ratingsQuery, [useProductID]);
+      const totalStars = ratings.reduce(
+        (sum, rating) => sum + rating.review_star,
+        0
+      );
+      const averageRating =
+        ratings.length > 0 ? (totalStars / ratings.length).toFixed(1) : 0;
       if (isLogged) {
         var query =
           "SELECT * FROM `products` INNER JOIN `product_image` ON `products`.`product_id` = `product_image`.`product_id` INNER JOIN `extra_cat` ON `products`.`product_cat_id` = `extra_cat`.`extra_cat_id`  WHERE `products`.`product_id` = ?";
@@ -202,6 +215,8 @@ exports.productDetails = async (req, res) => {
                                                       images: encImages,
                                                       notification:
                                                         notification,
+                                                      ratings,
+                                                      averageRating,
                                                     }
                                                   );
                                                 } else {

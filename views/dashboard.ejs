@@ -24,34 +24,32 @@
 		}
 		%>
 	<div class="px-5 flex-grow-1 py-5">
-		<div class="mb-5 row row-cols-2 row-cols-lg-5 gap-lg-5 gap-2 align-items-stretch">
-			<a href="/orders#newOrder" class="text-white col border rounded p-3" style="background-color: #1a63a6;">
-				<i class="bi bi-clipboard-plus fs-2" style="color: #fff"></i>
+		<div class="row-cols-sm-12 mb-5 row row-cols-1 row-cols-lg-5 gap-lg-5 gap-2 align-items-stretch">
+			<a href="/orders#newOrder" class="text-white col-12 col-lg border rounded p-3"
+				style="background-color: #1a63a6; height: 120px;">
 				<p class="py-2 m-0">New Orders (<%= orderCount[2] %>)</p>
+				<p class="py-2 m-0">[<%= (totalPrice[2] * currRate).toFixed(2) %> <%= currencyCode %> ]</p>
+			</a>
 
-				<p class="py-2 m-0">[<%= (totalPrice[2] * currRate).toFixed(2) %>
-					<%= currencyCode  %> ]</p>
+			<a href="/orders#accepted-order" class="text-white col-12 col-lg border rounded p-3"
+				style="background-color: #ffd166; height: 120px;">
+				<p class="py-2 m-0">Shipped Orders (<%= orderCount[3] %>)</p>
+				<p class="py-2 m-0">[<%= (totalPrice[3] * currRate).toFixed(2) %> <%= currencyCode %> ]</p>
+			</a>
 
+			<a href="/orders#confirmed-order" class="text-white col-12 col-lg border rounded p-3"
+				style="background-color: #06d6a0; height: 120px;">
+				<p class="py-2 m-0">Confirmed Orders (<%= orderCount[0] %>)</p>
+				<p class="py-2 m-0">[<%= (totalPrice[0] * currRate).toFixed(2) %> <%= currencyCode %> ]</p>
 			</a>
-			<a class="nav-link btn p-2 px-3" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#accepted-order"
-				type="button">
-				Shipped Order (<%= orderCount[3] %>) </br> [<%= (totalPrice[3] * currRate).toFixed(2) %>
-				<%= currencyCode  %>
-				]
-			</a>
-			<a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab"
-				data-bs-target="#confirmed-order" type="button">
-				Confirmed Order (<%= orderCount[0] %>) </br> [<%= (totalPrice[0] * currRate).toFixed(2) %>
-				<%= currencyCode  %> ]
-			</a>
-			<a class="nav-link btn p-2 px-3" id="nav-questions-tab" data-bs-toggle="tab"
-				data-bs-target="#rejected-order" type="button">
-				Rejected Order (<%= orderCount[1] %>) </br> [<%= (totalPrice[1] * currRate).toFixed(2) %>
-				<%= currencyCode  %>
-				]
+
+			<a href="/orders#rejected-order" class="text-white col-12 col-lg border rounded p-3"
+				style="background-color: #ef476f; height: 120px;">
+				<p class="py-2 m-0">Rejected Orders (<%= orderCount[1] %>)</p>
+				<p class="py-2 m-0">[<%= (totalPrice[1] * currRate).toFixed(2) %> <%= currencyCode %> ]</p>
 			</a>
 		</div>
-		<div class="mb-5 row row-cols-2 row-cols-lg-5 gap-lg-5 gap-2 align-items-stretch">
+		<!-- <div class="mb-5 row row-cols-2 row-cols-lg-5 gap-lg-5 gap-2 align-items-stretch">
 
 			<% var value=[0, 0, 0, 0] %>
 			<% for (var i=0; i < orders.length; i++) { %>
@@ -105,7 +103,7 @@
 			</a>
 
 
-		</div>
+		</div> -->
 
 		<!-- Details -->
 		<!-- <div class="d-flex flex-column flex-lg-row gap-5 align-items-start dashboard-details">

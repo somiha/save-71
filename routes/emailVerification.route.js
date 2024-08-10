@@ -6,6 +6,9 @@ const {
   emailVerificationRequestAPI,
   emailVerificationPostAPI,
   resendOtp,
+  resendOtpByUserId,
+  emailVerificationRequestByUserId,
+  emailVerificationPostByUserId,
 } = require("../controllers/emailVerification.controller");
 const router = express.Router();
 
@@ -18,6 +21,13 @@ router.get(
   emailVerificationRequest
 );
 
-router.get("/resendOtp/:userId", resendOtp);
+router.post("/emailVerificationPostByUserId", emailVerificationPostByUserId);
+router.get(
+  "/emailVerificationRequestByUserId/:encUserId/:message",
+  emailVerificationRequestByUserId
+);
+
+router.get("/resendOtp", resendOtp);
+router.get("/resendOtpByUserId/:userId", resendOtpByUserId);
 
 module.exports = router;

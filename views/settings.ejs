@@ -35,7 +35,7 @@
           <img id="pp" src="<%= info[0].pic_url %>" class="rounded-circle" style="width: 10rem; height: 10rem"
             alt="img" />
           <% } else { %>
-          <img id="pp" src="http://localhost:3000/images/placeholder.webp" style="height: 100%; width: 100%" />
+          <img id="pp" src="https://save71.lens-ecom.store/images/placeholder.webp" style="height: 100%; width: 100%" />
           <% } %>
           <!-- Edit Picture Icon -->
           <span class="edit-icon position-absolute text-primary" style="bottom: 0; right: 0">
@@ -207,6 +207,9 @@
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cancel
                   </button>
+                  <p onclick="resendOtp('<%= info[0].user_id %>')" class="btn btn-primary" id="resendOTPButton1">Resend
+                  </p>
+                  <p id="otpMessage1" style="display: none;">An OTP is sent to your email</p>
                   <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
               </div>
@@ -236,6 +239,10 @@
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cancel
                   </button>
+                  <p onclick="resendOtp('<%= info[0].user_id %>')" class="btn btn-primary" id="resendOTPButton">Resend
+                  </p>
+                  <p id="otpMessage" style="display: none;">An OTP is sent to your email</p>
+
                   <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
               </div>
@@ -506,4 +513,56 @@
       else passField.type = 'password'
     })
   })
+</script>
+
+<script>
+  function resendOtp(userId) {
+    console.log(userId);
+    // Replace the URL with the actual endpoint for OTP resend
+    fetch('/resendOtpByUserId/' + userId)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Handle response data
+        console.log(data);
+        if (data.status === "success") {
+          // OTP resend successful
+          console.log('OTP resend successful');
+        } else {
+          // Handle other error cases
+          console.error('OTP resend failed');
+        }
+      })
+      .catch(error => {
+        // Handle fetch error
+        console.error('Fetch error:', error);
+      });
+  }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#resendOTPButton').click(function () {
+      $('#otpMessage').fadeIn(); // Show the message
+      setTimeout(function () {
+        $('#otpMessage').fadeOut(); // Hide the message after a certain time (optional)
+      }, 3000); // Hide after 3 seconds (3000 milliseconds)
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#resendOTPButton1').click(function () {
+      $('#otpMessage1').fadeIn(); // Show the message
+      setTimeout(function () {
+        $('#otpMessage1').fadeOut(); // Hide the message after a certain time (optional)
+      }, 3000); // Hide after 3 seconds (3000 milliseconds)
+    });
+  });
 </script>

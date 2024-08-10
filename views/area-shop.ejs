@@ -9,7 +9,28 @@
 <meta property="og:image" content="http://localhost:3000/images/logo-og.webp">
 
 
+<style>
+  /* Adjust button position for mobile */
+  @media (max-width: 767px) {
+    .search {
+      position: relative;
+      /* Ensure relative positioning for the button */
+    }
 
+    .search-btn {
+      position: absolute;
+      top: 0;
+      right: 10px;
+      /* Adjust as needed */
+      height: 100%;
+    }
+
+    .nav-search {
+      padding-right: 30px;
+      /* Adjust to make space for the button */
+    }
+  }
+</style>
 <!-- Shops Nearby Section -->
 <div class="container  mb-5">
 
@@ -27,18 +48,31 @@
           <i class="bi bi-chevron-right d-md-none"></i>
         </h1>
         <div class="dropdown-container w-100 p-2 p-lg-0 all-products-sidebar-dropdown-container">
-          <!-- <div class="col-md-3">
-              <div class="list-group"> -->
-          <% for (var i=0; i < extraCat.length; i++) { %>
-          <a href="#<%= extraCat[i].extra_cat_id %>"
-            class="fs-6 w-100 d-flex align-items-center justify-content-between mb-2" type="button" id="dropdown-btn">
+          <!-- Search Box -->
+          <div class="position-relative d-lg-flex align-items-center flex-grow-1 header-search-container"
+            style="max-width: 100%;">
+            <div class="search d-flex w-100">
+              <input class="form-control bg-transparent rounded-2 nav-search py-2"
+                style="border-color: #1A63A6; padding-right: 50px" type="search" placeholder="Search"
+                aria-label="Search" id="search-box" name="q" autocomplete="off" />
+              <button class="btn px-3 bg-transparent position-absolute rounded-start-0 rounded-end-2 search-btn h-100"
+                style="right: 0%;" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Categories List -->
+          <% for (var i = 0; i < extraCat.length; i++) { %>
+          <a href="/product/<%= extraCat[i].extra_cat_id %>"
+            class="fs-6 w-100 py-1 d-flex align-items-center justify-content-between mb-2 category-item"
+            data-name="<%= extraCat[i].extra_cat_name %>" type="button" id="dropdown-btn">
             <%= extraCat[i].extra_cat_name %>
           </a>
           <% } %>
-          <!-- </div>
-            </div> -->
         </div>
       </div>
+
 
 
 
@@ -62,7 +96,7 @@
                 All</a>
             </div>
             <!-- Product start -->
-            <div class="row row-cols-lg-5 g-4 row-cols-2 row-cols-md-3 d-none d-md-flex">
+            <div class="row row-cols-lg-4 g-4 row-cols-2 row-cols-md-3 d-none d-md-flex">
               <% var product_count = 0 %>
               <% // for (var k=0; k < shops.length; k++) { %>
               <% // if (product_count > 6) break;%>
@@ -140,6 +174,27 @@
       const categoryElement = document.querySelector(event.target.hash);
       categoryElement?.scrollIntoView({
         behavior: 'smooth'
+      });
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchBox = document.getElementById('search-box');
+    const categoryItems = document.querySelectorAll('.category-item');
+
+    searchBox.addEventListener('input', function () {
+      const searchText = searchBox.value.toLowerCase();
+      categoryItems.forEach(item => {
+        const categoryName = item.getAttribute('data-name').toLowerCase();
+        if (categoryName.includes(searchText)) {
+          item.classList.remove('d-none');
+          item.classList.add('d-flex');
+        } else {
+          item.classList.remove('d-flex');
+          item.classList.add('d-none');
+        }
       });
     });
   });

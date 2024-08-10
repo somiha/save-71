@@ -38,6 +38,7 @@
           <tr>
             <th scope="col">Customer Name</th>
             <th scope="col">Customer Number</th>
+            <th scope="col">Completed Order</th>
             <th scope="col">Total Earning (<%= currencyCode %>)</th>
           </tr>
         </thead>
@@ -49,6 +50,10 @@
             </td>
             <td>
               <%= customers[i].phone %>
+            </td>
+
+            <td>
+              <%= customers[i].completedOrders %>
             </td>
             <% var earned=0 %>
             <% for (var j=0; j < earning.length; j++) { %>

@@ -2,9 +2,20 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Rich Text Editor Section -->
 <link rel="stylesheet" href=" /richtexteditor/rte_theme_default.css" />
+<link href="
+https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css
+" rel="stylesheet">
+<script src="
+https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js
+"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/jquery.imagezoom.min.css">
+<script type="text/javascript" src="js/jquery.imagezoom.min.js"></script>
 <script type="text /javascript" src="/richtexteditor/rte.js"></script>
 <script type="text /javascript" src='/richtexteditor/plugins/all_plugins.js'></script>
+<script src="//code.jquery.com/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/2.2.3ß/jquery.elevatezoom.min.js"></script>
 
 <style>
   .rating-stars {
@@ -16,6 +27,86 @@
   .profile-image {
     width: 50px;
     height: 50px;
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+  }
+
+  @media (min-width: 768px) {
+    .image {
+      width: 75%;
+    }
+  }
+
+  .splide__slide img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .splide__slide {
+    opacity: 0.6;
+  }
+
+
+  .splide__slide .is-active {
+    opacity: 1;
+  }
+
+  .splide__arrow--prev {
+    left: -2.3em;
+  }
+
+  .splide__arrow--next {
+    right: -2.3em;
+  }
+
+  #carousel-wrapper {
+    border: 1px solid #ccc;
+    /* Gray border */
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 10px;
+    /* Optional: Add padding inside the border */
+  }
+
+  /* .thumbnail-slider .splide__slide img {
+    transform-origin: 65% 75%;
+    transition: transform 1s, filter .5s ease-out;
+  }
+
+  .thumbnail-slider .splide__slide:hover img {
+    transform: scale(5);
+  
+  } */
+  .thumbnail-slider .splide__slide .is-active .is-visible img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 0 0;
+  }
+
+  .img-zoom-container {
+    position: relative;
+    overflow: hidden;
+    /* Ensure the zoom effect doesn't overflow the container */
+    width: 100%;
+    height: 100%;
+  }
+
+  .zoom-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+    /* Smooth zoom effect */
+  }
+
+  .img-zoom-container:hover .zoom-image {
+    transform: scale(2);
+    /* Adjust the scale as needed for zoom effect */
   }
 </style>
 
@@ -154,7 +245,7 @@
 <!-- Products Description Section -->
 <div class="container relative mt-5 d-flex flex-column flex-md-row w-100 product-details-carousel row-gap-5">
   <!-- Carousel Section -->
-  <div class="d-flex w-50 justify-content-center align-items-center me-5 position-relative rounded-3">
+  <!-- <div class="d-flex w-50 justify-content-center align-items-center me-5 position-relative rounded-3">
     <div class="d-flex align-items-center">
       <div id="headerCarousel" class="carousel slide w-100">
         <div class="carousel-indicators">
@@ -180,7 +271,7 @@
           <% for (var i=0; i < product.length; i++) { %>
           <div class="carousel-item <%= (i === 0 && video.length === 0) ? 'active' : '' %> h-100">
             <div class="position-relative w-100 h-100">
-              <img src="<%= product[i].product_image_url %>" class="d-block w-100 h-100" style="object-fit:contain;">
+              <img src="<%= product[i].product_image_url %>" class="d-block image" style="object-fit:contain;">
             </div>
           </div>
           <% } %>
@@ -197,7 +288,63 @@
       <i class="bi bi-chevron-right fs-3"></i>
     </button>
     <% } %>
+  </div> -->
+  <div id="carousel-wrapper" class="justify-content-center align-items-center me-5 position-relative rounded-3"
+    style="width: 40%; height: 40%">
+    <section id="main-carousel" class="splide" aria-label="The carousel with videos and images"
+      style="margin-bottom: 30px;">
+      <div class="thumbnail-slider splide__track">
+        <ul class="splide__list imgBox">
+          <% for (var i=0; i < video.length; i++) { %>
+          <li class="splide__slide">
+            <div class="<%= (i === 0) ? 'active' : '' %> h-100">
+              <div class="position-relative w-100 h-100">
+                <video src="<%= video[i].product_video_url %>" class="d-block w-100 h-100" style="object-fit: contain;"
+                  autoplay muted controls="minimal">
+                  <button class="btn btn-primary btn-sm position-absolute top-0 start-0 m-3"
+                    onclick="toggleMute(this)"></button>
+                </video>
+              </div>
+            </div>
+          </li>
+          <% } %>
+          <% for (var i=0; i < product.length; i++) { %>
+          <li class="splide__slide">
+            <div class="<%= (i === 0 && video.length === 0) ? 'active' : '' %> h-100">
+              <div class="img-zoom-container position-relative w-100 h-100">
+                <img src="<%= product[i].product_image_url %>" class="zoom-image d-block w-100 h-100"
+                  id="productImage<%= i %>" style="object-fit: contain;">
+              </div>
+            </div>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </section>
+
+    <section id="thumbnail-carousel" class="splide" aria-label="Thumbnail carousel for navigation"
+      style="display: flex; margin-bottom: 5px; margin-left: 30px; margin-right: 30px;">
+      <div class="splide__track">
+        <ul class="splide__list">
+          <% for (var i=0; i < video.length + product.length; i++) { %>
+          <li class="splide__slide">
+            <div class="position-relative w-100 h-100">
+              <% if (i < video.length) { %>
+              <video src="<%= video[i].product_video_url %>" class="d-block w-100 h-100" style="object-fit: contain;">
+              </video>
+              <% } else { %>
+              <img src="<%= product[i - video.length].product_image_url %>" class="d-block w-100 h-100 image"
+                id="thumbnailImage<%= i %>" style="object-fit: contain;">
+              <% } %>
+            </div>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </section>
   </div>
+
+
 
 
   <!-- Details Section -->
@@ -207,11 +354,35 @@
       <h1 class="fw-medium fs-5" style="color: #2874a6;">
         <%= product[0].product_name %>
       </h1>
+
+
       <div class="d-flex mt-3 gap-3 align-items-center mb-2">
+        <% if (product[0].regular_price) { %>
+        <% var regularPrice = product[0].regular_price * currRate; %>
+        <% var sellingPrice = product[0].product_price * currRate; %>
+        <% var discount = ((regularPrice - sellingPrice) / regularPrice) * 100; %>
         <h3 class="fw-normal fs-6">
-          <%= currencyCode %>: <%= (product[0].product_price * currRate).toFixed(2) %>
+          <div style="font-size: larger; margin-bottom: 10px;">
+
+            <%= currencyCode %>: <%= sellingPrice.toFixed(2) %>
+          </div>
+          <div class="d-flex align-items-center">
+            <div style="text-decoration: line-through; margin-right: 10px;">
+              <%= currencyCode %>: <%= regularPrice.toFixed(2) %>
+            </div>
+            <span style="color: red;"><%= discount.toFixed(0) %>% Save</span>
+          </div>
+
         </h3>
+        <% } else { %>
+        <% var sellingPrice = product[0].product_price * currRate; %>
+        <h3 class="fw-normal fs-6">
+          <%= currencyCode %>: <%= sellingPrice.toFixed(2) %>
+        </h3>
+        <% } %>
       </div>
+
+
       <p class="text-dark" id="productId">Product Id : <%= product[0].product_id %>
         <button title="Copy Product ID" id="copyButton" class="btn text-white fw-bold">
           <i title="Copy Product ID" id="copy_icon" class="bi bi-clipboard fw-bold" style="color: #2874a6"></i>
@@ -253,6 +424,17 @@
           <p>
             <%= ratings.length %> reviews
           </p>
+          <div>
+            <% for (let j = 0; j < 5; j++) { %>
+            <% if (j < Math.floor(averageRating)) { %>
+            <i class="rating-stars bi bi-star-fill"></i>
+            <% } else if (j < Math.ceil(averageRating) && averageRating % 1 !== 0) { %>
+            <i class="rating-stars bi bi-star-half"></i>
+            <% } else { %>
+            <i class="rating-stars bi bi-star"></i>
+            <% } %>
+            <% } %>
+          </div>
         </a>
       </div>
 
@@ -316,7 +498,13 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Product Price (<%= currencyCode %>)</label>
+              <label class="form-label">Regular Price (<%= currencyCode %>)</label>
+              <input type="number" class="form-control" name="regular_price"
+                value="<%= (product[0].regular_price * currRate).toFixed(2) %>" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Selling Price (<%= currencyCode %>)</label>
               <input type="number" class="form-control" name="product_price"
                 value="<%= (product[0].product_price * currRate).toFixed(2) %>" required />
             </div>
@@ -350,15 +538,14 @@
 </form>
 
 <!-- Product details & qa section -->
-<div class="container my-5 px-2 mt-5">
-  <nav class="mb-4 w-100 ">
-    <div class="d-flex gap-lg-3 gap-3 fs-6 products-tab justify-content-center px-3 px-lg-0" id="nav-tab"
-      role="tablist">
+<div class="container my-5 px-2 mt-5" style="margin-top: 120px !important">
+  <nav class="mb-4 w-100">
+    <div class="d-flex gap-lg-3 gap-3 fs-6 products-tab justify-content-center justify-content-lg-start px-3 px-lg-0"
+      id="nav-tab" role="tablist">
       <a class="nav-link active btn p-2 px-3" id="nav-description-tab" data-bs-toggle="tab"
         data-bs-target="#nav-description" type="button">
         Description
       </a>
-
       <a class="nav-link btn p-2 px-3" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#nav-reviews"
         type="button">
         Reviews
@@ -369,6 +556,7 @@
       </a>
     </div>
   </nav>
+
   <div class="tab-content w-100 " id="nav-tabContent">
     <div class="tab-pane fade show active border rounded-3 p-4" id="nav-description" role="tabpanel" tabindex="0">
       <div>
@@ -382,11 +570,11 @@
       <div class="border rounded-3 p-4">
         <h1 id="Customer_Reviews" class="fs-5" style="color: #003F62;">Customer Reviews</h1>
         <div class="d-flex flex-column gap-3">
-          <% for (let i=0; i < ratings.length; i++) { %>
-          <% if (ratings[i].user_id==user[0].user_id) { %>
+          <% for (let i = 0; i < ratings.length; i++) { %>
+          <% if (ratings[i].user_id == user[0].user_id) { %>
           <div class="d-flex flex-column gap-0 p-3 border rounded-3">
             <ul class="d-flex p-0 gap-2 align-items-center">
-              <% for (let j=0; j < 5; j++) { %>
+              <% for (let j = 0; j < 5; j++) { %>
               <% if (j < ratings[i].review_star) { %>
               <i class="rating-stars bi bi-star-fill"></i>
               <% } else { %>
@@ -404,12 +592,17 @@
           <% } %>
           <% } %>
         </div>
+
         <!-- Button trigger modal -->
-        <% if (login_status) {%>
+        <% if (login_status) { %>
         <button type="button" class="btn mt-3" style="text-decoration: underline; background: #003F62; color: white;"
-          data-bs-toggle="modal" data-bs-target="#addReview">
+          id="reviewButton">
           Write A review
         </button>
+        <!-- Hidden message element -->
+        <div id="alreadyReviewedMessage" style="display: none; color: red;">
+          You have already reviewed this product.
+        </div>
         <% } else { %>
         <a href="/login" type="button" class="btn"
           style="text-decoration: underline; background: #003F62; color: white;">
@@ -457,13 +650,18 @@
           </div>
         </div>
         <!-- Modal End -->
+
+        <!-- Hidden input field to store review status -->
+        <input type="hidden" id="userHasReviewed"
+          value="<%= JSON.stringify(ratings.some(rating => rating.user_id == user[0].user_id)) %>">
       </div>
+
       <div class="d-flex flex-column gap-3">
-        <% for (let i=0; i < ratings.length; i++) { %>
-        <% if (ratings[i].user_id !=user[0].user_id) { %>
+        <% for (let i = 0; i < ratings.length; i++) { %>
+        <% if (ratings[i].user_id != user[0].user_id) { %>
         <div class="d-flex flex-column gap-0 p-3 border rounded-3">
           <ul class="d-flex p-0 gap-2 align-items-center">
-            <% for (let j=0; j < 5; j++) { %>
+            <% for (let j = 0; j < 5; j++) { %>
             <% if (j < ratings[i].review_star) { %>
             <i class="rating-stars bi bi-star-fill"></i>
             <% } else { %>
@@ -482,6 +680,28 @@
         <% } %>
       </div>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Retrieve the userHasReviewed value from the hidden input field
+        const userHasReviewed = JSON.parse(document.getElementById('userHasReviewed').value);
+
+        const reviewButton = document.getElementById('reviewButton');
+        const alreadyReviewedMessage = document.getElementById('alreadyReviewedMessage');
+
+        reviewButton.addEventListener('click', () => {
+          if (userHasReviewed) {
+            // Display a message that the user has already reviewed
+            alreadyReviewedMessage.style.display = 'block';
+          } else {
+            // Trigger the modal
+            var myModal = new bootstrap.Modal(document.getElementById('addReview'));
+            myModal.show();
+          }
+        });
+      });
+    </script>
+
 
     <!-- FAQ starts -->
     <div class="tab-pane fade" id="nav-questions" role="tabpanel" tabindex="0">
@@ -514,6 +734,8 @@
   </div>
 </div>
 
+
+
 <!-- You might also like section -->
 <div class="container d-md-block justify-content-center d-none my-5">
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -521,11 +743,15 @@
   </div>
   <div class="row row-cols-lg-5 g-4 row-cols-2 row-cols-md-3">
     <% relatedProducts.slice(0, 5).forEach(function(productDetails) { %>
+    <% if (productDetails.quantity === 0) { %>
     <div class="col">
       <%- include('./components/product_card.ejs', { product_details: productDetails }) %>
     </div>
-    <%  }) %>
+    <% } %>
+    <% }) %>
   </div>
+</div>
+
 
 
 </div>
@@ -564,6 +790,15 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+
+<script>
+  $('.imgBox').imgZoom({
+    boxWidth: 400,
+    boxHeight: 400,
+    marginLeft: 5,
+    origin: 'data-origin'
+  });
+</script>
 
 <script>
   function disableSubmitButton() {
@@ -643,5 +878,66 @@
     });
   });
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var main = new Splide('#main-carousel', {
+      type: 'fade',
+      rewind: true,
+      pagination: false,
+      arrows: false,
+    });
+
+    var thumbnails = new Splide('#thumbnail-carousel', {
+      fixedWidth: 100,
+      fixedHeight: 60,
+      gap: 10,
+      rewind: true,
+      pagination: false,
+      isNavigation: true,
+      breakpoints: {
+        600: {
+          fixedWidth: 60,
+          fixedHeight: 44,
+        },
+      },
+    });
+
+    main.sync(thumbnails);
+    main.mount();
+    thumbnails.mount();
+  });
+
+
+</script>
+
+<script>
+  $("#zoom").imagezoom();
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const zoomContainers = document.querySelectorAll(".img-zoom-container");
+
+    zoomContainers.forEach(container => {
+      const img = container.querySelector(".zoom-image");
+
+      container.addEventListener("mousemove", function (e) {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+
+        const xPercent = (x / container.offsetWidth) * 100;
+        const yPercent = (y / container.offsetHeight) * 100;
+
+
+        img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+      });
+    });
+  });
+</script>
+
+
 
 <%- include('footer'); -%>

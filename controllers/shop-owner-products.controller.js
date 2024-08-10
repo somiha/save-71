@@ -82,6 +82,7 @@ exports.shop_owner_product = async (req, res) => {
                               product.product_cat_id === cat.extra_cat_id
                           );
                         });
+                        console.log("Filtered extra cat : ", filteredExtraCat);
 
                         var images = fetchFeaturedImages.map((image) => {
                           image.product_id = crypto.smallEncrypt(

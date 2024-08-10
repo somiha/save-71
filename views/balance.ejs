@@ -249,7 +249,7 @@
 
                 createAndAppendTable(
                   response.orderTable,
-                  ['Order ID', 'Delivery Date', 'Amount'],
+                  ['Order ID', 'Delivery Date', 'Amount (<%= currencyCode %>)'],
                   'order',
                   response.currRate,
                   1
@@ -343,8 +343,9 @@
             .done(response => {
               if (response) {
                 changesDiv.append('<h5><b>Due Balance</b></h5>');
-                const headers1 = ['Due Transaction ID', 'Order ID', 'Last Due Date', 'Amount', 'Status', 'Action'];
-                const table1 = createTable(response.dueTable, headers1, response.currRate);
+                const headers1 = ['Due Transaction ID', 'Order ID', 'Last Due Date', 'Sales (<%= currencyCode %>)', 'Charge (<%= currencyCode %>)', 'Status', 'Action'];
+                const table1 = createTable(response.dueTable, headers1, response.currRate, response.totalSales);
+                console.log("s", response.totalSales);
                 changesDiv.append(table1);
               } else {
                 showError('Invalid response data.');
@@ -361,7 +362,7 @@
           });
         }
 
-        function createTable(data, headers, currRate) {
+        function createTable(data, headers, currRate, totalSales) {
           console.log(data);
           const table = $('<table>').addClass(
             'table table-bordered table-striped'
@@ -383,6 +384,8 @@
             const idCell = $('<td>').text(item.due_id)
             const orderIdCell = $('<td>').append(`<a class="btn" href="/order_details/${item.order_id}">${item.order_id}</a>`);
             const dateCell = $('<td>').text(formatDate(item.last_date));
+            const salesValue = totalSales[item.order_id] || 0;
+            const saleCell = $('<td>').text((salesValue * currRate).toFixed(2));
             const priceCell = $('<td>').text((item.due_amount * currRate).toFixed(2));
             const statusCell = $('<td>');
             const payCell = $('<td>');
@@ -393,7 +396,7 @@
               payCell.append(`<a class="btn btn-primary" href="/payDue/${item.due_id}/1">Pay Now</a>`)
               statusCell.append('<p class="btn btn-danger"><i class="bi bi-exclamation-circle me-2 text-white"></i>Pending</p>');
             }
-            row.append(idCell, orderIdCell, dateCell, priceCell, statusCell, payCell);
+            row.append(idCell, orderIdCell, dateCell, saleCell, priceCell, statusCell, payCell);
             tableBody.append(row);
           });
 

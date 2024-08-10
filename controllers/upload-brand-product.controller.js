@@ -90,7 +90,8 @@ exports.uploadBrandProductPost = async (req, res) => {
     const [currRate] = await Promise.all([
       catModel.fetchCurrencyRate(currencyCode),
     ]);
-    var { extra_id, temp_id, product_price, product_name } = req.body;
+    var { extra_id, temp_id, regular_price, product_price, product_name } =
+      req.body;
     product_name = product_name.trim().slice(0, 100);
 
     temp_id = crypto.smallDecrypt(temp_id);
@@ -98,13 +99,14 @@ exports.uploadBrandProductPost = async (req, res) => {
       "Upload product : ",
       extra_id,
       temp_id,
+      regular_price,
       product_price,
       product_name
     );
     var seller_id = crypto.decrypt(req.cookies.seller_id);
     var product_id;
     var query =
-      "INSERT INTO `products` (`product_id`, `product_name`, `product_price`, `product_short_des`, `product_details_des`, `product_cat_id`, `seller_id`, `sell_count`, `quantity`, `status`, `admin_published`, `is_branded`) VALUES (NULL, ?, ?, ?, ?, ?, ?, '0', '0', '1', '1', '1')";
+      "INSERT INTO `products` (`product_id`, `product_name`, `regular_price`, `product_price`, `product_short_des`, `product_details_des`, `product_cat_id`, `seller_id`, `sell_count`, `quantity`, `status`, `admin_published`, `is_branded`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, '0', '0', '1', '1', '1')";
     db.query(
       "SELECT * FROM `product_template` WHERE `temp_id` = ?",
       [temp_id],
@@ -116,6 +118,7 @@ exports.uploadBrandProductPost = async (req, res) => {
             query,
             [
               product_name,
+              regular_price / currRate,
               product_price / currRate,
               res3[0].temp_short_des,
               res3[0].temp_long_des,

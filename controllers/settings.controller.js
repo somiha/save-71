@@ -40,10 +40,11 @@ exports.settings = async (req, res) => {
                       if (!err4) {
                         console.log("IMG : ", res1[0]);
                         res.render("settings", {
-                          ogImage: "http://localhost:3000/images/logo-og.webp",
+                          ogImage:
+                            "https://save71.lens-ecom.store/images/logo-og.webp",
                           ogTitle:
                             "Save71 Connects You and the World through Business.",
-                          ogUrl: "http://localhost:3000/",
+                          ogUrl: "https://save71.lens-ecom.store/",
                           menuId: "shop-owner-settings",
                           name: "Settings & Privacy",
                           info: res1,
@@ -142,7 +143,9 @@ exports.settings_personal_info = (req, res) => {
 
 exports.settings_personal_info_done = (req, res) => {
   const { emailOtp } = req.body;
-  var uID = crypto.decrypt(req.cookies.userId);
+  var uID = req.cookies.userIdNotEnc;
+
+  console.log("Email: ", emailOtp, req.cookies);
   db.query(
     "SELECT * FROM `otp` WHERE `otp`.`user_id` = ?",
     [uID],
@@ -327,7 +330,8 @@ exports.picEdit = (req, res) => {
       res.redirect("/settings");
       return;
     }
-    var pic_url = "http://localhost:3000/images/userImg/" + req.file.filename;
+    var pic_url =
+      "https://save71.lens-ecom.store/images/userImg/" + req.file.filename;
     var uID = crypto.decrypt(req.cookies.userId);
     var query = "UPDATE `user` SET `pic_url` = ? WHERE `user`.`user_id` = ?";
     db.query(query, [pic_url, uID], (err1, res1) => {
@@ -350,7 +354,7 @@ exports.updateBankInfo = (req, res) => {
 
   // console.log("BankName: ", bankName, "\nAcc number: ",accountNumber, "\nAcc Name: ",accName, "\nBranch Name: ",branchName, "\nRouting Number: ",routingNumber)
 
-  const uID = crypto.decrypt(req.cookies.userId);
+  const uID = req.cookies.userIdNotEnc;
   const sendMail = helperFunctions.mailSend;
   const bn = crypto.encrypt(bankName);
   const acN = crypto.encrypt(accountNumber);
@@ -449,6 +453,7 @@ exports.updateBankInfo = (req, res) => {
 
 exports.updateBankInfoOTPApi = (req, res) => {
   const { bankOtp } = req.body;
+  console.log(req.cookies);
   const bn = crypto.decrypt(req.cookies.bn);
   const acN = crypto.decrypt(req.cookies.acN);
   const acNa = crypto.decrypt(req.cookies.acNa);

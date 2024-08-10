@@ -61,6 +61,20 @@ exports.loginPost = (req, res) => {
     );
   });
 
+  let myPromiseDemo = new Promise(function (myResolve, myReject) {
+    db.query(
+      "SELECT * FROM `user_demo` WHERE `phone` = ?;",
+      [phone],
+      async function (error, result) {
+        if (!error) {
+          // console.log(result, phone)
+          myResolve(result);
+        }
+        myReject(error);
+      }
+    );
+  });
+
   myPromise.then(
     async function (result) {
       // console.log(password + " - " + result[0].user_password)
@@ -100,6 +114,9 @@ exports.loginPost = (req, res) => {
                         );
                       }
                       res.cookie("userId", crypto.encrypt(userId), {
+                        maxAge: 24 * 60 * 60 * 1000,
+                      });
+                      res.cookie("userIdNotEnc", userId, {
                         maxAge: 24 * 60 * 60 * 1000,
                       });
                       res.cookie("seller_id", crypto.encrypt(res1[0].id), {
@@ -148,7 +165,7 @@ exports.loginPost = (req, res) => {
                   const encMsg = crypto.encrypt("Check Mail !");
                   const encMsgEncoded = encodeURIComponent(encMsg);
                   res.redirect(
-                    `/emailVerificationRequest/${encUserIdEncoded}/${encMsgEncoded}`
+                    `/emailVerificationRequestByUserId/${userId}/${encMsgEncoded}`
                   );
                 }
               }
@@ -159,12 +176,35 @@ exports.loginPost = (req, res) => {
             maxAge: 1000 * 1,
           });
           res.redirect("/login");
+          return;
         }
       } else {
-        res.cookie("loginMessage", crypto.encrypt("No User with this Number"), {
-          maxAge: 1000 * 1,
+        myPromiseDemo.then(function (result) {
+          if (result.length > 0) {
+            const savedUser = result[0];
+            console.log({ savedUser });
+            const encUserId = crypto.encrypt(savedUser.user_id); // assuming crypto.encrypt is synchronous
+            const encUserIdEncoded = encodeURIComponent(encUserId);
+            const encMsg = crypto.encrypt("Email Sent. Check Your Email !");
+            const encMsgEncoded = encodeURIComponent(encMsg);
+            console.log(encUserIdEncoded);
+            console.log(encMsgEncoded);
+            res.redirect(
+              `/emailVerificationRequestByUserId/${savedUser.user_id}/${encMsgEncoded}` // use savedUser[0].user_id instead of res1[0].user_id
+            );
+            return;
+          } else {
+            res.cookie(
+              "loginMessage",
+              crypto.encrypt("No User with this Number"),
+              {
+                maxAge: 1000 * 1,
+              }
+            );
+            res.redirect("/login");
+            return;
+          }
         });
-        res.redirect("/login");
       }
     },
     function (error) {
@@ -195,6 +235,7 @@ exports.emailVerify = (req, res) => {
           res.status(200).send({
             status: "success",
             encUserId,
+            userId: res1[0].user_id,
           });
         } else {
           res.send("failed");

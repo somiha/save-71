@@ -125,6 +125,7 @@ exports.uploadOwnProductPost = async (req, res) => {
       var seller_id = crypto.decrypt(req.cookies.seller_id);
       var {
         product_name,
+        regular_price,
         product_price,
         category,
         product_des,
@@ -157,11 +158,12 @@ exports.uploadOwnProductPost = async (req, res) => {
 
       // Insert product information into the database
       var query =
-        "INSERT INTO `products` (`product_id`, `product_name`, `product_price`, `product_short_des`, `product_details_des`, `product_cat_id`, `seller_id`, `sell_count`, `quantity`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO `products` (`product_id`, `product_name`, `regular_price`, `product_price`, `product_short_des`, `product_details_des`, `product_cat_id`, `seller_id`, `sell_count`, `quantity`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(
         query,
         [
           product_name,
+          regular_price / currRate,
           product_price / currRate,
           product_short_des,
           product_des,
@@ -238,7 +240,8 @@ exports.addProductFromStore = async (req, res) => {
     const [currRate] = await Promise.all([
       catModel.fetchCurrencyRate(currencyCode),
     ]);
-    var { product_id, product_price, product_name } = req.body;
+    console.log("body", req.body);
+    var { product_id, regular_price, product_price, product_name } = req.body;
     product_name = product_name.trim().slice(0, 100);
     // console.log('Upload product : ', product_id, product_price, product_name)
     product_id = crypto.smallDecrypt(product_id);
@@ -246,7 +249,7 @@ exports.addProductFromStore = async (req, res) => {
     var seller_id = crypto.decrypt(req.cookies.seller_id);
     var p_id;
     var query =
-      "INSERT INTO `products` (`product_id`, `product_name`, `product_price`, `product_short_des`, `product_details_des`, `product_cat_id`, `seller_id`, `sell_count`, `quantity`, `status`, `admin_published`, `is_branded`) VALUES (NULL, ?, ?, ?, ?, ?, ?, '0', '0', '1', '1', '0')";
+      "INSERT INTO `products` (`product_id`, `product_name`, `regular_price`, `product_price`, `product_short_des`, `product_details_des`, `product_cat_id`, `seller_id`, `sell_count`, `quantity`, `status`, `admin_published`, `is_branded`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, '0', '0', '1', '1', '0')";
     db.query(
       "SELECT * FROM `products` WHERE `product_id` = ?",
       [product_id],
@@ -258,6 +261,7 @@ exports.addProductFromStore = async (req, res) => {
             query,
             [
               product_name,
+              regular_price / currRate,
               product_price / currRate,
               res3[0].product_short_des,
               res3[0].product_details_des,

@@ -1,13 +1,13 @@
 <html lang="en">
 
   <head>
-    <link rel="icon" sizes="325x325" href="https://save71.com/images/save71_icon.webp">
+    <link rel="icon" sizes="325x325" href="https://save71.lens-ecom.store/images/save71_icon.webp">
     <meta property="og:title" content="Save71 Connects You and the World through Business.">
     <meta property="og:site_name" content="Save-71">
-    <meta property="og:url" content="https://save71.com/login">
+    <meta property="og:url" content="https://save71.lens-ecom.store/login">
     <meta property="og:description" content="Unlock Global Connectivity with Save71 for Business.">
     <meta property="og:type" content="business.business">
-    <meta property="og:image" content="https://save71.com/images/logo-og.webp">
+    <meta property="og:image" content="https://save71.lens-ecom.store/images/logo-og.webp">
 
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -77,11 +77,12 @@
     <script src="/js/location.js"></script>
 
     <div id="loading-container" style="display: none">
-      <img id="loading-gif" src="https://save71.com/images/loading.gif" alt="Loading..." />
+      <img id="loading-gif" src="https://save71.lens-ecom.store/images/loading.gif" alt="Loading..." />
     </div>
     <div class="d-flex justify-content-center align-items-center border min-vh-100 login-page-div" style="width: 100vw">
       <div class="d-flex flex-column row-gap-0">
-        <img src="https://save71.com/images/logo.webp" class="p-2 mb-3" style="width: 70%; align-self: center;" />
+        <img src="https://save71.lens-ecom.store/images/logo.webp" class="p-2 mb-3"
+          style="width: 70%; align-self: center;" />
 
         <form class="d-flex flex-column row-gap-4" action="/login" method="POST">
           <div class="position-relative">
@@ -150,8 +151,10 @@
                   <label for="otp">Enter OTP:</label>
                   <input type="text" id="otp" name="otp" class="form-control" required />
                   <input type="text" id="encUserId" name="encUserId" class="form-control" value="" required hidden />
+                  <input type="text" id="userId" name="userId" class="form-control" value="" required hidden />
                   <button id="verifyOTPButton" class="btn btn-primary mt-2">Verify OTP</button>
                   <button id="resendOTPButton" class="btn btn-primary mt-2">Resend OTP</button>
+                  <p id="otpMessage" style="display: none;">An OTP is sent to your email</p>
                 </div>
 
                 <!-- Step 3 : Reset Pass -->
@@ -242,12 +245,14 @@
             $('#submitButton').hide();
             $('#resetPasswordButton').show();
             $('#encUserId').val(response.encUserId);
+            $('#userId').val(response.userId);
 
             $.ajax({
               type: 'POST',
               url: '/emailVerificationRequestAPI',
               data: {
                 encUserId: response.encUserId,
+                userId: response.userId
               },
               success: (response) => {
                 if (response.status === true || response.status === 'success') {
@@ -288,6 +293,7 @@
     $('#verifyOTPButton').click(function () {
       var enteredOTP = $('#otp').val();
       var encUserId = $('#encUserId').val();
+      var userId = $('#userId').val();
       var step2 = $('#step2');
 
       // Remove any existing error messages
@@ -300,6 +306,7 @@
         data: {
           otp: enteredOTP,
           encUserId,
+          userId
         },
         success: function (response) {
           if (response.status === 'success') {
@@ -377,11 +384,12 @@
 
     $('#resendOTPButton').click(function () {
       var encUserId = $('#encUserId').val();
+      var userId = $('#userId').val();
 
       // Perform Ajax request to resend the OTP
       $.ajax({
         type: 'GET',
-        url: '/resendOTP/' + encUserId, // Replace with the actual endpoint for OTP resend
+        url: '/resendOtpByUserId/' + userId, // Replace with the actual endpoint for OTP resend
         success: function (response, status, xhr) {
           // Handle success case
           console.log('Response:', response);
@@ -390,10 +398,7 @@
 
           if (response.status === "success") {
             // OTP resend successful
-            $('<p>')
-              .text('OTP resend successful')
-              .addClass('text-success')
-              .show();
+
           } else {
             // Handle other error cases
             var error = $('<p>')
@@ -526,4 +531,16 @@
       else passField.type = 'password'
     })
   })
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#resendOTPButton').click(function () {
+      $('#otpMessage').fadeIn(); // Show the message
+      setTimeout(function () {
+        $('#otpMessage').fadeOut(); // Hide the message after a certain time (optional)
+      }, 3000); // Hide after 3 seconds (3000 milliseconds)
+    });
+  });
 </script>
